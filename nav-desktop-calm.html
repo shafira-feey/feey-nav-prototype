@@ -51,7 +51,10 @@
   .navr{grid-column:3;justify-self:end;display:flex;align-items:center;gap:16px}
   .icobtn{font-size:18px;cursor:pointer;position:relative}
   .icobtn .dot{position:absolute;top:-3px;right:-4px;background:var(--green);color:#fff;font-family:var(--fh);font-weight:600;font-size:9px;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-  .nav{display:flex;gap:2px;justify-content:flex-start;padding:1px 26px 12px}
+  .nav{display:flex;align-items:center;gap:2px;justify-content:flex-start;padding:1px 26px 12px}
+  .navservice{margin-left:auto;display:flex;gap:2px;align-items:center}
+  .navservice .svc{font-family:var(--fh);font-weight:500;font-size:12px;color:var(--dark-beige);padding:7px 9px;border-radius:6px;cursor:pointer;white-space:nowrap}
+  .navservice .svc:hover{background:var(--light-beige);color:var(--black)}
   .navitem{font-family:var(--fh);font-weight:500;font-size:13.5px;padding:9px 12px;cursor:pointer;color:var(--black);border-radius:6px;white-space:nowrap;position:relative}
   .navitem:hover,.navitem.on{background:var(--light-beige)}
   .navitem.on::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2px;background:var(--green-dark)}
@@ -113,6 +116,8 @@
   .wlink:last-child{border-bottom:0}
   .wlink:hover{color:var(--green-dark)}
   .wlink .wdot{font-size:13px;opacity:.7}
+  .wallblogs{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--green-dark);cursor:pointer;margin-top:14px;display:inline-block}
+  .wallblogs:hover{text-decoration:underline}
 
   /* Column 4 — slim rail (highlight tool · one small feature · optional Neu/Bestseller) */
   .col.rail{flex:1 1 270px;min-width:230px;max-width:360px;display:flex;flex-direction:column;gap:16px}
@@ -288,7 +293,11 @@
 
   /* ---- header nav ---- */
   var nav=document.getElementById('nav');
-  (function(){var o='';for(var i=0;i<ORDER.length;i++){var k=ORDER[i];o+='<div class="navitem'+(k==='workshops'?' tier':'')+'" data-k="'+k+'">'+WORLDS[k].title+'</div>';}nav.innerHTML=o;})();
+  (function(){var o='';for(var i=0;i<ORDER.length;i++){var k=ORDER[i];o+='<div class="navitem'+(k==='workshops'?' tier':'')+'" data-k="'+k+'">'+WORLDS[k].title+'</div>';}
+    /* SERVICE links — right side of the second nav row (Mein Konto = the 👤 icon above) */
+    var SVC=[['Hilfezentrum','Hilfezentrum'],['Pflanzendoktor','Pflanzendoktor'],['Firmen-Angebot','Firmen-Angebot (B2B)'],['Mehr über uns','Über feey']];
+    o+='<div class="navservice">';for(var s=0;s<SVC.length;s++){o+='<span class="svc" data-pillar="'+esc(SVC[s][1])+'" data-crumb="Service">'+SVC[s][0]+'</span>';}o+='</div>';
+    nav.innerHTML=o;})();
 
   /* ===== V4 calm mega-menu — one column per thing ===== */
   function discoverCol(k){
@@ -309,9 +318,10 @@
     var w=WORLDS[k],feat=w.featured||[],isPlant=(k==='zimmer'||k==='balkon'),i;
     if(!feat.length)return '';
     var allAttr=isPlant?('data-blogcat="'+(k==='zimmer'?0:1)+'"'):'data-blog="1"';
-    var o='<div class="col wissen"><div class="sechd"><span class="deye">Wissen &amp; Geschichten</span><span class="seeall" '+allAttr+'>Alle Blogs →</span></div>';
+    var o='<div class="col wissen"><div class="deye">Wissen &amp; Geschichten</div>';
     if(isPlant){o+='<div class="hubrow" data-pillar="Pflanzenlexikon" data-crumb="Wissen"><div class="hi">📖</div><div><b>Pflanzenlexikon</b><span>Alles Wissen rund um deine Pflanzen</span></div><span class="cv">›</span></div>';}
     for(i=0;i<feat.length;i++){o+='<div class="wlink" data-pillar="'+esc(feat[i])+'" data-crumb="Blog"><span class="wdot">📄</span>'+feat[i]+'</div>';}
+    o+='<div class="wallblogs" '+allAttr+'>Alle Blogs ansehen →</div>';
     return o+'</div>';
   }
   function railCol(k){
