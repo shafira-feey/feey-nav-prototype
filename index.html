@@ -8,6 +8,9 @@
    • Category rows now carry a context subline (e.g. Schädlingsbekämpfung — Prävention & Akut-Hilfe).
    • Tipps & Wissen leads with the content pillars (Pflanzenlexikon · Blog · Herkunft),
      then specific articles. [tentative per Sevi — easy to revert]
+  2026-06-25 (align to desktop V4): selecting an "Entdecken nach" smart facet (Licht/Raum/Anlass/
+   Standort/Saison) no longer opens an in-drawer L3 layer — it CLOSES the drawer and redirects to the
+   curated landing page (smartLandingPage), matching desktop. Drawer is now 2 layers (worlds → world) + page.
   Deep-links: ?view=list · ?world=zimmer|balkon|pflege|toepfe|blumen|geschenke|workshops · &facet=licht|raum|standort|saison|anlass
 -->
 <!doctype html>
@@ -261,14 +264,17 @@
     }
     return o+'<div style="height:22px"></div></div>';
   }
-  function smartList(id){
-    var n=NODES[id],pool=(WORLDS[cw]||WORLDS.zimmer).prods;
-    var o=phead(n.eyebrow,n.title)+'<div class="dpad" style="padding-top:6px">';
+  /* curated facet selection → LANDING PAGE in the main view (aligned with desktop V4; was an in-drawer L3 layer) */
+  function smartLandingPage(id){
+    var n=NODES[id],w=WORLDS[cw]||WORLDS.zimmer,pool=w.prods;
+    var o='<div class="topbar"><div class="ico" data-a="open-drawer">☰</div><div class="logo" data-a="home">feey</div><div class="grp"><div class="ico" data-a="open-search">🔍</div><div class="ico">🛒<span class="dot"></span></div></div></div>';
+    o+='<div class="collwrap"><div class="crumb"><a data-a="home">Startseite</a> › '+w.title+' › '+n.eyebrow+'</div><div class="colltitle">'+n.title+'</div>';
+    o+='<p style="font-size:13px;color:var(--dark-beige);margin:0 0 16px;line-height:18px">Kuratierte Auswahl — wir haben '+w.title.toLowerCase()+' nach passenden Plätzen sortiert, damit du schneller findest, was zu dir passt.</p>';
     for(var i=0;i<n.items.length;i++){
       o+='<div class="smartsec"><div class="smarthd" '+rd(n.items[i][1],null)+'><div class="l"><span class="sme">'+n.items[i][0]+'</span><b>'+n.items[i][1]+'</b></div><span class="link">Alle ansehen ›</span></div><div class="cardscroll">';
       var s=slice5(pool,i*2);for(var k=0;k<s.length;k++){o+=pcard(s[k]);}o+='</div></div>';
     }
-    return o+'<div style="height:22px"></div></div>';
+    return o+'</div>';
   }
   function collectionPage(title,crumb,filter){
     var w=WORLDS[cw]||WORLDS.zimmer,list=w.prods;
@@ -304,6 +310,7 @@
   function popAll(){for(var i=0;i<stack.length;i++){if(stack[i].parentNode)stack[i].parentNode.removeChild(stack[i]);}stack=[];}
   function closeDrawer(){popAll();document.getElementById('fyDrawer').classList.remove('show');document.querySelector('.scrim').classList.remove('show');}
   function redirect(title,crumb,filter){closeDrawer();document.getElementById('fySearch').classList.remove('show');document.getElementById('fyColl').innerHTML=collectionPage(title,crumb,filter);document.getElementById('fyHome').style.display='none';document.getElementById('fyColl').style.display='block';document.querySelector('.screen').scrollTop=0;}
+  function redirectSmart(id){closeDrawer();document.getElementById('fySearch').classList.remove('show');document.getElementById('fyColl').innerHTML=smartLandingPage(id);document.getElementById('fyHome').style.display='none';document.getElementById('fyColl').style.display='block';document.querySelector('.screen').scrollTop=0;}
   function goHome(){cw=null;closeDrawer();document.getElementById('fyColl').style.display='none';document.getElementById('fyHome').style.display='block';}
 
   var T=[{k:'GRID',n:'Raster',tag:'Blöcke'},{k:'LIST',n:'Liste',tag:'Text'}];
@@ -319,7 +326,7 @@
     var bcat=e.target.closest('[data-blogcat]');if(bcat){push(topicPanel(+bcat.getAttribute('data-blogcat')));return;}
     var pil=e.target.closest('[data-pillar]');if(pil){redirectPillar(pil.getAttribute('data-pillar'),pil.getAttribute('data-crumb'));return;}
     var w=e.target.closest('[data-w]');if(w){cw=w.getAttribute('data-w');push(worldL2(cw));return;}
-    var to=e.target.closest('[data-to]');if(to){push(smartList(to.getAttribute('data-to')));return;}
+    var to=e.target.closest('[data-to]');if(to){redirectSmart(to.getAttribute('data-to'));return;}
     var a=e.target.closest('[data-a]');if(!a)return;var act=a.getAttribute('data-a');
     if(act==='open-drawer'){document.getElementById('fyDrawer').classList.add('show');document.querySelector('.scrim').classList.add('show');}
     else if(act==='close-drawer'){closeDrawer();}
@@ -333,7 +340,7 @@
   var P=new URLSearchParams(location.search);
   if(P.get('view')==='list'){curi=1;showTL();}
   if(P.get('nb')==='off'){document.getElementById('fyNB').style.display='none';document.getElementById('nbState').textContent='Aus';}
-  var wd=P.get('world');if(wd&&WORLDS[wd]){cw=wd;push(worldL2(wd));var fc=P.get('facet');if(fc&&NODES[fc]){push(smartList(fc));}}
+  var wd=P.get('world');if(wd&&WORLDS[wd]){cw=wd;var fc=P.get('facet');if(fc&&NODES[fc]){redirectSmart(fc);}else{push(worldL2(wd));}}
   if(P.get('blog')==='1'){push(blogPanel());var bca=P.get('blogcat');if(bca!==null&&BLOG[+bca]&&BLOG[+bca].topics){push(topicPanel(+bca));}}
   if(P.get('pillar')){redirectPillar(P.get('pillar'),P.get('crumb')||'Blog');}
   if(P.get('search')==='1'){document.getElementById('fySearch').classList.add('show');}
