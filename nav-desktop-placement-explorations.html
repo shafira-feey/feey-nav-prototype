@@ -1,0 +1,256 @@
+<!--
+  feey.ch — DESKTOP NAV · PLACEMENT + SLIDE-DOWN + FULL DRILL (throwaway /prototype)
+  Split nav (worlds flank a CENTERED feey logo) + panel SLIDES DOWN, NOW WITH the canonical's layered depth:
+   L1 world → nav COLUMN (left) + EXPOSE PREVIEW (right: feature + popular + Wissen).
+   L2 click a facet (Nach Licht/Raum/Anlass…) → preview shows selectable TILES.
+   L3 click a tile → preview shows the matching PRODUCTS. Direct facets/categories → collection page.
+  3 layouts (switch ‹ › / arrow keys / ?variant=1|2|3 · open: &open=<key>&facet=<f>&tile=<i>):
+   1 · GETEILT 3│logo│4 — all 7 · full-width slide-down
+   2 · REDUZIERT 2│logo│3 — 5 doors (Pflege & Wohnen, Blumen & Geschenke merged) · full-width slide-down
+   3 · GETEILT 3│logo│4 — same split · slide-down as a centered, contained card  (Shafira's visual fave)
+-->
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>feey · Desktop-Nav Placement + Layers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--green:#60BFA4;--green-dark:#4A9A83;--green-15:#E6F4F0;--green-40:#BFE4DB;--yellow:#FACE44;--yellow-40:#FDEBB3;--yellow-70:#FBDD7C;--beige:#D3CCB6;--light-beige:#F6F5F0;--dark-beige:#635D4B;--dark-beige-15:#E8E6E4;--black:#141414;--fh:'Poppins',system-ui,sans-serif;--fb:'Karla',system-ui,sans-serif}
+  *{box-sizing:border-box}html,body{margin:0}
+  body{font-family:var(--fb);color:var(--black);background:#dfddd5;padding:22px 16px 92px;display:flex;flex-direction:column;align-items:center}
+  .intro{max-width:1000px;text-align:center;margin-bottom:12px}
+  .intro h1{font-family:var(--fh);font-weight:600;font-size:17px;margin:0 0 4px}.intro p{font-size:12.5px;color:var(--dark-beige);margin:0}
+  .win{width:100%;max-width:1360px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 30px 70px -24px rgba(20,20,20,.5)}
+  .chrome{height:42px;background:#e9e7e1;display:flex;align-items:center;gap:8px;padding:0 16px;border-bottom:1px solid #d8d5cc}
+  .chrome .dots{display:flex;gap:6px}.chrome .dots i{width:11px;height:11px;border-radius:50%;display:block}
+  .chrome .dots i:nth-child(1){background:#ec6a5e}.chrome .dots i:nth-child(2){background:#f4be4f}.chrome .dots i:nth-child(3){background:#61c554}
+  .chrome .addr{flex:1;max-width:420px;margin:0 auto;background:#fff;border-radius:20px;height:26px;display:flex;align-items:center;justify-content:center;gap:7px;font-size:12px;color:var(--dark-beige);border:1px solid #d8d5cc}
+  .site{position:relative}
+  .util{background:var(--green);color:#fff;font-size:11.5px;font-weight:500;display:flex;justify-content:center;gap:26px;padding:7px 16px}
+
+  .header{position:relative;display:flex;align-items:center;padding:16px 22px;background:#fff;border-bottom:1px solid var(--dark-beige-15);z-index:30}
+  .navside{flex:1;display:flex;gap:2px;align-items:center}
+  .navside.left{justify-content:flex-end;padding-right:20px}
+  .navside.right{justify-content:flex-start;padding-left:20px}
+  .logo{flex:0 0 auto;font-family:var(--fh);font-weight:700;font-size:25px;letter-spacing:.5px;cursor:pointer}
+  .navitem{font-family:var(--fh);font-weight:500;font-size:13px;padding:9px 11px;cursor:pointer;color:var(--black);border-radius:6px;white-space:nowrap;position:relative}
+  .navitem:hover,.navitem.on{background:var(--light-beige)}
+  .navitem.on::after{content:"";position:absolute;left:11px;right:11px;bottom:-1px;height:2px;background:var(--green-dark)}
+  .navitem.tier{color:var(--dark-beige)}
+  .hicons{position:absolute;right:22px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:15px}
+  .icobtn{font-size:18px;cursor:pointer;position:relative}
+  .icobtn .dot{position:absolute;top:-3px;right:-4px;background:var(--green);color:#fff;font-family:var(--fh);font-weight:600;font-size:9px;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+  .stagewrap{position:relative;min-height:720px}
+  /* full-bleed embed (used by the compare viewer) — prototype fills the whole screen, no browser-window card */
+  body.embed{padding:0;height:100vh;overflow:hidden}
+  body.embed .intro,body.embed .hint,body.embed .switcher,body.embed .chrome{display:none}
+  body.embed .win{max-width:none;width:100%;height:100vh;border-radius:0;box-shadow:none;display:flex;flex-direction:column}
+  body.embed .site{flex:1;display:flex;flex-direction:column;min-height:0}
+  body.embed .stagewrap{flex:1;min-height:0}
+  .scrim{position:absolute;inset:0;background:rgba(20,20,20,.28);z-index:24;opacity:0;pointer-events:none;transition:opacity .25s}.scrim.show{opacity:1;pointer-events:auto}
+
+  /* slide-DOWN dropdown holding the column + preview */
+  .ddwrap{position:absolute;left:0;right:0;top:100%;z-index:26;overflow:hidden;max-height:0;opacity:0;transition:max-height .34s cubic-bezier(.4,0,.1,1),opacity .2s}
+  .ddwrap.show{max-height:1100px;opacity:1}
+  .dd{background:var(--light-beige);border-top:1px solid var(--dark-beige-15);box-shadow:0 26px 40px -18px rgba(20,20,20,.28)}
+  .contained .ddwrap{background:transparent;padding-bottom:52px}
+  .contained .dd{max-width:1120px;margin:12px auto 18px;background:#fff;border:1px solid var(--dark-beige-15);border-radius:14px;box-shadow:0 30px 60px -26px rgba(20,20,20,.4);overflow:hidden}
+  .ddinner{display:flex}
+  /* V1/V2 (full-width slide-down): background spans full width, content stays compact + centered */
+  .site:not(.contained) .ddinner{max-width:1120px;margin:0 auto}
+  .pcol{flex:0 0 320px;border-right:1px solid var(--dark-beige-15);padding:18px 18px 24px;background:#fff}
+  .pcol::-webkit-scrollbar,.preview::-webkit-scrollbar{width:0}
+  .colhd{font-family:var(--fh);font-weight:600;font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--green-dark);margin:0 0 2px}
+  .coltitle{font-family:var(--fh);font-weight:600;font-size:20px;margin:0 0 11px}
+  .fpsec{font-family:var(--fh);font-weight:600;font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dark-beige);margin:15px 0 4px}
+  .hl{display:flex;align-items:center;gap:10px;background:var(--yellow-40);border-radius:10px;padding:11px;cursor:pointer;margin:2px 0}
+  .hl .hi{width:36px;height:36px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex:0 0 auto}
+  .hl b{font-family:var(--fh);font-weight:600;font-size:13px;display:block}.hl span{font-size:11px;color:var(--dark-beige)}
+  .row{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--dark-beige-15);cursor:pointer}
+  .row .e{font-size:16px;width:21px;text-align:center;flex:0 0 auto}
+  .row .rt b{font-family:var(--fh);font-weight:600;font-size:13.5px;display:block;line-height:16px}
+  .row .rt small{font-size:11px;color:var(--dark-beige);display:block;line-height:13px}
+  .row:hover .rt b{color:var(--green-dark)}
+  .row.sel{background:var(--light-beige);margin:0 -18px;padding:10px 18px;border-bottom-color:transparent}
+  .row.sel .rt b{color:var(--green-dark)}
+  .row .cv{margin-left:auto;color:var(--beige);font-size:15px}
+  .hubrow{display:flex;align-items:center;gap:10px;background:var(--green-15);border-radius:10px;padding:10px 11px;cursor:pointer;margin:3px 0}
+  .hubrow .hi{width:34px;height:34px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 auto}
+  .hubrow b{font-family:var(--fh);font-weight:600;font-size:13px;display:block}.hubrow span{font-size:10.5px;color:var(--dark-beige)}
+  .hubrow .cv{margin-left:auto;color:var(--green-dark)}
+  /* preview */
+  .preview{flex:1;padding:22px 26px 26px;background:var(--light-beige)}
+  .sechd{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:16px 0 4px}
+  .sechd:first-child{margin-top:0}
+  .sechd .fpsec,.sechd .phd{margin:0}
+  .phd{font-family:var(--fh);font-weight:600;font-size:21px}
+  .psub{font-size:13px;color:var(--dark-beige);margin:2px 0 14px;max-width:520px;line-height:18px}
+  .seeall{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--green-dark);cursor:pointer;white-space:nowrap;flex:0 0 auto}
+  .seeall:hover{text-decoration:underline}
+  .pfeat{border-radius:12px;overflow:hidden;position:relative;min-height:184px;display:flex;flex-direction:column;justify-content:flex-end;padding:16px;color:#fff;cursor:pointer;background-image:linear-gradient(0deg,rgba(20,20,20,.6),rgba(20,20,20,.05) 60%),linear-gradient(135deg,#7BAE9E,#CDB892)}
+  .pfeat.feat-out{background-image:linear-gradient(0deg,rgba(20,20,20,.6),rgba(20,20,20,.05) 60%),linear-gradient(135deg,#7FA886,#CFD8BC)}
+  .pfeat.feat-care{background-image:linear-gradient(0deg,rgba(20,20,20,.6),rgba(20,20,20,.05) 60%),linear-gradient(135deg,#E4A877,#FBE9D8)}
+  .pfeat.feat-pots{background-image:linear-gradient(0deg,rgba(20,20,20,.6),rgba(20,20,20,.05) 60%),linear-gradient(135deg,#B7AD8C,#ECE7D6)}
+  .pfeat.feat-flow{background-image:linear-gradient(0deg,rgba(20,20,20,.6),rgba(20,20,20,.05) 60%),linear-gradient(135deg,#E48C8A,#FBE2E1)}
+  .pfeat.feat-gift{background-image:linear-gradient(0deg,rgba(20,20,20,.6),rgba(20,20,20,.05) 60%),linear-gradient(135deg,#E6BE55,#FDF0C2)}
+  .pfeat.feat-work{background-image:linear-gradient(0deg,rgba(20,20,20,.6),rgba(20,20,20,.05) 60%),linear-gradient(135deg,#7FA8A6,#D4CDBA)}
+  .pfeat .pre{font-family:var(--fh);font-weight:600;font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.95}
+  .pfeat b{font-family:var(--fh);font-weight:600;font-size:19px;margin:3px 0 10px;display:block}
+  .pfeat .cta{font-family:var(--fh);font-weight:500;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;background:#fff;color:var(--black);padding:9px 13px;align-self:flex-start}
+  .ptiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+  .ptile{border-radius:11px;min-height:96px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff;cursor:pointer;background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 66%),linear-gradient(135deg,#8FCBB9,#BFE4DB)}
+  .ptile.feat-out{background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 66%),linear-gradient(135deg,#7FA886,#CFD8BC)}
+  .ptile.feat-flow{background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 66%),linear-gradient(135deg,#E48C8A,#FBE2E1)}
+  .ptile.feat-gift{background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 66%),linear-gradient(135deg,#E6BE55,#FDF0C2)}
+  .ptile .e{position:absolute;top:9px;right:11px;font-size:21px;opacity:.9}.ptile b{font-family:var(--fh);font-weight:600;font-size:14px;position:relative;z-index:1}
+  .ptile.sel{box-shadow:0 0 0 3px var(--green-dark)}
+  .prodgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+  /* V1/V2 (full-width slide-down) — cap product cards so they don't stretch huge across the wide beige preview */
+  .site:not(.contained) .prodgrid{grid-template-columns:repeat(4,168px);justify-content:start}
+  .site:not(.contained) .artgrid{grid-template-columns:repeat(3,minmax(0,230px))!important;justify-content:start}
+  .artgrid{display:grid;gap:12px;margin-top:4px}
+  .artcard{min-width:0;border:1px solid var(--dark-beige-15);border-radius:11px;padding:13px;cursor:pointer;min-height:88px;display:flex;flex-direction:column;justify-content:space-between;background:#fff}
+  .artcard:hover{border-color:var(--beige)}
+  .artcard .rl{font-family:var(--fh);font-weight:600;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--green-dark)}
+  .artcard b{font-family:var(--fh);font-weight:600;font-size:13.5px;line-height:16px;margin-top:5px}
+  .pcard{cursor:pointer}
+  .pthumb{position:relative;border-radius:8px;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:30px;background:linear-gradient(135deg,var(--green-15),var(--green-40))}
+  .pbadge{position:absolute;left:6px;top:6px;font-family:var(--fh);font-weight:400;font-size:9.5px;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:4px;line-height:1}
+  .pbadge.best{background:#D8F2EB;color:#008275}.pbadge.neu{background:var(--yellow-70);color:#896D1F}
+  .pcard .pt{font-family:var(--fh);font-weight:500;font-size:12.5px;margin:6px 0 0;line-height:15px}.pcard .pp{font-family:var(--fh);font-weight:600;font-size:12.5px}
+
+  .page{position:relative;z-index:1}
+  .phero{position:relative;min-height:320px;display:flex;flex-direction:column;justify-content:center;padding:0 56px;background:linear-gradient(120deg,#F3E6CF,#F8EFE0 55%,var(--green-15));overflow:hidden}
+  .phero .deco{position:absolute;right:48px;top:50%;transform:translateY(-50%) rotate(8deg);font-size:180px;opacity:.5}
+  .phero .pre{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--green-dark)}
+  .phero h2{font-family:var(--fh);font-weight:600;font-size:38px;line-height:42px;margin:8px 0 14px;max-width:520px}.phero h2 em{font-style:normal;color:var(--green-dark)}
+  .phero .cta{font-family:var(--fh);font-weight:500;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;background:var(--green);color:#fff;padding:13px 24px;align-self:flex-start;cursor:pointer}
+  .collwrap{padding:26px 34px 40px}.crumb{font-size:13px;color:var(--dark-beige);margin-bottom:10px}.crumb a{color:var(--green-dark);cursor:pointer;font-weight:500}
+  .colltitle{font-family:var(--fh);font-weight:600;font-size:30px;margin:0 0 12px}.collcount{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--dark-beige);margin:0 0 14px}
+  .pg4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .shelf{padding:24px 34px 30px}.shelf .sh{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}.seclabel{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dark-beige)}
+  .prow{display:grid;grid-template-columns:repeat(5,1fr);gap:18px}
+  .link{font-family:var(--fh);font-weight:500;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--green-dark);cursor:pointer}
+
+  .switcher{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:200;display:inline-flex;align-items:center;gap:4px;background:#1b1b1d;color:#fff;border-radius:50px;padding:6px 7px;box-shadow:0 12px 30px rgba(0,0,0,.4)}
+  .switcher button{background:#34343a;border:0;color:#fff;width:32px;height:32px;border-radius:50%;font-size:15px;cursor:pointer}
+  .switcher .lab{font-family:var(--fh);font-weight:600;font-size:12px;padding:0 12px;min-width:260px;text-align:center}
+  .switcher .lab small{display:block;font-family:var(--fb);font-weight:400;font-size:10px;letter-spacing:.3px;color:#9b9ba3;margin-top:1px;text-transform:none}
+  .hint{max-width:1360px;margin:12px auto 0;font-size:11.5px;color:#8a887f;text-align:center;line-height:17px}
+</style>
+</head>
+<body>
+  <div class="intro">
+    <h1>feey · Desktop-Nav — Platzierung + Slide-down MIT Ebenen</h1>
+    <p>Welten ums zentrierte Logo · Slide-down · jetzt mit 2./3. Ebene. Klick Welt → Facette „Nach Licht" → Kachel. Wechsle ‹ ›.</p>
+  </div>
+  <div class="win">
+    <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="addr">🔒 feey.ch</div></div>
+    <div class="site" id="site">
+      <div class="util"><span>🌱 Gesunde &amp; langlebige Pflanzen</span><span>🚛 Lieferung an die Haustüre</span><span>📦 Versand inkl. Garantie</span><span>🇨🇭 Schweizer Gewächs</span></div>
+      <div class="header">
+        <nav class="navside left" id="navL"></nav>
+        <div class="logo" data-a="home">feey</div>
+        <nav class="navside right" id="navR"></nav>
+        <div class="hicons"><span class="icobtn">🔍</span><span class="icobtn">♡</span><span class="icobtn">👤</span><span class="icobtn">🛒<span class="dot">2</span></span></div>
+        <div class="ddwrap" id="ddwrap"></div>
+      </div>
+      <div class="stagewrap">
+        <div class="page" id="page"></div>
+        <div class="scrim" id="scrim"></div>
+      </div>
+    </div>
+  </div>
+  <div class="hint" id="hint"></div>
+  <div class="switcher"><button id="prev">‹</button><div class="lab" id="lab"></div><button id="next">›</button></div>
+
+<script>
+  var EMOJI={zimmer:'🪴',balkon:'🌳',pflege:'🧴',toepfe:'🛋️',blumen:'💐',geschenke:'🎁',workshops:'🎓',pflegewohnen:'🧴',blumengeschenke:'💐'};
+  var PLANTS=[['Pilea Peperomioides','29.90','🪙','best'],['Monstera Deliciosa','39.90','🌿',''],['Calathea Orbifolia','34.90','🍃','neu'],['Strelitzie','49.90','🌴',''],['Pothos','18.90','🌿','best'],['ZZ-Pflanze','29.90','🪴','']];
+  var OUT=[['Lavendel','14.90','💜','best'],['Olivenbaum','89.00','🫒',''],['Hortensie','24.90','🌸','neu'],['Buchsbaum','19.90','🌳',''],['Bambus','39.90','🎋','best'],['Ziergräser','17.90','🌾','']];
+  var GIFTS=[['Strauss Sommersorbet','54.90','💐','best'],['Blumen-Abo','39.00','🔁','neu'],['Geschenkset Easy','59.90','🎁',''],['Gutschein','25.00','💳','']];
+  var CARE=[['Bio-Flüssigdünger','12.90','🧴','best'],['Nematoden','9.90','🐛','neu'],['Übertopf Blom','24.90','🪴',''],['Giesskanne Lina','24.90','💧','']];
+  var NODES={
+    licht:{eyebrow:'Nach Licht',title:'Wie viel Licht hast du?',items:[['☀️','Für die sonnige Seite'],['🌤️','Für helle, indirekte Plätze'],['🌑','Für dunkle Ecken'],['❄️','Für kühle Nordzimmer']]},
+    raum:{eyebrow:'Nach Raum',title:'Für welchen Raum?',items:[['🛋️','Wohnzimmer'],['🛁','Badezimmer'],['🛏️','Schlafzimmer'],['💻','Homeoffice']]},
+    anlass:{eyebrow:'Nach Anlass',title:'Für welchen Anlass?',items:[['🎂','Geburtstag'],['💍','Jahrestag'],['💐','Muttertag'],['🙏','Dankeschön'],['🏡','Einzug']]},
+    standort:{eyebrow:'Nach Standort',title:'Wo solls hin?',items:[['☀️','Pralle Sonne'],['⛅','Halbschatten'],['🌑','Schattig'],['💨','Windige Balkone']]},
+    saison:{eyebrow:'Nach Saison',title:'Welche Jahreszeit?',items:[['🌷','Frühlingsblüher'],['☀️','Sommerblüher'],['🍂','Herbst & Winter'],['🌿','Ganzjährig grün']]}
+  };
+  var W={
+    zimmer:{title:'Zimmerpflanzen',main:'Alle Zimmerpflanzen',tile:'',hl:{e:'✨',t:'Pflanzenfinder',s:'Deine Pflanze in 1 Min'},uc:[['☀️','Nach Licht','licht'],['🪟','Nach Raum','raum'],['🐾','Haustierfreundlich'],['🌱','Pflegeleicht']],cats:[['🌿','Alle Zimmerpflanzen','Das ganze Sortiment'],['📏','Grosse Pflanzen','Statement ab 1 m'],['🌱','Kleine Pflanzen','Für Regal & Tisch'],['🪴','Hängepflanzen','Ampeln & Ranker'],['🏺','Übertöpfe & Zubehör','Passend zur Pflanze']],featured:['Die ersten 5 Pflanzen','Lichtbedarf einschätzen'],lex:1,feat:'',pre:'Saisonal · Highlight',ftit:'Sommer-Edit 2026',prods:PLANTS},
+    balkon:{title:'Balkon & Garten',main:'Alle Balkon- & Gartenpflanzen',tile:'feat-out',hl:{e:'✨',t:'Pflanzenfinder',s:'Die richtige für draussen'},uc:[['🧭','Nach Standort','standort'],['🌸','Nach Saison','saison'],['❄️','Winterhart']],cats:[['🪴','Balkonpflanzen','Kästen & Töpfe'],['🏺','Kübelpflanzen','Gross & winterhart'],['🌾','Stauden & Gräser','Mehrjährig'],['🌿','Kräuter','Küche & Duft'],['🌳','Bäume & Sträucher','Sichtschutz']],featured:['Balkon winterfest machen','Pflanze für den Schatten'],lex:1,feat:'feat-out',pre:'Jetzt aktuell',ftit:'Balkonsaison 2026',prods:OUT},
+    pflege:{title:'Pflege',main:'Alle Pflegeprodukte',tile:'feat-care',hl:{e:'🩺',t:'Pflanzendoktor',s:'Diagnose & Soforthilfe'},uc:[],cats:[['🧴','Dünger','Flüssig · Stäbchen · Bio'],['🐛','Schädlingsbekämpfung','Prävention & Akut-Hilfe'],['🪨','Erde & Substrat','Universal & Spezial'],['🛠️','Werkzeug','Scheren & Umtopf-Set'],['💧','Giesskannen','Innen & Outdoor']],featured:['Richtig giessen','Umtopfen Schritt für Schritt'],feat:'feat-care',pre:'Ratgeber',ftit:'Gesund durch den Sommer',prods:CARE},
+    toepfe:{title:'Wohnen & Lifestyle',main:'Alle Wohnen & Lifestyle',tile:'feat-pots',uc:[],cats:[['🪴','Übertöpfe','Innen · alle Grössen'],['🏺','Pflanzkübel','Boden & XL'],['🪑','Pflanzenständer','Höhe & Display'],['🕯️','Kerzen & Duft','Kerzen · Diffuser'],['🧢','Merch','feey zum Anziehen']],featured:['Styling-Tipps fürs Wohnzimmer'],feat:'feat-pots',pre:'Neu',ftit:'Wohn-Trends 2026',prods:CARE},
+    blumen:{title:'Blumen',main:'Alle Blumen',tile:'feat-flow',uc:[['🎉','Nach Anlass','anlass']],cats:[['💐','Blumensträusse','Frisch gebunden'],['🔁','Blumen-Abo','Regelmässig frisch'],['🌷','Saisonale Sträusse','Je nach Saison'],['🏺','Vasen & Zubehör','Passend zum Strauss']],featured:['Schnittblumen frisch halten'],feat:'feat-flow',pre:'Beliebt',ftit:'Blumen-Abo',prods:GIFTS},
+    geschenke:{title:'Geschenke',main:'Alle Geschenke',tile:'feat-gift',uc:[['🎉','Nach Anlass','anlass']],cats:[['🎁','Geschenksets','Fixfertig verpackt'],['💳','Gutscheine','Ab CHF 25'],['✉️','Grusskarten','Persönliche Worte']],featured:[],feat:'feat-gift',pre:'Für jeden Anlass',ftit:'Geschenkideen',prods:GIFTS},
+    workshops:{title:'Workshops',main:'Alle Workshops',tile:'feat-work',uc:[],cats:[['📅','Kommende Termine','Alle Daten'],['🌱','Einsteiger-Workshop','Basics & Pflege'],['🪴','Umtopf-Workshop','Hands-on'],['🏢','Firmen-Events','Teambuilding']],featured:['Was dich erwartet'],feat:'feat-work',pre:'Erlebnis',ftit:'Nächste Termine',prods:PLANTS},
+    pflegewohnen:{title:'Pflege & Wohnen',main:'Alle Pflege & Wohnen',tile:'feat-care',hl:{e:'🩺',t:'Pflanzendoktor',s:'Diagnose & Soforthilfe'},uc:[],cats:[['🧴','Dünger','Flüssig · Stäbchen · Bio'],['🐛','Schädlinge','Prävention & Akut'],['🛠️','Werkzeug','Scheren & Umtopf-Set'],['🪴','Übertöpfe','Innen · alle Grössen'],['🕯️','Kerzen & Duft','Kerzen · Diffuser'],['🧢','Merch','feey zum Anziehen']],featured:['Richtig giessen','Styling-Tipps fürs Wohnzimmer'],feat:'feat-care',pre:'Pflege + Lifestyle',ftit:'Gesund durch den Sommer',prods:CARE},
+    blumengeschenke:{title:'Blumen & Geschenke',main:'Alle Blumen & Geschenke',tile:'feat-flow',uc:[['🎉','Nach Anlass','anlass']],cats:[['💐','Blumensträusse','Frisch gebunden'],['🔁','Blumen-Abo','Regelmässig frisch'],['🎁','Geschenksets','Fixfertig verpackt'],['💳','Gutscheine','Ab CHF 25'],['✉️','Grusskarten','Persönliche Worte']],featured:['Schnittblumen frisch halten'],feat:'feat-flow',pre:'Schenken & Freude',ftit:'Geschenkideen',prods:GIFTS}
+  };
+  var VAR={
+    '1':{name:'Geteilt 3│4 · Slide-down',desc:'alle 7 Welten ums Logo · volle Breite',contained:false,left:['zimmer','balkon','blumen'],right:['pflege','toepfe','geschenke','workshops'],hint:'Variante 1 · alle 7 Welten ums zentrierte Logo. Klick Welt → Slide-down (volle Breite) mit Spalte + Vorschau. Klick „Nach Licht" → Kacheln → Kachel → Produkte.'},
+    '2':{name:'Reduziert 2│3 · Slide-down',desc:'5 Türen · Pflege & Wohnen / Blumen & Geschenke',contained:false,left:['zimmer','balkon'],right:['pflegewohnen','blumengeschenke','workshops'],hint:'Variante 2 · auf 5 Türen gekürzt (zusammengelegt). Sauber ums Logo. Slide-down mit Spalte + Vorschau + Ebenen.'},
+    '3':{name:'Geteilt 3│4 · zentrierte Karte',desc:'gleiche Aufteilung · Slide-down als Karte',contained:true,left:['zimmer','balkon','blumen'],right:['pflege','toepfe','geschenke','workshops'],hint:'Variante 3 (dein Favorit) · gleiche Aufteilung, Slide-down als zentrierte Karte. Mit Spalte + Vorschau + 2./3. Ebene.'}
+  };
+
+  var cur='1',openKey=null;
+  var navL=document.getElementById('navL'),navR=document.getElementById('navR'),ddwrap=document.getElementById('ddwrap'),scrim=document.getElementById('scrim'),page=document.getElementById('page'),site=document.getElementById('site');
+  function esc(s){return String(s).replace(/"/g,'&quot;');}
+  function rd(world,title){var c=W[world]?W[world].title:'';return 'data-redir="'+esc(title)+'" data-crumb="'+esc(c)+'" data-world="'+world+'"';}
+  function slice(pool,s,n){var r=[];for(var i=0;i<n;i++)r.push(pool[(s+i)%pool.length]);return r;}
+  function pcard(p){var bd=p[3]?'<span class="pbadge '+p[3]+'">'+(p[3]==='best'?'Bestseller':'Neu')+'</span>':'';return '<div class="pcard"><div class="pthumb">'+p[2]+bd+'</div><div class="pt">'+p[0]+'</div><div class="pp">CHF '+p[1]+'</div></div>';}
+
+  function navHTML(keys){var o='';for(var i=0;i<keys.length;i++){var k=keys[i];o+='<div class="navitem'+(k==='workshops'?' tier':'')+'" data-k="'+k+'">'+W[k].title+'</div>';}return o;}
+  function worldCol(k){
+    var w=W[k],i,o='<div class="colhd">Welt</div><div class="coltitle">'+w.title+'</div>';
+    if(w.hl)o+='<div class="hl" '+rd(k,w.hl.t)+'><div class="hi">'+w.hl.e+'</div><div><b>'+w.hl.t+'</b><span>'+w.hl.s+'</span></div></div>';
+    if(w.uc&&w.uc.length){o+='<div class="fpsec">Entdecken nach</div>';for(i=0;i<w.uc.length;i++){var it=w.uc[i];var drill=(it[2]&&NODES[it[2]]);o+='<div class="row'+(drill?' frow':'')+'" '+(drill?('data-facet="'+it[2]+'" data-world="'+k+'"'):rd(k,it[1]))+'><span class="e">'+it[0]+'</span><span class="rt"><b>'+it[1]+'</b></span><span class="cv">›</span></div>';}}
+    o+='<div class="fpsec">Kategorien</div>';for(i=0;i<w.cats.length;i++){var c=w.cats[i];o+='<div class="row" '+rd(k,c[1])+'><span class="e">'+c[0]+'</span><span class="rt"><b>'+c[1]+'</b>'+(c[2]?'<small>'+c[2]+'</small>':'')+'</span></div>';}
+    if(w.lex){o+='<div class="fpsec">Wissen &amp; Lernen</div><div class="hubrow" data-pillar="Pflanzenlexikon"><div class="hi">📖</div><div><b>Pflanzenlexikon</b><span>Alles Wissen rund um deine Pflanzen</span></div><span class="cv">›</span></div>';}
+    return o;
+  }
+  function wissenBlock(k){var w=W[k],feat=w.featured||[],i;if(!feat.length)return '';var o='<div class="sechd" style="margin-top:22px"><span class="fpsec">Wissen &amp; Geschichten</span><span class="seeall" data-pillar="Blog">Alle Blogs ansehen →</span></div><div class="artgrid" style="grid-template-columns:repeat('+Math.min(3,feat.length)+',1fr)">';for(i=0;i<Math.min(3,feat.length);i++)o+='<div class="artcard" data-pillar="'+esc(feat[i])+'"><span class="rl">Ratgeber</span><b>'+feat[i]+'</b></div>';return o+'</div>';}
+  function previewWorld(k){var w=W[k],i,o='<div class="pfeat '+w.feat+'" '+rd(k,w.ftit)+'><span class="pre">'+w.pre+'</span><b>'+w.ftit+'</b><span class="cta">Entdecken</span></div>';o+='<div class="sechd" style="margin-top:18px"><span class="fpsec">Beliebt in '+w.title+'</span><span class="seeall" '+rd(k,w.main)+'>Alle ansehen →</span></div><div class="prodgrid">';var s=slice(w.prods,0,4);for(i=0;i<4;i++)o+=pcard(s[i]);o+='</div>'+wissenBlock(k);return o;}
+  function previewFacet(facetKey,k,sel){var n=NODES[facetKey],w=W[k],i,o='<div class="sechd"><span class="phd">'+n.title+'</span><span class="seeall" '+rd(k,n.eyebrow)+'>Ganze Auswahl ansehen →</span></div><div class="psub">'+w.title+' · wähle einen Bereich — die passenden Produkte erscheinen darunter.</div><div class="ptiles">';for(i=0;i<n.items.length;i++)o+='<div class="ptile '+(w.tile||'')+(sel===i?' sel':'')+'" data-tile="'+i+'" data-tfacet="'+facetKey+'" data-world="'+k+'"><span class="e">'+n.items[i][0]+'</span><b>'+n.items[i][1]+'</b></div>';o+='</div>';if(sel!=null&&n.items[sel]){o+='<div class="sechd" style="margin-top:18px"><span class="fpsec">Passende Produkte · '+n.items[sel][1]+'</span><span class="seeall" '+rd(k,n.items[sel][1])+'>Alle ansehen →</span></div><div class="prodgrid">';var s=slice(w.prods,sel*2,4);for(i=0;i<4;i++)o+=pcard(s[i]);o+='</div>';}return o;}
+
+  function ddHTML(k){return '<div class="dd"><div class="ddinner"><div class="pcol" id="pcol">'+worldCol(k)+'</div><div class="preview" id="preview">'+previewWorld(k)+'</div></div></div>';}
+  function openDD(k){openKey=k;ddwrap.innerHTML=ddHTML(k);ddwrap.classList.add('show');scrim.classList.add('show');mark(k);}
+  function closeDD(){openKey=null;ddwrap.classList.remove('show');scrim.classList.remove('show');mark(null);}
+  function mark(k){var it=document.querySelectorAll('.navitem');for(var i=0;i<it.length;i++)it[i].classList.toggle('on',it[i].getAttribute('data-k')===k);}
+  function markFacet(el){var rows=ddwrap.querySelectorAll('.frow');for(var i=0;i<rows.length;i++)rows[i].classList.toggle('sel',rows[i]===el);}
+
+  document.addEventListener('click',function(e){
+    var ni=e.target.closest('.navitem');if(ni){var k=ni.getAttribute('data-k');if(openKey===k)closeDD();else openDD(k);return;}
+    var ff=e.target.closest('[data-facet]');if(ff){document.getElementById('preview').innerHTML=previewFacet(ff.getAttribute('data-facet'),ff.getAttribute('data-world')||openKey);markFacet(ff);return;}
+    var tl=e.target.closest('[data-tile]');if(tl){document.getElementById('preview').innerHTML=previewFacet(tl.getAttribute('data-tfacet'),tl.getAttribute('data-world')||openKey,+tl.getAttribute('data-tile'));return;}
+    var rdr=e.target.closest('[data-redir]');if(rdr){setPage(collectionPage(rdr.getAttribute('data-redir'),rdr.getAttribute('data-crumb'),rdr.getAttribute('data-world')));closeDD();return;}
+    var pil=e.target.closest('[data-pillar]');if(pil){setPage(collectionPage(pil.getAttribute('data-pillar'),'Wissen',openKey||'zimmer'));closeDD();return;}
+    if(e.target.closest('#scrim')){closeDD();return;}
+    var a=e.target.closest('[data-a]');if(a&&a.getAttribute('data-a')==='home'){setPage(homeHTML());closeDD();}
+  });
+
+  function setPage(h){page.innerHTML=h;window.scrollTo(0,0);}
+  function homeHTML(){var o='<div class="phero"><div class="deco">🪴</div><div><div class="pre">Willkommen bei feey</div><h2>Bring dein Zuhause zum <em>Leben</em></h2><div class="cta" '+rd('zimmer',W.zimmer.main)+'>Jetzt entdecken</div></div></div>';o+='<div class="shelf"><div class="sh"><span class="seclabel">Beliebt diese Woche</span><span class="link">Alle ansehen ›</span></div><div class="prow">';for(var i=0;i<PLANTS.length;i++)o+=pcard(PLANTS[i]);return o+'</div></div>';}
+  function collectionPage(title,crumb,world){var w=W[world]||W.zimmer,list=w.prods,i;var o='<div class="collwrap"><div class="crumb"><a data-a="home">Startseite</a> › '+(crumb||'')+'</div><div class="colltitle">'+title+'</div><div class="collcount">'+list.length+' Produkte</div><div class="pg4">';for(i=0;i<list.length;i++)o+=pcard(list[i]);return o+'</div></div>';}
+
+  function mount(v){cur=v;closeDD();var V=VAR[v];site.classList.toggle('contained',!!V.contained);navL.innerHTML=navHTML(V.left);navR.innerHTML=navHTML(V.right);setPage(homeHTML());
+    document.getElementById('lab').innerHTML=v+' — '+V.name+'<small>'+V.desc+'</small>';document.getElementById('hint').textContent=V.hint;
+    var u=new URL(location.href);u.searchParams.set('variant',v);history.replaceState(null,'',u);
+  }
+  document.getElementById('next').onclick=function(){mount(String((+cur%3)+1));};
+  document.getElementById('prev').onclick=function(){mount(String(((+cur+1)%3)+1));};
+  document.addEventListener('keydown',function(e){var t=e.target.tagName;if(t==='INPUT'||t==='TEXTAREA')return;if(e.key==='ArrowRight')mount(String((+cur%3)+1));else if(e.key==='ArrowLeft')mount(String(((+cur+1)%3)+1));});
+
+  var P=new URLSearchParams(location.search),v0=P.get('variant');
+  mount((v0==='2'||v0==='3')?v0:'1');
+  if(P.get('embed')==='1'){document.body.classList.add('embed');}
+  var op=P.get('open');
+  if(op&&W[op]&&document.querySelector('.navitem[data-k="'+op+'"]')){openDD(op);var fc=P.get('facet');if(fc&&NODES[fc]){var fr=ddwrap.querySelector('[data-facet="'+fc+'"]');var tl=P.get('tile');document.getElementById('preview').innerHTML=previewFacet(fc,op,(tl!==null&&tl!=='')?+tl:undefined);if(fr)markFacet(fr);}}
+</script>
+</body>
+</html>
