@@ -1,19 +1,21 @@
 <!--
-  feey.ch — NAVIGATION REDESIGN · DESKTOP · VERSION 4 "Ruhig" (calm 2-column drop-down) · throwaway
+  feey.ch — NAVIGATION REDESIGN · DESKTOP · VERSION 4 "Ruhig" (calm columned drop-down) · throwaway
   Built from designer feedback (2026-06-25): the approved full-height side-panel + expose preview
   "feels overwhelming on Desktop". He loves "Entdecken nach …" ("exactly what some people search for").
-  Idea: one calm column per thing — "Entdecken nach" | "Kategorien" — NO expanding to the right;
-  let typography, colour and spacing carry it and make it easier on the eyes.
+  Idea: calm columns instead of a busy panel — let typography, colour and spacing carry it.
 
-  This version therefore:
+  Refined with Shafira (2026-06-25):
    • SAME header as the approved build (logo centered top · 7-world nav left) → honest A/B with it.
    • Click a world → a contained drop-down opens UNDER the nav (content height, never full-screen).
-   • Two clean text columns side by side: ENTDECKEN NACH (the hero, lightly tinted) · KATEGORIEN.
-     + a slim, mostly-typographic rail (highlight tool · one small feature · Wissen & Geschichten).
-   • NO right-expansion / no in-menu preview swap: a smart facet (Nach Licht/Raum/Anlass/Standort/Saison)
-     goes straight to its curated L3 page; direct facets + categories go straight to the collection page.
-  IA + data model 1:1 with nav-redesign-desktop.html / nav-redesign-prototype.html. Geschenke hides Wissen.
-  Deep-links: ?menu=<world> · ?nb=off · ?embed=1 · ?world=<w>[&facet=<f>] · ?collection=<t>&crumb=<c>
+   • Each thing gets its OWN column: ENTDECKEN NACH (the hero, lightly tinted) · KATEGORIEN ·
+     WISSEN & GESCHICHTEN (desktop has room → link as many blogs as we like, no 3-cap) · a slim rail
+     for the highlight tool + one small seasonal feature.
+   • Neuheiten/Bestseller are merchant-OPTIONAL → OFF by default (toggle / ?nb=on to demo the "on" state).
+   • NO right-expansion / no in-menu preview swap: selecting an "Entdecken nach" filter REDIRECTS to its
+     curated landing page (smart facets → L3 landing; direct facets + categories → collection page).
+  IA + data model 1:1 with nav-redesign-desktop.html (the "featured" blog lists are expanded here to show
+  the desktop "many blogs in nav" case; names are placeholders pending the Voice_Profile_JC pass).
+  Deep-links: ?menu=<world> · ?nb=on · ?embed=1 · ?world=<w>[&facet=<f>] · ?collection=<t>&crumb=<c>
               · ?blog=1[&blogcat=0|1] · ?pillar=<t>&crumb=<c> · ?search=1
 -->
 <!doctype html>
@@ -21,7 +23,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>feey · Navigation Desktop (V4 · Ruhig — 2 Spalten)</title>
+<title>feey · Navigation Desktop (V4 · Ruhig)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -71,16 +73,16 @@
   .prow{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;flex:1}
 
   /* ===== V4 calm mega-menu ===== */
-  .mm{max-width:1240px;margin:0 auto;padding:26px 40px 38px}
+  .mm{max-width:1280px;margin:0 auto;padding:26px 40px 36px}
   .mmhead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-bottom:16px;margin-bottom:22px;border-bottom:1px solid var(--dark-beige-15)}
   .mmtitle{font-family:var(--fh);font-weight:600;font-size:22px;letter-spacing:.2px}
-  .mmcols{display:flex;gap:30px;align-items:flex-start}
+  .mmcols{display:flex;gap:34px;align-items:flex-start}
   .deye{font-family:var(--fh);font-weight:600;font-size:10.5px;letter-spacing:1.7px;text-transform:uppercase;color:var(--dark-beige);margin:0 0 10px}
   .seeall{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--green-dark);cursor:pointer;white-space:nowrap;flex:0 0 auto}
   .seeall:hover{text-decoration:underline}
 
   /* Column 1 — Entdecken nach (the hero, lightly tinted, generous) */
-  .col.discover{flex:0 0 256px;background:var(--green-15);border-radius:14px;padding:18px 16px 12px}
+  .col.discover{flex:0 0 238px;background:var(--green-15);border-radius:14px;padding:18px 16px 12px}
   .col.discover .deye{color:var(--green-dark)}
   .frow{display:flex;align-items:center;gap:13px;padding:11px 10px;border-radius:10px;cursor:pointer}
   .frow:hover{background:#fff}
@@ -91,16 +93,29 @@
   .frow .fcv{margin-left:auto;color:var(--green-40);font-size:15px}
 
   /* Column 2 — Kategorien (airy text list, hairline separators, no boxes) */
-  .col.cats{flex:0 0 300px}
-  .col.cats.solo{flex:0 0 360px}
+  .col.cats{flex:0 0 256px}
+  .col.cats.solo{flex:0 0 320px}
   .crow{padding:11px 0;cursor:pointer;border-bottom:1px solid var(--light-beige)}
   .crow:last-child{border-bottom:0}
   .crow b{font-family:var(--fh);font-weight:600;font-size:14.5px;display:block;line-height:18px}
   .crow small{font-size:12px;color:var(--dark-beige);display:block;line-height:15px;margin-top:1px}
   .crow:hover b{color:var(--green-dark)}
 
-  /* Column 3 — slim rail (highlight tool · small feature · Wissen) */
-  .col.rail{flex:1;min-width:260px;display:flex;flex-direction:column;gap:16px}
+  /* Column 3 — Wissen & Geschichten (its own column · plain text links, as many as linked) */
+  .col.wissen{flex:0 0 268px}
+  .col.wissen .sechd{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+  .col.wissen .sechd .deye{margin:0}
+  .hubrow{display:flex;align-items:center;gap:11px;background:var(--green-15);border-radius:11px;padding:10px 12px;cursor:pointer;margin-bottom:8px}
+  .hubrow .hi{width:34px;height:34px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 auto}
+  .hubrow b{font-family:var(--fh);font-weight:600;font-size:13px;display:block}.hubrow span{font-size:10.5px;color:var(--dark-beige);line-height:14px}
+  .hubrow .cv{margin-left:auto;color:var(--green-dark);font-size:15px}
+  .wlink{display:flex;align-items:center;gap:9px;padding:8px 0;font-size:13.5px;cursor:pointer;border-bottom:1px solid var(--light-beige)}
+  .wlink:last-child{border-bottom:0}
+  .wlink:hover{color:var(--green-dark)}
+  .wlink .wdot{font-size:13px;opacity:.7}
+
+  /* Column 4 — slim rail (highlight tool · one small feature · optional Neu/Bestseller) */
+  .col.rail{flex:1 1 270px;min-width:230px;max-width:360px;display:flex;flex-direction:column;gap:16px}
   .hl{display:flex;align-items:center;gap:11px;background:var(--yellow-40);border-radius:12px;padding:13px;cursor:pointer}
   .hl .hi{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}
   .hl b{font-family:var(--fh);font-weight:600;font-size:13.5px;display:block}.hl span{font-size:11px;color:var(--dark-beige)}
@@ -108,7 +123,7 @@
   .nbchip{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:var(--light-beige);border:1px solid var(--dark-beige-15);border-radius:9px;padding:10px;font-family:var(--fh);font-weight:600;font-size:12.5px;cursor:pointer}
   .nbchip:hover{border-color:var(--beige)}
   /* one small, calm feature card (the single concession to imagery) */
-  .dfeat{border-radius:12px;overflow:hidden;position:relative;min-height:108px;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;color:#fff;cursor:pointer;background-image:linear-gradient(0deg,rgba(20,20,20,.55),rgba(20,20,20,.05) 70%),linear-gradient(135deg,#7BAE9E,#CDB892)}
+  .dfeat{border-radius:12px;overflow:hidden;position:relative;min-height:122px;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;color:#fff;cursor:pointer;background-image:linear-gradient(0deg,rgba(20,20,20,.55),rgba(20,20,20,.05) 70%),linear-gradient(135deg,#7BAE9E,#CDB892)}
   .dfeat.feat-out{background-image:linear-gradient(0deg,rgba(20,20,20,.55),rgba(20,20,20,.05) 70%),linear-gradient(135deg,#7FA886,#CFD8BC)}
   .dfeat.feat-care{background-image:linear-gradient(0deg,rgba(20,20,20,.55),rgba(20,20,20,.05) 70%),linear-gradient(135deg,#E4A877,#FBE9D8)}
   .dfeat.feat-pots{background-image:linear-gradient(0deg,rgba(20,20,20,.55),rgba(20,20,20,.05) 70%),linear-gradient(135deg,#B7AD8C,#ECE7D6)}
@@ -117,17 +132,6 @@
   .dfeat.feat-work{background-image:linear-gradient(0deg,rgba(20,20,20,.55),rgba(20,20,20,.05) 70%),linear-gradient(135deg,#7FA8A6,#D4CDBA)}
   .dfeat .pre{font-family:var(--fh);font-weight:600;font-size:9.5px;letter-spacing:1.8px;text-transform:uppercase;opacity:.95}
   .dfeat b{font-family:var(--fh);font-weight:600;font-size:16px;margin-top:3px;display:block}
-  /* Wissen & Geschichten — plain text links, no cards */
-  .railsec .sechd{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:8px}
-  .railsec .sechd .deye{margin:0}
-  .hubrow{display:flex;align-items:center;gap:11px;background:var(--green-15);border-radius:11px;padding:10px 12px;cursor:pointer;margin-bottom:6px}
-  .hubrow .hi{width:34px;height:34px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 auto}
-  .hubrow b{font-family:var(--fh);font-weight:600;font-size:13px;display:block}.hubrow span{font-size:10.5px;color:var(--dark-beige);line-height:14px}
-  .hubrow .cv{margin-left:auto;color:var(--green-dark);font-size:15px}
-  .wlink{display:flex;align-items:center;gap:9px;padding:8px 0;font-size:13.5px;cursor:pointer;border-bottom:1px solid var(--light-beige)}
-  .wlink:last-child{border-bottom:0}
-  .wlink:hover{color:var(--green-dark)}
-  .wlink .wdot{font-size:13px;opacity:.7}
 
   .stagewrap{position:relative;height:760px;overflow:hidden}
   /* full-bleed embed (used by the compare viewer) */
@@ -199,9 +203,9 @@
 </head>
 <body>
   <div class="intro">
-    <h1>feey · Desktop-Navigation (V4 — „Ruhig", 2 Spalten)</h1>
-    <p>Klicke eine Welt → ruhiges Drop-down unter der Navigation: „Entdecken nach" (links, hervorgehoben) + „Kategorien" daneben. Keine Erweiterung nach rechts — „Nach Licht" führt direkt zur kuratierten Auswahl, Kategorien direkt zur Kollektion.</p>
-    <button class="nbtoggle" id="nbToggle">Neuheiten/Bestseller-Block: <b id="nbState">An</b></button>
+    <h1>feey · Desktop-Navigation (V4 — „Ruhig")</h1>
+    <p>Klicke eine Welt → ruhiges Drop-down: „Entdecken nach" (hervorgehoben), „Kategorien" und „Wissen &amp; Geschichten" als eigene Spalten. Eine Auswahl führt direkt zur Landingpage — keine weitere Ebene.</p>
+    <button class="nbtoggle" id="nbToggle">Neuheiten/Bestseller-Block: <b id="nbState">Aus</b></button>
   </div>
 
   <div class="win">
@@ -234,10 +238,11 @@
       </div>
     </div>
   </div>
-  <div class="hint">V4 „Ruhig": ein ruhiges Drop-down statt grossem Seiten-Panel — getragen von Typografie, Farbe &amp; Weissraum. „Entdecken nach" als eigene, hervorgehobene Spalte; „Kategorien" daneben. Keine Erweiterung nach rechts. Geschenke blendet „Wissen" aus.</div>
+  <div class="hint">V4 „Ruhig": ruhiges Drop-down statt grossem Seiten-Panel — getragen von Typografie, Farbe &amp; Weissraum. „Entdecken nach", „Kategorien" und „Wissen &amp; Geschichten" je als eigene Spalte. Eine Auswahl führt direkt zur Landingpage (keine Erweiterung nach rechts). Neuheiten/Bestseller optional (Schalter oben). Geschenke blendet „Wissen" aus.</div>
 
 <script>
-  /* ---- data model lifted 1:1 from nav-redesign-desktop.html (keep in sync) ---- */
+  /* ---- data model lifted from nav-redesign-desktop.html — "featured" blog lists EXPANDED here to show
+         the desktop "link as many blogs in the nav" case (placeholder titles, Voice_Profile_JC pass pending) ---- */
   var PLANTS=[['Pilea Peperomioides','29.90','🪙','best'],['Monstera Deliciosa','39.90','🌿',''],['Calathea Orbifolia','34.90','🍃','neu'],['Strelitzie','49.90','🌴',''],['Pothos','18.90','🌿','best'],['ZZ-Pflanze','29.90','🪴',''],['Sansevieria','24.90','🌵','best'],['Efeutute','19.90','🍃','neu']];
   var OUT=[['Lavendel','14.90','💜','best'],['Olivenbaum','89.00','🫒',''],['Hortensie','24.90','🌸','neu'],['Buchsbaum','19.90','🌳',''],['Bambus Fargesia','39.90','🎋','best'],['Ziergräser-Mix','17.90','🌾','']];
   var EMOJI={zimmer:'🪴',balkon:'🌳',pflege:'🧴',toepfe:'🛋️',blumen:'💐',geschenke:'🎁',workshops:'🎓'};
@@ -248,11 +253,11 @@
     {e:'🎓',t:'Online-Pflanzkurs: Mein grüner Daumen',s:'Schritt für Schritt zum Profi'}
   ];
   var WORLDS={
-    zimmer:{title:'Zimmerpflanzen',main:'Alle Zimmerpflanzen',tile:'',highlight:{e:'✨',t:'Pflanzenfinder',s:'Finde deine perfekte Zimmerpflanze'},uc:[['☀️','Nach Licht','licht'],['🪟','Nach Raum','raum'],['🐾','Haustierfreundlich'],['🌱','Pflegeleicht'],['✨','Raritäten']],cats:[['🌿','Alle Zimmerpflanzen','Das ganze Sortiment'],['📏','Grosse Pflanzen','Statement ab 1 m'],['🌱','Kleine Pflanzen','Für Regal & Tisch'],['🪴','Hängepflanzen','Ampeln & Ranker'],['🏺','Übertöpfe & Zubehör','Passend zur Pflanze']],featured:['Die ersten 5 Pflanzen','Lichtbedarf richtig einschätzen','Gelbe Blätter – was tun?'],prods:PLANTS},
-    balkon:{title:'Balkon & Garten',main:'Alle Balkon- & Gartenpflanzen',tile:'gt-out',highlight:{e:'✨',t:'Pflanzenfinder',s:'Finde die richtige Pflanze für draussen'},uc:[['🧭','Nach Standort','standort'],['🌸','Nach Saison','saison'],['❄️','Winterhart']],cats:[['🪴','Balkonpflanzen','Kästen & Töpfe'],['🏺','Kübelpflanzen','Gross & winterhart'],['🌾','Stauden & Gräser','Mehrjährig'],['🌿','Kräuter','Küche & Duft'],['🌳','Bäume & Sträucher','Sichtschutz & Struktur'],['🪑','Kübel & Zubehör','Outdoor-Töpfe']],featured:['Balkon winterfest machen','Welche Pflanze für den Schatten?','Kübel richtig bepflanzen'],prods:OUT},
-    pflege:{title:'Pflege',main:'Alle Pflegeprodukte',tile:'gt-care',highlight:{e:'🩺',t:'Pflanzendoktor',s:'Diagnose & Soforthilfe für deine Pflanze'},uc:[],cats:[['🧴','Dünger','Flüssig · Stäbchen · Bio'],['🐛','Schädlingsbekämpfung','Prävention & Akut-Hilfe'],['🪨','Erde & Substrat','Universal & Spezial'],['🛠️','Werkzeug','Scheren & Umtopf-Set'],['💧','Giesskannen','Innen & Outdoor']],featured:['Richtig giessen','Schädlinge erkennen & bekämpfen','Umtopfen Schritt für Schritt'],prods:[['Bio-Flüssigdünger','12.90','🧴','best'],['Nematoden','9.90','🐛','neu'],['Giesskanne Lina','24.90','💧',''],['Pflanzenerde','14.90','🪨','best']]},
+    zimmer:{title:'Zimmerpflanzen',main:'Alle Zimmerpflanzen',tile:'',highlight:{e:'✨',t:'Pflanzenfinder',s:'Finde deine perfekte Zimmerpflanze'},uc:[['☀️','Nach Licht','licht'],['🪟','Nach Raum','raum'],['🐾','Haustierfreundlich'],['🌱','Pflegeleicht'],['✨','Raritäten']],cats:[['🌿','Alle Zimmerpflanzen','Das ganze Sortiment'],['📏','Grosse Pflanzen','Statement ab 1 m'],['🌱','Kleine Pflanzen','Für Regal & Tisch'],['🪴','Hängepflanzen','Ampeln & Ranker'],['🏺','Übertöpfe & Zubehör','Passend zur Pflanze']],featured:['Die ersten 5 Pflanzen','Lichtbedarf richtig einschätzen','Gelbe Blätter – was tun?','Richtig giessen','Umtopfen Schritt für Schritt','Pflanzen & Haustiere'],prods:PLANTS},
+    balkon:{title:'Balkon & Garten',main:'Alle Balkon- & Gartenpflanzen',tile:'gt-out',highlight:{e:'✨',t:'Pflanzenfinder',s:'Finde die richtige Pflanze für draussen'},uc:[['🧭','Nach Standort','standort'],['🌸','Nach Saison','saison'],['❄️','Winterhart']],cats:[['🪴','Balkonpflanzen','Kästen & Töpfe'],['🏺','Kübelpflanzen','Gross & winterhart'],['🌾','Stauden & Gräser','Mehrjährig'],['🌿','Kräuter','Küche & Duft'],['🌳','Bäume & Sträucher','Sichtschutz & Struktur'],['🪑','Kübel & Zubehör','Outdoor-Töpfe']],featured:['Balkon winterfest machen','Welche Pflanze für den Schatten?','Kübel richtig bepflanzen','Der richtige Standort draussen','Giessen im Hochsommer'],prods:OUT},
+    pflege:{title:'Pflege',main:'Alle Pflegeprodukte',tile:'gt-care',highlight:{e:'🩺',t:'Pflanzendoktor',s:'Diagnose & Soforthilfe für deine Pflanze'},uc:[],cats:[['🧴','Dünger','Flüssig · Stäbchen · Bio'],['🐛','Schädlingsbekämpfung','Prävention & Akut-Hilfe'],['🪨','Erde & Substrat','Universal & Spezial'],['🛠️','Werkzeug','Scheren & Umtopf-Set'],['💧','Giesskannen','Innen & Outdoor']],featured:['Richtig giessen','Schädlinge erkennen & bekämpfen','Umtopfen Schritt für Schritt','Dünger richtig dosieren'],prods:[['Bio-Flüssigdünger','12.90','🧴','best'],['Nematoden','9.90','🐛','neu'],['Giesskanne Lina','24.90','💧',''],['Pflanzenerde','14.90','🪨','best']]},
     toepfe:{title:'Wohnen & Lifestyle',main:'Alle Wohnen & Lifestyle',tile:'gt-pots',uc:[],cats:[['🪴','Übertöpfe','Innen · alle Grössen'],['🏺','Pflanzkübel','Boden & XL'],['🪑','Pflanzenständer','Höhe & Display'],['🕯️','Kerzen & Duft','Kerzen · Diffuser'],['🧢','Merch','feey zum Anziehen'],['🛋️','Deko & Accessoires','Wohn-Accessoires']],featured:['Styling-Tipps fürs Wohnzimmer','Den richtigen Übertopf wählen'],prods:[['Übertopf Blom','24.90','🪴','best'],['Pflanzenständer Nora','39.90','🪑','neu'],['Duftkerze Sage','19.90','🕯️',''],['feey Cap','29.00','🧢','neu']]},
-    blumen:{title:'Blumen',main:'Alle Blumen',tile:'gt-flow',uc:[['🎉','Nach Anlass','anlass']],cats:[['💐','Blumensträusse','Frisch gebunden'],['🔁','Blumen-Abo','Regelmässig frisch'],['🌷','Saisonale Sträusse','Je nach Saison'],['🏺','Vasen & Zubehör','Passend zum Strauss']],featured:['Schnittblumen länger frisch halten'],prods:[['Strauss Sommersorbet','54.90','💐','best'],['Blumen-Abo','39.00','🔁','neu'],['Strauss Perlenglanz','49.90','💐','']]},
+    blumen:{title:'Blumen',main:'Alle Blumen',tile:'gt-flow',uc:[['🎉','Nach Anlass','anlass']],cats:[['💐','Blumensträusse','Frisch gebunden'],['🔁','Blumen-Abo','Regelmässig frisch'],['🌷','Saisonale Sträusse','Je nach Saison'],['🏺','Vasen & Zubehör','Passend zum Strauss']],featured:['Schnittblumen länger frisch halten','Die schönsten Sommersträusse'],prods:[['Strauss Sommersorbet','54.90','💐','best'],['Blumen-Abo','39.00','🔁','neu'],['Strauss Perlenglanz','49.90','💐','']]},
     geschenke:{title:'Geschenke',main:'Alle Geschenke',tile:'gt-gift',uc:[['🎉','Nach Anlass','anlass']],cats:[['🎁','Geschenksets','Fixfertig verpackt'],['💳','Geschenkgutscheine','Ab CHF 25'],['✉️','Grusskarten','Persönliche Worte']],featured:[],prods:[['Geschenkset Easy','59.90','🎁','best'],['Geschenkgutschein','25.00','💳',''],['Grusskarte','4.90','✉️','neu']]},
     workshops:{title:'Workshops',main:'Alle Workshops',tile:'gt-work',uc:[],cats:[['📅','Kommende Termine','Alle Daten'],['🌱','Einsteiger-Workshop','Basics & Pflege'],['🪴','Umtopf-Workshop','Hands-on'],['🏢','Firmen-Events','Teambuilding']],featured:['Was dich im Workshop erwartet'],prods:[['Einsteiger-Workshop','49.00','🌱','best'],['Umtopf-Workshop','59.00','🪴',''],['Floristik-Abend','69.00','💐','neu']]}
   };
@@ -275,7 +280,7 @@
   var TERMS=[{t:'Monstera',k:'p'},{t:'Übertöpfe',k:'p'},{t:'Pflanze umtopfen',k:'b'}];
   var ORDER=['zimmer','balkon','pflege','toepfe','blumen','geschenke','workshops'];
 
-  var nbOn=true, cw='zimmer', panelWorld=null;
+  var nbOn=false, cw='zimmer', panelWorld=null;
   function esc(s){return String(s).replace(/"/g,'&quot;');}
   function pcard(p){var bd=p[3]?'<span class="pbadge '+p[3]+'">'+(p[3]==='best'?'Bestseller':'Neu')+'</span>':'';return '<div class="pcard"><div class="pthumb">'+p[2]+bd+'</div><div class="pt">'+p[0]+'</div><div class="pp">CHF '+p[1]+'</div></div>';}
   function slice5(pool,s){var r=[];for(var i=0;i<5;i++){r.push(pool[(s+i)%pool.length]);}return r;}
@@ -285,7 +290,7 @@
   var nav=document.getElementById('nav');
   (function(){var o='';for(var i=0;i<ORDER.length;i++){var k=ORDER[i];o+='<div class="navitem'+(k==='workshops'?' tier':'')+'" data-k="'+k+'">'+WORLDS[k].title+'</div>';}nav.innerHTML=o;})();
 
-  /* ===== V4 calm mega-menu ===== */
+  /* ===== V4 calm mega-menu — one column per thing ===== */
   function discoverCol(k){
     var w=WORLDS[k],i,o='<div class="col discover"><div class="deye">Entdecken nach</div>';
     for(i=0;i<w.uc.length;i++){
@@ -300,13 +305,13 @@
     for(i=0;i<w.cats.length;i++){var ct=w.cats[i];o+='<div class="crow" '+rd(k,ct[1])+'><b>'+ct[1]+'</b>'+(ct[2]?'<small>'+ct[2]+'</small>':'')+'</div>';}
     return o+'</div>';
   }
-  function wissenRail(k){
-    var w=WORLDS[k],feat=w.featured||[],isPlant=(k==='zimmer'||k==='balkon'),i,n=Math.min(3,feat.length);
+  function wissenCol(k){
+    var w=WORLDS[k],feat=w.featured||[],isPlant=(k==='zimmer'||k==='balkon'),i;
     if(!feat.length)return '';
     var allAttr=isPlant?('data-blogcat="'+(k==='zimmer'?0:1)+'"'):'data-blog="1"';
-    var o='<div class="railsec"><div class="sechd"><span class="deye">Wissen &amp; Geschichten</span><span class="seeall" '+allAttr+'>Alle →</span></div>';
+    var o='<div class="col wissen"><div class="sechd"><span class="deye">Wissen &amp; Geschichten</span><span class="seeall" '+allAttr+'>Alle Blogs →</span></div>';
     if(isPlant){o+='<div class="hubrow" data-pillar="Pflanzenlexikon" data-crumb="Wissen"><div class="hi">📖</div><div><b>Pflanzenlexikon</b><span>Alles Wissen rund um deine Pflanzen</span></div><span class="cv">›</span></div>';}
-    for(i=0;i<n;i++){o+='<div class="wlink" data-pillar="'+esc(feat[i])+'" data-crumb="Blog"><span class="wdot">📄</span>'+feat[i]+'</div>';}
+    for(i=0;i<feat.length;i++){o+='<div class="wlink" data-pillar="'+esc(feat[i])+'" data-crumb="Blog"><span class="wdot">📄</span>'+feat[i]+'</div>';}
     return o+'</div>';
   }
   function railCol(k){
@@ -314,13 +319,13 @@
     if(w.highlight){o+='<div class="hl" '+rd(k,w.highlight.t)+'><div class="hi">'+w.highlight.e+'</div><div><b>'+w.highlight.t+'</b><span>'+w.highlight.s+'</span></div></div>';}
     if(nbOn){o+='<div class="nbrow"><span class="nbchip" '+rd(k,w.main,'Neuheiten')+'>🆕 Neuheiten</span><span class="nbchip" '+rd(k,w.main,'Bestseller')+'>⭐ Bestseller</span></div>';}
     o+='<div class="dfeat '+f.cls+'" '+rd(k,f.b)+'><span class="pre">'+f.pre+'</span><b>'+f.b+'</b></div>';
-    o+=wissenRail(k);
     return o+'</div>';
   }
   function megaHTML(k){
     var w=WORLDS[k],hasUC=(w.uc&&w.uc.length),cols='';
     if(hasUC)cols+=discoverCol(k);
     cols+=catsCol(k,!hasUC);
+    cols+=wissenCol(k);
     cols+=railCol(k);
     return '<div class="mm"><div class="mmhead"><div class="mmtitle">'+w.title+'</div><span class="seeall" '+rd(k,w.main)+'>Alle ansehen →</span></div><div class="mmcols">'+cols+'</div></div>';
   }
@@ -410,7 +415,7 @@
   setPage(homeHTML());
   var P=new URLSearchParams(location.search);
   if(P.get('embed')==='1'){document.body.classList.add('embed');}
-  if(P.get('nb')==='off'){nbOn=false;document.getElementById('nbState').textContent='Aus';}
+  if(P.get('nb')==='on'){nbOn=true;document.getElementById('nbState').textContent='An';}
   var wd=P.get('world'),fcd=P.get('facet');
   if(wd&&WORLDS[wd]){cw=wd;if(fcd&&NODES[fcd]){setPage(smartPage(fcd,wd));}else{setPage(collectionPage(WORLDS[wd].main,WORLDS[wd].title,null,wd));}}
   if(P.get('collection')){setPage(collectionPage(P.get('collection'),P.get('crumb')||'',P.get('filter')||null));}
