@@ -9,8 +9,8 @@
    • SAME header as V4 (logo centered top · 7-world nav left · SERVICE links right of the nav row).
    • Click a world → contained drop-down under the nav (content height). Inside:
        LEFT  = visual PREVIEW (the "tiles"): highlight tool + feature banner + "Beliebt in …" product cards ← V1
-       MIDDLE= ENTDECKEN NACH (tinted) with WISSEN & GESCHICHTEN below it (the column before Kategorien)
-       RIGHT = KATEGORIEN — the main CTA, last (per Shafira 2026-06-25; the visual anchors the left)
+       THEN  = ENTDECKEN NACH (tinted) · WISSEN & GESCHICHTEN · KATEGORIEN (last) — each its OWN column
+       (Wissen sits left of Kategorien, after Entdecken nach, per Shafira 2026-06-25; the visual anchors the left)
    • Flow kept from V4 (locked): selecting an "Entdecken nach" filter / category / product REDIRECTS to the
      landing/collection page — no in-menu drilling, no hover (click-only).
   IA + data model 1:1 with nav-desktop-calm.html / nav-redesign-desktop.html.
@@ -76,7 +76,7 @@
   .mm{max-width:1320px;margin:0 auto;padding:26px 38px 34px}
   .mmhead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-bottom:16px;margin-bottom:20px;border-bottom:1px solid var(--dark-beige-15)}
   .mmtitle{font-family:var(--fh);font-weight:600;font-size:22px;letter-spacing:.2px}
-  .mmtop{display:flex;gap:26px;align-items:flex-start}
+  .mmtop{display:flex;gap:24px;align-items:flex-start}
   /* right rail stacks Entdecken nach + Wissen (3-region layout: visual LEFT · Kategorien MIDDLE · this) */
   /* middle column stacks Entdecken nach (tinted) + Wissen & Geschichten below it */
   .col.side{flex:0 0 244px;display:flex;flex-direction:column;gap:22px}
@@ -108,7 +108,7 @@
 
   /* RIGHT — visual preview pane (from V1) */
   /* fixed width so the tiles/banner stay the SAME size regardless of how many columns a world has */
-  .preview{flex:0 0 540px;display:flex;flex-direction:column;gap:14px}
+  .preview{flex:0 0 492px;display:flex;flex-direction:column;gap:14px}
   .hl{display:flex;align-items:center;gap:11px;background:var(--yellow-40);border-radius:12px;padding:12px 13px;cursor:pointer}
   .hl .hi{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}
   .hl b{font-family:var(--fh);font-weight:600;font-size:13.5px;display:block}.hl span{font-size:11px;color:var(--dark-beige)}
@@ -209,7 +209,7 @@
 <body>
   <div class="intro">
     <h1>feey · Desktop-Navigation (V5 — Hybrid: visuell + ruhig)</h1>
-    <p>Kombiniert V1 + V4: visuelle Vorschau (Highlight, Kampagne &amp; beliebte Produkte) <b>links</b>, in der Mitte „Entdecken nach" mit „Wissen &amp; Geschichten" darunter, „Kategorien" (Haupt-CTA) zuletzt. Eine Auswahl führt direkt zur Landingpage.</p>
+    <p>Kombiniert V1 + V4: visuelle Vorschau (Highlight, Kampagne &amp; beliebte Produkte) <b>links</b>, dann „Entdecken nach", „Wissen &amp; Geschichten" und „Kategorien" (Haupt-CTA, zuletzt) als eigene Spalten. Eine Auswahl führt direkt zur Landingpage.</p>
   </div>
 
   <div class="win">
@@ -242,7 +242,7 @@
       </div>
     </div>
   </div>
-  <div class="hint">V5 „Hybrid": visuelle Vorschau (Kampagne &amp; beliebte Produkte, V1) <b>links</b> · in der Mitte „Entdecken nach" mit „Wissen &amp; Geschichten" darunter · „Kategorien" (Haupt-CTA) zuletzt. Auswahl → direkt zur Landingpage. Geschenke blendet „Wissen" aus.</div>
+  <div class="hint">V5 „Hybrid": visuelle Vorschau (Kampagne &amp; beliebte Produkte, V1) <b>links</b> · dann „Entdecken nach", „Wissen &amp; Geschichten" und „Kategorien" (Haupt-CTA) als eigene Spalten · Kategorien zuletzt. Auswahl → direkt zur Landingpage. Geschenke blendet „Wissen" aus.</div>
 
 <script>
   /* ---- data model 1:1 with nav-desktop-calm.html (featured blog lists expanded for the desktop "many blogs" case) ---- */
@@ -333,9 +333,8 @@
   }
   function megaHTML(k){
     var w=WORLDS[k],hasUC=(w.uc&&w.uc.length);
-    /* visual LEFT · MIDDLE column = Entdecken nach (top) + Wissen & Geschichten (below) · Kategorien LAST (Shafira) */
-    var mid='<div class="col side">'+(hasUC?discoverCol(k):'')+wissenCol(k)+'</div>';
-    var top=previewPane(k)+mid+catsCol(k);
+    /* visual LEFT · Entdecken nach · Wissen & Geschichten · Kategorien (last) — each its OWN column (Shafira) */
+    var top=previewPane(k)+(hasUC?discoverCol(k):'')+wissenCol(k)+catsCol(k);
     return '<div class="mm"><div class="mmhead"><div class="mmtitle">'+w.title+'</div><span class="seeall" '+rd(k,w.main)+'>Alle ansehen →</span></div><div class="mmtop">'+top+'</div></div>';
   }
 
