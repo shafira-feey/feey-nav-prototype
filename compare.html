@@ -1,13 +1,15 @@
 <!--
-  feey.ch — DESKTOP NAVIGATION · 5-VERSION VIEWER (team review)
+  feey.ch — DESKTOP NAVIGATION · 6-VERSION VIEWER (team review)
   Full-screen tabbed viewer: tabs switch the version; each prototype fills the screen — NO scrolling.
    · Version 1   — split bar + slide-DOWN (full width)      → nav-desktop-placement-explorations.html?variant=1
    · Version 3   — split bar + slide-DOWN (centered card)   → nav-desktop-placement-explorations.html?variant=3
    · Seiten-Panel— centered logo / left nav + slide-IN       → nav-redesign-desktop.html (previously approved)
    · Version 4   — Ruhig: calm 2-column drop-down (Entdecken nach | Kategorien) → nav-desktop-calm.html
                    (designer feedback 2026-06-25: approved panel felt overwhelming; keep "Entdecken nach", calm it via type/colour/spacing)
-   · Version 5   — Hybrid: V4 calm columns (left) + V1 visual preview (right) + Wissen bar → nav-desktop-hybrid.html
+   · Version 5   — Hybrid: visual tiles left + Entdecken nach · Wissen · Kategorien (last) → nav-desktop-hybrid.html
                    (Shafira 2026-06-25: combine V1's visual/shop-through-eyes with V4's calm familiarity)
+   · Version 6   — Kategorien links: = V5 but Kategorien pulled far left + wider → nav-desktop-v6.html
+                   (Shafira 2026-06-25: Kategorien (CTA) leads on the left; visual · Entdecken nach · Wissen follow)
   Each loads with embed=1 (no intro/switcher) and pre-opened on Zimmerpflanzen. Interaction works through the scale.
 -->
 <!doctype html>
@@ -36,13 +38,14 @@
 </head>
 <body>
   <div class="bar">
-    <div class="ttl">feey · Desktop-Navigation — <span>5 Versionen</span></div>
+    <div class="ttl">feey · Desktop-Navigation — <span>6 Versionen</span></div>
     <div class="tabs">
       <button data-src="nav-desktop-placement-explorations.html?variant=1&amp;embed=1&amp;open=zimmer&amp;v=2" data-h="900" class="active">Version 1 · Slide-down</button>
       <button data-src="nav-desktop-placement-explorations.html?variant=3&amp;embed=1&amp;open=zimmer&amp;v=2" data-h="900">Version 3 · Karte</button>
       <button data-src="nav-redesign-desktop.html?embed=1&amp;menu=zimmer&amp;v=2" data-h="1015">Seiten-Panel · freigegeben</button>
       <button data-src="nav-desktop-calm.html?embed=1&amp;menu=zimmer&amp;v=2" data-h="1000">Version 4 · Ruhig</button>
       <button data-src="nav-desktop-hybrid.html?embed=1&amp;menu=zimmer&amp;v=2" data-h="1000">Version 5 · Hybrid</button>
+      <button data-src="nav-desktop-v6.html?embed=1&amp;menu=zimmer&amp;v=2" data-h="1000">Version 6 · Kategorien links</button>
     </div>
   </div>
   <div class="stage"><iframe id="frame" title="Prototype"></iframe></div>
