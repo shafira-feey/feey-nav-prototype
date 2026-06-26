@@ -8,9 +8,9 @@
   Result:
    • SAME header as V4 (logo centered top · 7-world nav left · SERVICE links right of the nav row).
    • Click a world → contained drop-down under the nav (content height). Inside:
-       LEFT  = calm text columns: ENTDECKEN NACH (tinted hero) · KATEGORIEN   ← V4
+       LEFT  = calm text columns: ENTDECKEN NACH (tinted hero) · KATEGORIEN · WISSEN & GESCHICHTEN  ← V4
        RIGHT = visual PREVIEW pane: highlight tool + feature banner + "Beliebt in …" product cards ← V1
-       BOTTOM= full-width WISSEN & GESCHICHTEN bar (Pflanzenlexikon + all blogs + "Alle Blogs ansehen →")
+       (Wissen is its OWN column — the earlier bottom bar read like a missable footer, per Shafira 2026-06-25)
    • Flow kept from V4 (locked): selecting an "Entdecken nach" filter / category / product REDIRECTS to the
      landing/collection page — no in-menu drilling, no hover (click-only).
   IA + data model 1:1 with nav-desktop-calm.html / nav-redesign-desktop.html.
@@ -73,16 +73,16 @@
   .prow{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;flex:1}
 
   /* ===== V5 hybrid mega-menu ===== */
-  .mm{max-width:1300px;margin:0 auto;padding:26px 40px 34px}
+  .mm{max-width:1320px;margin:0 auto;padding:26px 38px 34px}
   .mmhead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-bottom:16px;margin-bottom:20px;border-bottom:1px solid var(--dark-beige-15)}
   .mmtitle{font-family:var(--fh);font-weight:600;font-size:22px;letter-spacing:.2px}
-  .mmtop{display:flex;gap:30px;align-items:flex-start}
+  .mmtop{display:flex;gap:26px;align-items:flex-start}
   .deye{font-family:var(--fh);font-weight:600;font-size:10.5px;letter-spacing:1.7px;text-transform:uppercase;color:var(--dark-beige);margin:0 0 10px}
   .seeall{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--green-dark);cursor:pointer;white-space:nowrap;flex:0 0 auto}
   .seeall:hover{text-decoration:underline}
 
   /* LEFT — Entdecken nach (tinted hero) + Kategorien (calm text columns · from V4) */
-  .col.discover{flex:0 0 224px;background:var(--green-15);border-radius:14px;padding:18px 16px 12px}
+  .col.discover{flex:0 0 200px;background:var(--green-15);border-radius:14px;padding:18px 14px 12px}
   .col.discover .deye{color:var(--green-dark)}
   .frow{display:flex;align-items:center;gap:13px;padding:11px 10px;border-radius:10px;cursor:pointer}
   .frow:hover{background:#fff}
@@ -91,7 +91,7 @@
   .frow .fl{font-family:var(--fh);font-weight:600;font-size:14px}
   .frow:hover .fl{color:var(--green-dark)}
   .frow .fcv{margin-left:auto;color:var(--green-40);font-size:15px}
-  .col.cats{flex:0 0 220px}
+  .col.cats{flex:0 0 184px}
   .col.cats.solo{flex:0 0 300px}
   .crow{padding:11px 0;cursor:pointer;border-bottom:1px solid var(--light-beige)}
   .crow:last-child{border-bottom:0}
@@ -124,15 +124,19 @@
   .pcard .pt{font-family:var(--fh);font-weight:500;font-size:12.5px;margin:7px 0 1px;line-height:15px}
   .pcard .pp{font-family:var(--fh);font-weight:600;font-size:12.5px}
 
-  /* BOTTOM — full-width Wissen & Geschichten bar (own area · many blogs) */
-  .wissenbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:22px;padding-top:18px;border-top:1px solid var(--dark-beige-15)}
-  .wissenbar .deye{margin:0;flex:0 0 auto}
-  .wlinkrow{display:flex;align-items:center;gap:9px 18px;flex-wrap:wrap;flex:1}
-  .wpill{display:inline-flex;align-items:center;gap:6px;background:var(--green-15);color:var(--green-dark);border-radius:20px;padding:6px 12px;font-family:var(--fh);font-weight:600;font-size:12.5px;cursor:pointer}
-  .wpill:hover{background:var(--green-40)}
-  .wlink{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;cursor:pointer;color:var(--black)}
+  /* Wissen & Geschichten — its OWN column (a clear peer, not a footer) */
+  .col.wissen{flex:0 0 196px}
+  .col.wissen .deye{margin-bottom:8px}
+  .hubrow{display:flex;align-items:center;gap:10px;background:var(--green-15);border-radius:11px;padding:10px 11px;cursor:pointer;margin-bottom:8px}
+  .hubrow .hi{width:32px;height:32px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 auto}
+  .hubrow b{font-family:var(--fh);font-weight:600;font-size:12.5px;display:block}.hubrow span{font-size:10px;color:var(--dark-beige);line-height:13px}
+  .hubrow .cv{margin-left:auto;color:var(--green-dark);font-size:14px}
+  .wlink{display:flex;align-items:center;gap:9px;padding:8px 0;font-size:13px;cursor:pointer;border-bottom:1px solid var(--light-beige)}
+  .wlink:last-child{border-bottom:0}
   .wlink:hover{color:var(--green-dark)}
   .wlink .wdot{font-size:12px;opacity:.7}
+  .wallblogs{font-family:var(--fh);font-weight:600;font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--green-dark);cursor:pointer;margin-top:12px;display:inline-block}
+  .wallblogs:hover{text-decoration:underline}
 
   .stagewrap{position:relative;height:760px;overflow:hidden}
   /* full-bleed embed (used by the compare viewer) */
@@ -197,7 +201,7 @@
 <body>
   <div class="intro">
     <h1>feey · Desktop-Navigation (V5 — Hybrid: visuell + ruhig)</h1>
-    <p>Kombiniert V4 (ruhige, vertraute Spalten links: „Entdecken nach" + „Kategorien") mit V1 (visuelle Vorschau rechts: Highlight, Kampagne &amp; beliebte Produkte). „Wissen &amp; Geschichten" als Leiste unten. Eine Auswahl führt direkt zur Landingpage.</p>
+    <p>Kombiniert V4 (ruhige, vertraute Spalten links: „Entdecken nach" + „Kategorien") mit V1 (visuelle Vorschau rechts: Highlight, Kampagne &amp; beliebte Produkte). „Wissen &amp; Geschichten" als eigene Spalte. Eine Auswahl führt direkt zur Landingpage.</p>
   </div>
 
   <div class="win">
@@ -230,7 +234,7 @@
       </div>
     </div>
   </div>
-  <div class="hint">V5 „Hybrid": links ruhige, vertraute Spalten (V4) · rechts visuelle Vorschau mit Kampagne &amp; beliebten Produkten (V1) · unten „Wissen &amp; Geschichten". Auswahl → direkt zur Landingpage (keine weitere Ebene). Geschenke blendet „Wissen" aus.</div>
+  <div class="hint">V5 „Hybrid": links ruhige, vertraute Spalten (V4) · rechts visuelle Vorschau mit Kampagne &amp; beliebten Produkten (V1) · „Wissen &amp; Geschichten" als eigene Spalte. Auswahl → direkt zur Landingpage (keine weitere Ebene). Geschenke blendet „Wissen" aus.</div>
 
 <script>
   /* ---- data model 1:1 with nav-desktop-calm.html (featured blog lists expanded for the desktop "many blogs" case) ---- */
@@ -308,22 +312,24 @@
     var s=slice5(w.prods,0);for(i=0;i<4;i++){o+=pcard(s[i]);}
     return o+'</div></div>';
   }
-  /* BOTTOM — full-width Wissen bar: Pflanzenlexikon + all linked blogs + Alle Blogs → */
-  function wissenBar(k){
+  /* Wissen & Geschichten — its OWN column: Pflanzenlexikon + all linked blogs + Alle Blogs → (at column bottom) */
+  function wissenCol(k){
     var w=WORLDS[k],feat=w.featured||[],isPlant=(k==='zimmer'||k==='balkon'),i;
     if(!feat.length)return '';
     var allAttr=isPlant?('data-blogcat="'+(k==='zimmer'?0:1)+'"'):'data-blog="1"';
-    var o='<div class="wissenbar"><span class="deye">Wissen &amp; Geschichten</span><div class="wlinkrow">';
-    if(isPlant){o+='<span class="wpill" data-pillar="Pflanzenlexikon" data-crumb="Wissen">📖 Pflanzenlexikon</span>';}
-    for(i=0;i<feat.length;i++){o+='<span class="wlink" data-pillar="'+esc(feat[i])+'" data-crumb="Blog"><span class="wdot">📄</span>'+feat[i]+'</span>';}
-    return o+'</div><span class="seeall" '+allAttr+'>Alle Blogs ansehen →</span></div>';
+    var o='<div class="col wissen"><div class="deye">Wissen &amp; Geschichten</div>';
+    if(isPlant){o+='<div class="hubrow" data-pillar="Pflanzenlexikon" data-crumb="Wissen"><div class="hi">📖</div><div><b>Pflanzenlexikon</b><span>Alles Wissen rund um deine Pflanzen</span></div><span class="cv">›</span></div>';}
+    for(i=0;i<feat.length;i++){o+='<div class="wlink" data-pillar="'+esc(feat[i])+'" data-crumb="Blog"><span class="wdot">📄</span>'+feat[i]+'</div>';}
+    o+='<div class="wallblogs" '+allAttr+'>Alle Blogs ansehen →</div>';
+    return o+'</div>';
   }
   function megaHTML(k){
     var w=WORLDS[k],hasUC=(w.uc&&w.uc.length),top='';
     if(hasUC)top+=discoverCol(k);
     top+=catsCol(k,!hasUC);
+    top+=wissenCol(k);
     top+=previewPane(k);
-    return '<div class="mm"><div class="mmhead"><div class="mmtitle">'+w.title+'</div><span class="seeall" '+rd(k,w.main)+'>Alle ansehen →</span></div><div class="mmtop">'+top+'</div>'+wissenBar(k)+'</div>';
+    return '<div class="mm"><div class="mmhead"><div class="mmtitle">'+w.title+'</div><span class="seeall" '+rd(k,w.main)+'>Alle ansehen →</span></div><div class="mmtop">'+top+'</div></div>';
   }
 
   var megamenu=document.getElementById('megamenu'),scrim=document.getElementById('scrim');
