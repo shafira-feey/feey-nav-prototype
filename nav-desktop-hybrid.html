@@ -85,15 +85,14 @@
   .seeall:hover{text-decoration:underline}
 
   /* LEFT — Entdecken nach (tinted hero) + Kategorien (calm text columns · from V4) */
-  .col.discover{flex:0 0 190px;background:var(--green-15);border-radius:14px;padding:18px 14px 12px}
+  .col.discover{flex:0 0 240px;background:var(--green-15);border-radius:14px;padding:18px 14px 12px}
   .col.discover .deye{color:var(--green-dark)}
-  .frow{display:flex;align-items:center;gap:13px;padding:11px 10px;border-radius:10px;cursor:pointer}
+  .frow{display:flex;align-items:center;gap:11px;padding:11px 8px;border-radius:10px;cursor:pointer}
   .frow:hover{background:#fff}
-  .frow .fic{width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex:0 0 auto;box-shadow:0 1px 0 rgba(20,20,20,.04)}
+  .frow .fic{width:32px;height:32px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 auto;box-shadow:0 1px 0 rgba(20,20,20,.04)}
   .col.discover .frow:hover .fic{background:var(--green-15)}
-  .frow .fl{font-family:var(--fh);font-weight:600;font-size:14px}
+  .frow .fl{font-family:var(--fh);font-weight:600;font-size:14px;white-space:nowrap}
   .frow:hover .fl{color:var(--green-dark)}
-  .frow .fcv{margin-left:auto;color:var(--green-40);font-size:15px}
   /* Kategorien — the WIDEST text column (main CTA into the catalog) */
   .col.cats{flex:0 0 252px}
   .col.cats.solo{flex:0 0 320px}
@@ -107,7 +106,8 @@
   .crow:hover .ccv{color:var(--green-dark)}
 
   /* RIGHT — visual preview pane (from V1) */
-  .preview{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px}
+  /* fixed width so the tiles/banner stay the SAME size regardless of how many columns a world has */
+  .preview{flex:0 0 492px;display:flex;flex-direction:column;gap:14px}
   .hl{display:flex;align-items:center;gap:11px;background:var(--yellow-40);border-radius:12px;padding:12px 13px;cursor:pointer}
   .hl .hi{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}
   .hl b{font-family:var(--fh);font-weight:600;font-size:13.5px;display:block}.hl span{font-size:11px;color:var(--dark-beige)}
@@ -123,7 +123,7 @@
   .pfeat .cta{font-family:var(--fh);font-weight:500;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;background:#fff;color:var(--black);padding:9px 14px;align-self:flex-start}
   .pvhd{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:2px 0 0}
   .pvhd .deye{margin:0}
-  .prodgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:10px}
+  .prodgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:10px}
   .pcard{cursor:pointer}
   .pthumb{position:relative;border-radius:9px;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:34px;background:linear-gradient(135deg,var(--green-15),var(--green-40))}
   .pbadge{position:absolute;left:7px;top:7px;font-family:var(--fh);font-weight:400;font-size:10px;letter-spacing:.5px;text-transform:uppercase;padding:3px 7px;border-radius:4px;line-height:1}
@@ -301,7 +301,7 @@
     for(i=0;i<w.uc.length;i++){
       var it=w.uc[i],smart=(it[2]&&NODES[it[2]]);
       var at=smart?('data-facetall="'+it[2]+'" data-world="'+k+'"'):rd(k,it[1]);
-      o+='<div class="frow" '+at+'><span class="fic">'+it[0]+'</span><span class="fl">'+it[1]+'</span><span class="fcv">›</span></div>';
+      o+='<div class="frow" '+at+'><span class="fic">'+it[0]+'</span><span class="fl">'+it[1]+'</span></div>';
     }
     return o+'</div>';
   }
@@ -316,7 +316,7 @@
     if(w.highlight){o+='<div class="hl" '+rd(k,w.highlight.t)+'><div class="hi">'+w.highlight.e+'</div><div><b>'+w.highlight.t+'</b><span>'+w.highlight.s+'</span></div></div>';}
     o+='<div class="pfeat '+f.cls+'" '+rd(k,f.b)+'><span class="pre">'+f.pre+'</span><b>'+f.b+'</b><span class="cta">Entdecken</span></div>';
     o+='<div class="pvhd"><span class="deye">Beliebt in '+w.title+'</span><span class="seeall" '+rd(k,w.main)+'>Alle ansehen →</span></div><div class="prodgrid">';
-    var s=slice5(w.prods,0);for(i=0;i<4;i++){o+=pcard(s[i]);}
+    var s=slice5(w.prods,0);for(i=0;i<3;i++){o+=pcard(s[i]);}
     return o+'</div></div>';
   }
   /* Wissen & Geschichten — its OWN column: Pflanzenlexikon + all linked blogs + Alle Blogs → (at column bottom) */
