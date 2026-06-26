@@ -82,7 +82,7 @@
   .seeall:hover{text-decoration:underline}
 
   /* LEFT — Entdecken nach (tinted hero) + Kategorien (calm text columns · from V4) */
-  .col.discover{flex:0 0 200px;background:var(--green-15);border-radius:14px;padding:18px 14px 12px}
+  .col.discover{flex:0 0 186px;background:var(--green-15);border-radius:14px;padding:18px 14px 12px}
   .col.discover .deye{color:var(--green-dark)}
   .frow{display:flex;align-items:center;gap:13px;padding:11px 10px;border-radius:10px;cursor:pointer}
   .frow:hover{background:#fff}
@@ -91,13 +91,17 @@
   .frow .fl{font-family:var(--fh);font-weight:600;font-size:14px}
   .frow:hover .fl{color:var(--green-dark)}
   .frow .fcv{margin-left:auto;color:var(--green-40);font-size:15px}
-  .col.cats{flex:0 0 184px}
-  .col.cats.solo{flex:0 0 300px}
-  .crow{padding:11px 0;cursor:pointer;border-bottom:1px solid var(--light-beige)}
+  /* Kategorien — the WIDEST text column (main CTA into the catalog) */
+  .col.cats{flex:0 0 252px}
+  .col.cats.solo{flex:0 0 320px}
+  .crow{display:flex;align-items:center;gap:10px;padding:12px 0;cursor:pointer;border-bottom:1px solid var(--light-beige)}
   .crow:last-child{border-bottom:0}
-  .crow b{font-family:var(--fh);font-weight:600;font-size:14px;display:block;line-height:18px}
+  .crow .ct{flex:1;min-width:0}
+  .crow b{font-family:var(--fh);font-weight:600;font-size:15px;display:block;line-height:19px}
   .crow small{font-size:12px;color:var(--dark-beige);display:block;line-height:15px;margin-top:1px}
+  .crow .ccv{flex:0 0 auto;color:var(--beige);font-size:15px}
   .crow:hover b{color:var(--green-dark)}
+  .crow:hover .ccv{color:var(--green-dark)}
 
   /* RIGHT — visual preview pane (from V1) */
   .preview{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px}
@@ -125,7 +129,7 @@
   .pcard .pp{font-family:var(--fh);font-weight:600;font-size:12.5px}
 
   /* Wissen & Geschichten — its OWN column (a clear peer, not a footer) */
-  .col.wissen{flex:0 0 196px}
+  .col.wissen{flex:0 0 182px}
   .col.wissen .deye{margin-bottom:8px}
   .hubrow{display:flex;align-items:center;gap:10px;background:var(--green-15);border-radius:11px;padding:10px 11px;cursor:pointer;margin-bottom:8px}
   .hubrow .hi{width:32px;height:32px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 auto}
@@ -300,7 +304,7 @@
   }
   function catsCol(k,solo){
     var w=WORLDS[k],i,o='<div class="col cats'+(solo?' solo':'')+'"><div class="deye">Kategorien</div>';
-    for(i=0;i<w.cats.length;i++){var ct=w.cats[i];o+='<div class="crow" '+rd(k,ct[1])+'><b>'+ct[1]+'</b>'+(ct[2]?'<small>'+ct[2]+'</small>':'')+'</div>';}
+    for(i=0;i<w.cats.length;i++){var ct=w.cats[i];o+='<div class="crow" '+rd(k,ct[1])+'><div class="ct"><b>'+ct[1]+'</b>'+(ct[2]?'<small>'+ct[2]+'</small>':'')+'</div><span class="ccv">›</span></div>';}
     return o+'</div>';
   }
   /* RIGHT — visual preview (from V1): highlight + feature banner + popular products */
