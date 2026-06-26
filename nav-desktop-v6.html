@@ -41,21 +41,25 @@
 
   .site{position:relative}
   .util{background:var(--green);color:#fff;font-size:11.5px;font-weight:500;display:flex;justify-content:center;gap:26px;padding:7px 16px}
-  /* two-row header — logo CENTERED top · nav LEFT below · SERVICE links right (same as V4) */
-  .header{position:relative;z-index:30;background:#fff;border-bottom:1px solid var(--dark-beige-15)}
-  .hdr-top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:14px 26px 10px}
-  .logo{grid-column:2;justify-self:center;font-family:var(--fh);font-weight:700;font-size:25px;letter-spacing:.5px;cursor:pointer}
-  .navr{grid-column:3;justify-self:end;display:flex;align-items:center;gap:16px}
+  /* TOP utility toolbar (very top, BEFORE the announcement bar) — service links left · icons right */
+  .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:6px 22px;background:#fff;border-bottom:1px solid var(--dark-beige-15)}
+  .tb-svc{display:flex;gap:2px;align-items:center;flex-wrap:wrap}
+  .tb-svc .svc{font-family:var(--fh);font-weight:500;font-size:12px;color:var(--dark-beige);padding:5px 9px;border-radius:6px;cursor:pointer;white-space:nowrap}
+  .tb-svc .svc:hover{background:var(--light-beige);color:var(--black)}
+  .tb-icons{display:flex;align-items:center;gap:16px;flex:0 0 auto}
   .icobtn{font-size:18px;cursor:pointer;position:relative}
   .icobtn .dot{position:absolute;top:-3px;right:-4px;background:var(--green);color:#fff;font-family:var(--fh);font-weight:600;font-size:9px;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-  .nav{display:flex;align-items:center;gap:2px;justify-content:flex-start;padding:1px 26px 12px}
-  .navitem{font-family:var(--fh);font-weight:500;font-size:13.5px;padding:9px 12px;cursor:pointer;color:var(--black);border-radius:6px;white-space:nowrap;position:relative}
+  /* main header — worlds flank a CENTERED logo (V1 style) */
+  .header{position:relative;z-index:30;background:#fff;border-bottom:1px solid var(--dark-beige-15)}
+  .hdr-main{display:flex;align-items:center;padding:14px 26px}
+  .navside{flex:1;display:flex;gap:2px;align-items:center}
+  .navside.left{justify-content:flex-end;padding-right:22px}
+  .navside.right{justify-content:flex-start;padding-left:22px}
+  .logo{flex:0 0 auto;font-family:var(--fh);font-weight:700;font-size:25px;letter-spacing:.5px;cursor:pointer}
+  .navitem{font-family:var(--fh);font-weight:500;font-size:13.5px;padding:9px 11px;cursor:pointer;color:var(--black);border-radius:6px;white-space:nowrap;position:relative}
   .navitem:hover,.navitem.on{background:var(--light-beige)}
-  .navitem.on::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:2px;background:var(--green-dark)}
+  .navitem.on::after{content:"";position:absolute;left:11px;right:11px;bottom:-1px;height:2px;background:var(--green-dark)}
   .navitem.tier{color:var(--dark-beige)}
-  .navservice{margin-left:auto;display:flex;gap:2px;align-items:center}
-  .navservice .svc{font-family:var(--fh);font-weight:500;font-size:12px;color:var(--dark-beige);padding:7px 9px;border-radius:6px;cursor:pointer;white-space:nowrap}
-  .navservice .svc:hover{background:var(--light-beige);color:var(--black)}
 
   /* shared dropdown shell (search + mega-menu both drop from the header) */
   .drop{position:absolute;left:0;right:0;top:100%;z-index:28;background:#fff;border-top:1px solid var(--dark-beige-15);box-shadow:0 26px 44px -20px rgba(20,20,20,.26);display:none}
@@ -215,19 +219,22 @@
   <div class="win">
     <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="addr">🔒 feey.ch</div></div>
     <div class="site" id="site">
+      <div class="toolbar">
+        <div class="tb-svc" id="tbSvc"></div>
+        <div class="tb-icons">
+          <div class="icobtn" data-a="open-search">🔍</div>
+          <div class="icobtn">♡</div>
+          <div class="icobtn">👤</div>
+          <div class="icobtn">🛒<span class="dot">2</span></div>
+        </div>
+      </div>
       <div class="util"><span>🌱 Gesunde &amp; langlebige Pflanzen</span><span>🚛 Lieferung an die Haustüre</span><span>📦 Versand inkl. Garantie</span><span>🇨🇭 Schweizer Gewächs</span></div>
       <div class="header">
-        <div class="hdr-top">
-          <span></span>
+        <div class="hdr-main">
+          <nav class="navside left" id="navL"></nav>
           <div class="logo" data-a="home">feey</div>
-          <div class="navr">
-            <div class="icobtn" data-a="open-search">🔍</div>
-            <div class="icobtn">♡</div>
-            <div class="icobtn">👤</div>
-            <div class="icobtn">🛒<span class="dot">2</span></div>
-          </div>
+          <nav class="navside right" id="navR"></nav>
         </div>
-        <nav class="nav" id="nav"></nav>
         <!-- search drop-down -->
         <div class="drop" id="searchpanel"><div class="sp">
           <div class="terms"><h4>Beliebte Suchen · letzte 30 Tage</h4><div id="terms"></div></div>
@@ -289,12 +296,14 @@
   function slice5(pool,s){var r=[];for(var i=0;i<5;i++){r.push(pool[(s+i)%pool.length]);}return r;}
   function rd(world,title,filter){var c=WORLDS[world]?WORLDS[world].title:'';var f=filter?(' data-filter="'+esc(filter)+'"'):'';return 'data-redir="'+esc(title)+'" data-crumb="'+esc(c)+'" data-world="'+world+'"'+f;}
 
-  /* ---- header nav + service links ---- */
-  var nav=document.getElementById('nav');
-  (function(){var o='';for(var i=0;i<ORDER.length;i++){var k=ORDER[i];o+='<div class="navitem'+(k==='workshops'?' tier':'')+'" data-k="'+k+'">'+WORLDS[k].title+'</div>';}
-    var SVC=[['Hilfezentrum','Hilfezentrum'],['Pflanzendoktor','Pflanzendoktor'],['Firmen-Angebot','Firmen-Angebot (B2B)'],['Mehr über uns','Über feey']];
-    o+='<div class="navservice">';for(var s=0;s<SVC.length;s++){o+='<span class="svc" data-pillar="'+esc(SVC[s][1])+'" data-crumb="Service">'+SVC[s][0]+'</span>';}o+='</div>';
-    nav.innerHTML=o;})();
+  /* ---- header: worlds split around the centered logo (V1 style) · service links in the top toolbar ---- */
+  var navL=document.getElementById('navL'),navR=document.getElementById('navR');
+  var LEFTW=['zimmer','balkon','blumen'],RIGHTW=['pflege','toepfe','geschenke','workshops'];
+  function navHTML(keys){var o='';for(var i=0;i<keys.length;i++){var k=keys[i];o+='<div class="navitem'+(k==='workshops'?' tier':'')+'" data-k="'+k+'">'+WORLDS[k].title+'</div>';}return o;}
+  navL.innerHTML=navHTML(LEFTW);navR.innerHTML=navHTML(RIGHTW);
+  (function(){var SVC=[['Hilfezentrum','Hilfezentrum'],['Pflanzendoktor','Pflanzendoktor'],['Firmen-Angebot','Firmen-Angebot (B2B)'],['Mehr über uns','Über feey']];
+    var o='';for(var s=0;s<SVC.length;s++){o+='<span class="svc" data-pillar="'+esc(SVC[s][1])+'" data-crumb="Service">'+SVC[s][0]+'</span>';}
+    document.getElementById('tbSvc').innerHTML=o;})();
 
   /* ===== V5 hybrid mega-menu ===== */
   function discoverCol(k){
@@ -339,8 +348,8 @@
   }
 
   var megamenu=document.getElementById('megamenu'),scrim=document.getElementById('scrim');
-  function openMenu(k){closeSearch();panelWorld=k;cw=k;megamenu.innerHTML=megaHTML(k);megamenu.classList.add('show');scrim.classList.add('show');var it=nav.querySelectorAll('.navitem');for(var i=0;i<it.length;i++)it[i].classList.toggle('on',it[i].getAttribute('data-k')===k);}
-  function closeMenu(){panelWorld=null;megamenu.classList.remove('show');scrim.classList.remove('show');var it=nav.querySelectorAll('.navitem');for(var i=0;i<it.length;i++)it[i].classList.remove('on');}
+  function openMenu(k){closeSearch();panelWorld=k;cw=k;megamenu.innerHTML=megaHTML(k);megamenu.classList.add('show');scrim.classList.add('show');var it=document.querySelectorAll('.navitem');for(var i=0;i<it.length;i++)it[i].classList.toggle('on',it[i].getAttribute('data-k')===k);}
+  function closeMenu(){panelWorld=null;megamenu.classList.remove('show');scrim.classList.remove('show');var it=document.querySelectorAll('.navitem');for(var i=0;i<it.length;i++)it[i].classList.remove('on');}
 
   /* ---- inner pages (lifted from approved build) ---- */
   function pageHead(crumbHTML,title){return '<div class="collwrap"><div class="crumb">'+crumbHTML+'</div><div class="colltitle">'+title+'</div>';}
@@ -395,7 +404,8 @@
   function openSearch(){closeMenu();sp.classList.add('show');scrim.classList.add('show');}
   function closeSearch(){sp.classList.remove('show');}
 
-  nav.addEventListener('click',function(e){var it=e.target.closest('.navitem');if(it){var k=it.getAttribute('data-k');if(panelWorld===k){closeMenu();}else{openMenu(k);}}});
+  function navClick(e){var it=e.target.closest('.navitem');if(it){var k=it.getAttribute('data-k');if(panelWorld===k){closeMenu();}else{openMenu(k);}}}
+  navL.addEventListener('click',navClick);navR.addEventListener('click',navClick);
   scrim.addEventListener('click',function(){closeMenu();closeSearch();});
 
   document.addEventListener('click',function(e){
