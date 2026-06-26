@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  :root{--green:#60BFA4;--green-dark:#4A9A83;--green-15:#E6F4F0;--green-40:#BFE4DB;--yellow:#FACE44;--yellow-40:#FDEBB3;--yellow-70:#FBDD7C;--beige:#D3CCB6;--light-beige:#F6F5F0;--dark-beige:#635D4B;--dark-beige-15:#E8E6E4;--black:#141414;--fh:'Poppins',system-ui,sans-serif;--fb:'Karla',system-ui,sans-serif}
+  :root{--green:#60BFA4;--green-dark:#4A9A83;--green-15:#E6F4F0;--green-40:#BFE4DB;--yellow:#FACE44;--yellow-40:#FDEBB3;--yellow-70:#FBDD7C;--beige:#D3CCB6;--light-beige:#F6F5F0;--dark-beige:#635D4B;--dark-beige-15:#E8E6E4;--black:#141414;--fh:'Poppins',system-ui,sans-serif;--fb:'Karla',system-ui,sans-serif;--gut:max(34px,calc((100% - 1340px)/2))}
   *{box-sizing:border-box}html,body{margin:0}
   body{font-family:var(--fb);color:var(--black);background:#dfddd5;padding:24px 16px 56px;display:flex;flex-direction:column;align-items:center}
   .intro{max-width:1000px;text-align:center;margin-bottom:14px}
@@ -42,21 +42,24 @@
   .chrome .addr{flex:1;max-width:420px;margin:0 auto;background:#fff;border-radius:20px;height:26px;display:flex;align-items:center;justify-content:center;gap:7px;font-size:12px;color:var(--dark-beige);border:1px solid #d8d5cc}
 
   .site{position:relative}
-  .util{background:var(--green);color:#fff;font-size:11.5px;font-weight:500;display:flex;justify-content:center;gap:26px;padding:7px 16px}
-  /* TOP utility toolbar (very top, BEFORE the announcement bar) — service links left · icons right */
-  .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:6px 22px;background:#fff;border-bottom:1px solid var(--dark-beige-15)}
+  .util{background:var(--green);color:#fff;font-size:11.5px;font-weight:500;display:flex;justify-content:center;gap:26px;padding:7px var(--gut)}
+  /* slim utility toolbar — service links left · icons right · aligned to the content grid (not window edges) */
+  .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:7px var(--gut);background:#fff;border-bottom:1px solid var(--dark-beige-15)}
   .tb-svc{display:flex;gap:2px;align-items:center;flex-wrap:wrap}
   .tb-svc .svc{font-family:var(--fh);font-weight:500;font-size:12px;color:var(--dark-beige);padding:5px 9px;border-radius:6px;cursor:pointer;white-space:nowrap}
   .tb-svc .svc:hover{background:var(--light-beige);color:var(--black)}
   .tb-icons{display:flex;align-items:center;gap:16px;flex:0 0 auto}
   .icobtn{font-size:18px;cursor:pointer;position:relative}
   .icobtn .dot{position:absolute;top:-3px;right:-4px;background:var(--green);color:#fff;font-family:var(--fh);font-weight:600;font-size:9px;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-  /* main header — worlds flank a CENTERED logo (V1 style), sitting ON the header image/hero */
-  .header{position:relative;z-index:30;border-bottom:1px solid var(--dark-beige-15);background-image:linear-gradient(0deg,rgba(20,20,20,.34),rgba(20,20,20,.12)),linear-gradient(120deg,#7BAE9E,#CDB892);background-size:cover;background-position:center}
-  .hdr-main{display:flex;align-items:center;padding:22px 26px;min-height:98px}
+  /* HEADER = the header/hero IMAGE (full-bleed); nav + heading sit ON it; darkening covers the WHOLE image */
+  .header{position:relative;z-index:30;background-image:linear-gradient(135deg,#5C8C7C,#9FB48E 55%,#CBBE9C);background-size:cover;background-position:center}
+  .header::before{content:"";position:absolute;inset:0;background:rgba(20,20,20,.34);z-index:0}
+  /* nav strip — frosted blur over the image (blur amount = schema setting later) */
+  .navrow{position:relative;z-index:5;background:rgba(20,20,20,.10);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);border-bottom:1px solid rgba(255,255,255,.14)}
+  .hdr-main{display:flex;align-items:center;gap:16px;padding:13px var(--gut)}
   .navside{flex:1;display:flex;gap:2px;align-items:center}
-  .navside.left{justify-content:flex-end;padding-right:22px}
-  .navside.right{justify-content:flex-start;padding-left:22px}
+  .navside.left{justify-content:flex-start}
+  .navside.right{justify-content:flex-end}
   .logo{flex:0 0 auto;font-family:var(--fh);font-weight:700;font-size:26px;letter-spacing:.5px;cursor:pointer}
   .navitem{font-family:var(--fh);font-weight:500;font-size:13.5px;padding:9px 11px;cursor:pointer;border-radius:6px;white-space:nowrap;position:relative}
   .navitem.on::after{content:"";position:absolute;left:11px;right:11px;bottom:-1px;height:2px;background:currentColor;opacity:.9}
@@ -69,6 +72,14 @@
   .header.navlight .navitem:hover,.header.navlight .navitem.on{background:rgba(255,255,255,.18)}
   .header.navdark .navitem:hover,.header.navdark .navitem.on{background:rgba(20,20,20,.07)}
   .header.navcustom .navitem:hover,.header.navcustom .navitem.on{background:var(--green-15)}
+  /* hero heading — over the darkened image; home only (.header.inner hides it on inner pages) */
+  .herohead{position:relative;z-index:1;color:#fff;padding:34px var(--gut) 56px}
+  .hh-pre{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;opacity:.92}
+  .hh-h2{font-family:var(--fh);font-weight:600;font-size:42px;line-height:46px;margin:8px 0 12px;max-width:560px}
+  .hh-h2 em{font-style:normal;color:var(--green-40)}
+  .hh-p{font-size:15px;opacity:.92;margin:0 0 20px;max-width:480px;line-height:21px}
+  .hh-cta{font-family:var(--fh);font-weight:500;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;background:#fff;color:var(--black);padding:13px 26px;display:inline-block;cursor:pointer}
+  .header.inner .herohead{display:none}
 
   /* shared dropdown shell (search + mega-menu both drop from the header) */
   .drop{position:absolute;left:0;right:0;top:100%;z-index:28;background:#fff;border-top:1px solid var(--dark-beige-15);box-shadow:0 26px 44px -20px rgba(20,20,20,.26);display:none}
@@ -76,7 +87,7 @@
   @keyframes dropin{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
 
   /* ===== search dropdown ===== */
-  .sp{max-width:1300px;margin:0 auto;display:flex;gap:46px;padding:24px 40px 30px}
+  .sp{display:flex;gap:46px;padding:24px var(--gut) 30px}
   .sp .terms{flex:0 0 280px}
   .sp h4{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dark-beige);margin:0 0 12px}
   .sp .seehead{display:flex;align-items:baseline;justify-content:space-between}
@@ -86,7 +97,7 @@
   .prow{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;flex:1}
 
   /* ===== V5 hybrid mega-menu ===== */
-  .mm{max-width:1360px;margin:0 auto;padding:26px 38px 34px}
+  .mm{padding:26px var(--gut) 34px}
   .mmhead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-bottom:16px;margin-bottom:20px;border-bottom:1px solid var(--dark-beige-15)}
   .mmtitle{font-family:var(--fh);font-weight:600;font-size:22px;letter-spacing:.2px}
   .mmtop{display:flex;gap:24px;align-items:flex-start}
@@ -179,7 +190,7 @@
   .phero h2 em{font-style:normal;color:var(--green-dark)}
   .phero p{font-size:15px;color:var(--dark-beige);margin:0 0 18px;max-width:460px}
   .phero .cta{font-family:var(--fh);font-weight:500;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;background:var(--green);color:#fff;padding:13px 26px;align-self:flex-start;cursor:pointer}
-  .worldsstrip{max-width:1300px;margin:0 auto;padding:34px 34px 8px}
+  .worldsstrip{padding:34px var(--gut) 8px}
   .worldsstrip .wh{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dark-beige);margin:0 0 14px}
   .wgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
   .wtile{position:relative;border-radius:11px;overflow:hidden;min-height:118px;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;cursor:pointer;color:#fff;background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 62%),linear-gradient(135deg,#8FCBB9,#BFE4DB)}
@@ -193,7 +204,7 @@
   .wtile.gt-gift{background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 62%),linear-gradient(135deg,#E6BE55,#FDF0C2)}
   .wtile.gt-work{background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 62%),linear-gradient(135deg,#7FA8A6,#D4CDBA)}
 
-  .collwrap{max-width:1300px;margin:0 auto;padding:26px 34px 52px}
+  .collwrap{padding:26px var(--gut) 52px}
   .crumb{font-size:13px;color:var(--dark-beige);margin-bottom:10px}.crumb a{color:var(--green-dark);cursor:pointer;font-weight:500}
   .colltitle{font-family:var(--fh);font-weight:600;font-size:30px;margin:0 0 10px}
   .collsub{font-size:14px;color:var(--dark-beige);margin:0 0 18px;max-width:620px;line-height:20px}
@@ -240,18 +251,26 @@
         </div>
       </div>
       <div class="header navlight">
-        <div class="hdr-main">
-          <nav class="navside left" id="navL"></nav>
-          <div class="logo" data-a="home">feey</div>
-          <nav class="navside right" id="navR"></nav>
+        <div class="navrow">
+          <div class="hdr-main">
+            <nav class="navside left" id="navL"></nav>
+            <div class="logo" data-a="home">feey</div>
+            <nav class="navside right" id="navR"></nav>
+          </div>
+          <!-- search drop-down -->
+          <div class="drop" id="searchpanel"><div class="sp">
+            <div class="terms"><h4>Beliebte Suchen · letzte 30 Tage</h4><div id="terms"></div></div>
+            <div style="flex:1"><div class="seehead"><h4>Meistverkaufte Produkte</h4><span class="link">Alle ansehen</span></div><div class="prow" id="sprods"></div></div>
+          </div></div>
+          <!-- mega-menu drop-down -->
+          <div class="drop" id="megamenu"></div>
         </div>
-        <!-- search drop-down -->
-        <div class="drop" id="searchpanel"><div class="sp">
-          <div class="terms"><h4>Beliebte Suchen · letzte 30 Tage</h4><div id="terms"></div></div>
-          <div style="flex:1"><div class="seehead"><h4>Meistverkaufte Produkte</h4><span class="link">Alle ansehen</span></div><div class="prow" id="sprods"></div></div>
-        </div></div>
-        <!-- mega-menu drop-down -->
-        <div class="drop" id="megamenu"></div>
+        <div class="herohead">
+          <div class="hh-pre">Willkommen bei feey</div>
+          <h2 class="hh-h2">Bring dein Zuhause zum <em>Leben</em></h2>
+          <p class="hh-p">Pflanzen, Pflege, Töpfe &amp; Geschenke — alles aus einer Hand, in die Schweiz geliefert.</p>
+          <div class="hh-cta" data-redir="Alle Zimmerpflanzen" data-crumb="Zimmerpflanzen" data-world="zimmer">Jetzt entdecken</div>
+        </div>
       </div>
       <div class="stagewrap">
         <div class="page" id="page"></div>
@@ -364,8 +383,8 @@
   /* ---- inner pages (lifted from approved build) ---- */
   function pageHead(crumbHTML,title){return '<div class="collwrap"><div class="crumb">'+crumbHTML+'</div><div class="colltitle">'+title+'</div>';}
   function homeHTML(){
-    var o='<div class="phero"><div class="deco">🪴</div><div><div class="pre">Willkommen bei feey</div><h2>Bring dein Zuhause zum <em>Leben</em></h2><p>Pflanzen, Pflege, Töpfe &amp; Geschenke — alles aus einer Hand, in die Schweiz geliefert.</p><div class="cta" '+rd('zimmer',WORLDS.zimmer.main)+'>Jetzt entdecken</div></div></div>';
-    o+='<div class="worldsstrip"><div class="wh">Entdecke unsere Welten</div><div class="wgrid">';
+    /* hero heading now lives in the header (over the image); home page = the worlds strip */
+    var o='<div class="worldsstrip"><div class="wh">Entdecke unsere Welten</div><div class="wgrid">';
     for(var i=0;i<ORDER.length;i++){var k=ORDER[i],w=WORLDS[k],sp=(k==='zimmer')?' span2':'';o+='<div class="wtile'+sp+' '+(w.tile||'')+'" data-menu="'+k+'"><span class="e">'+EMOJI[k]+'</span><b>'+w.title+'</b></div>';}
     o+='</div></div>';
     return o;
@@ -410,7 +429,7 @@
 
   /* ---- view plumbing ---- */
   var page=document.getElementById('page'),sp=document.getElementById('searchpanel');
-  function setPage(html){page.innerHTML=html;page.scrollTop=0;}
+  function setPage(html){page.innerHTML=html;page.scrollTop=0;var h=document.querySelector('.header');if(h)h.classList.toggle('inner',html.indexOf('worldsstrip')===-1);}
   function openSearch(){closeMenu();sp.classList.add('show');scrim.classList.add('show');}
   function closeSearch(){sp.classList.remove('show');}
 
