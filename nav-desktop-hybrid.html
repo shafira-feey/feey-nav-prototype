@@ -8,9 +8,10 @@
   Result:
    • SAME header as V4 (logo centered top · 7-world nav left · SERVICE links right of the nav row).
    • Click a world → contained drop-down under the nav (content height). Inside:
-       LEFT  = calm text columns: ENTDECKEN NACH (tinted hero) · KATEGORIEN · WISSEN & GESCHICHTEN  ← V4
-       RIGHT = visual PREVIEW pane: highlight tool + feature banner + "Beliebt in …" product cards ← V1
-       (Wissen is its OWN column — the earlier bottom bar read like a missable footer, per Shafira 2026-06-25)
+       LEFT  = visual PREVIEW (the "tiles"): highlight tool + feature banner + "Beliebt in …" product cards ← V1
+       MIDDLE= KATEGORIEN — the main CTA into the catalog (widest text column) ← V4
+       RIGHT = ENTDECKEN NACH (tinted) + WISSEN & GESCHICHTEN, stacked
+       (tiles moved LEFT + consolidated to 3 regions — the earlier 4-column build felt crowded, per Shafira 2026-06-25)
    • Flow kept from V4 (locked): selecting an "Entdecken nach" filter / category / product REDIRECTS to the
      landing/collection page — no in-menu drilling, no hover (click-only).
   IA + data model 1:1 with nav-desktop-calm.html / nav-redesign-desktop.html.
@@ -76,13 +77,16 @@
   .mm{max-width:1320px;margin:0 auto;padding:26px 38px 34px}
   .mmhead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-bottom:16px;margin-bottom:20px;border-bottom:1px solid var(--dark-beige-15)}
   .mmtitle{font-family:var(--fh);font-weight:600;font-size:22px;letter-spacing:.2px}
-  .mmtop{display:flex;gap:26px;align-items:flex-start}
+  .mmtop{display:flex;gap:30px;align-items:flex-start}
+  /* right rail stacks Entdecken nach + Wissen (3-region layout: visual LEFT · Kategorien MIDDLE · this) */
+  .col.side{flex:0 0 240px;display:flex;flex-direction:column;gap:20px}
+  .col.side .col{flex:0 0 auto;width:100%}
   .deye{font-family:var(--fh);font-weight:600;font-size:10.5px;letter-spacing:1.7px;text-transform:uppercase;color:var(--dark-beige);margin:0 0 10px}
   .seeall{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--green-dark);cursor:pointer;white-space:nowrap;flex:0 0 auto}
   .seeall:hover{text-decoration:underline}
 
   /* LEFT — Entdecken nach (tinted hero) + Kategorien (calm text columns · from V4) */
-  .col.discover{flex:0 0 186px;background:var(--green-15);border-radius:14px;padding:18px 14px 12px}
+  .col.discover{background:var(--green-15);border-radius:14px;padding:18px 14px 12px}
   .col.discover .deye{color:var(--green-dark)}
   .frow{display:flex;align-items:center;gap:13px;padding:11px 10px;border-radius:10px;cursor:pointer}
   .frow:hover{background:#fff}
@@ -205,7 +209,7 @@
 <body>
   <div class="intro">
     <h1>feey · Desktop-Navigation (V5 — Hybrid: visuell + ruhig)</h1>
-    <p>Kombiniert V4 (ruhige, vertraute Spalten links: „Entdecken nach" + „Kategorien") mit V1 (visuelle Vorschau rechts: Highlight, Kampagne &amp; beliebte Produkte). „Wissen &amp; Geschichten" als eigene Spalte. Eine Auswahl führt direkt zur Landingpage.</p>
+    <p>Kombiniert V1 + V4: visuelle Vorschau (Highlight, Kampagne &amp; beliebte Produkte) <b>links</b>, „Kategorien" als Haupt-CTA in der Mitte, „Entdecken nach" + „Wissen &amp; Geschichten" rechts. Eine Auswahl führt direkt zur Landingpage.</p>
   </div>
 
   <div class="win">
@@ -238,7 +242,7 @@
       </div>
     </div>
   </div>
-  <div class="hint">V5 „Hybrid": links ruhige, vertraute Spalten (V4) · rechts visuelle Vorschau mit Kampagne &amp; beliebten Produkten (V1) · „Wissen &amp; Geschichten" als eigene Spalte. Auswahl → direkt zur Landingpage (keine weitere Ebene). Geschenke blendet „Wissen" aus.</div>
+  <div class="hint">V5 „Hybrid": die visuelle Vorschau (Kampagne &amp; beliebte Produkte, V1) <b>links</b> · „Kategorien" als Haupt-CTA in der Mitte · „Entdecken nach" + „Wissen &amp; Geschichten" rechts. Auswahl → direkt zur Landingpage. Geschenke blendet „Wissen" aus.</div>
 
 <script>
   /* ---- data model 1:1 with nav-desktop-calm.html (featured blog lists expanded for the desktop "many blogs" case) ---- */
@@ -328,11 +332,10 @@
     return o+'</div>';
   }
   function megaHTML(k){
-    var w=WORLDS[k],hasUC=(w.uc&&w.uc.length),top='';
-    if(hasUC)top+=discoverCol(k);
-    top+=catsCol(k,!hasUC);
-    top+=wissenCol(k);
-    top+=previewPane(k);
+    var w=WORLDS[k],hasUC=(w.uc&&w.uc.length);
+    /* visual LEFT · Kategorien MIDDLE · (Entdecken nach + Wissen) stacked RIGHT */
+    var side='<div class="col side">'+(hasUC?discoverCol(k):'')+wissenCol(k)+'</div>';
+    var top=previewPane(k)+catsCol(k,!hasUC)+side;
     return '<div class="mm"><div class="mmhead"><div class="mmtitle">'+w.title+'</div><span class="seeall" '+rd(k,w.main)+'>Alle ansehen →</span></div><div class="mmtop">'+top+'</div></div>';
   }
 
