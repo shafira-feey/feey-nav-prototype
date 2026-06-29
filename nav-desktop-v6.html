@@ -43,48 +43,73 @@
 
   .site{position:relative}
   .util{background:var(--green);color:#fff;font-size:11.5px;font-weight:500;display:flex;justify-content:center;gap:26px;padding:7px var(--gut)}
-  /* slim utility toolbar — service links left · icons right · aligned to the content grid (not window edges) */
-  .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:7px var(--gut);background:#fff;border-bottom:1px solid var(--dark-beige-15)}
+
+  /* ===== HERO HEADER — toolbar + nav + heading ALL sit on ONE hero image =====
+     Darkening: toolbar = slight (--tbDark); nav + heading SHARE the same strength (--heroDark).
+     (--heroDark + the hero height are the values to expose in the Shopify schema later.) */
+  .hero{position:relative;z-index:30;background-image:linear-gradient(135deg,#5C8C7C,#9FB48E 55%,#CBBE9C);background-size:cover;background-position:center;--heroDark:.42;--tbDark:.18}
+  .toolbar{position:relative;z-index:6;display:flex;align-items:center;gap:16px;padding:7px var(--gut);background:rgba(20,20,20,var(--tbDark));border-bottom:1px solid rgba(255,255,255,.12);color:#fff}
   .tb-svc{display:flex;gap:2px;align-items:center;flex-wrap:wrap}
-  .tb-svc .svc{font-family:var(--fh);font-weight:500;font-size:12px;color:var(--dark-beige);padding:5px 9px;border-radius:6px;cursor:pointer;white-space:nowrap}
-  .tb-svc .svc:hover{background:var(--light-beige);color:var(--black)}
-  .tb-icons{display:flex;align-items:center;gap:16px;flex:0 0 auto}
-  .icobtn{font-size:18px;cursor:pointer;position:relative}
+  .tb-svc .svc{font-family:var(--fh);font-weight:500;font-size:12px;color:inherit;opacity:.92;padding:5px 9px;border-radius:6px;cursor:pointer;white-space:nowrap}
+  .tb-svc .svc:hover{background:rgba(255,255,255,.16);opacity:1}
+  .tb-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+  .tb-loc{font-family:var(--fh);font-weight:600;font-size:12px;color:inherit;opacity:.92;cursor:pointer;white-space:nowrap}
+  .tb-loc:hover{opacity:1}
+  .icobtn{font-size:18px;cursor:pointer;position:relative;color:inherit}
   .icobtn .dot{position:absolute;top:-3px;right:-4px;background:var(--green);color:#fff;font-family:var(--fh);font-weight:600;font-size:9px;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-  /* HEADER = the header/hero IMAGE (full-bleed); nav + heading sit ON it; darkening covers the WHOLE image */
-  .header{position:relative;z-index:30;background-image:linear-gradient(135deg,#5C8C7C,#9FB48E 55%,#CBBE9C);background-size:cover;background-position:center}
-  .header::before{content:"";position:absolute;inset:0;background:rgba(20,20,20,.34);z-index:0}
-  /* nav strip — frosted blur over the image (blur amount = schema setting later) */
-  .navrow{position:relative;z-index:5;background:rgba(20,20,20,.10);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);border-bottom:1px solid rgba(255,255,255,.14)}
+  /* search pill — collapsed by default, expands to the LEFT when search is active */
+  .tb-search{width:0;min-width:0;opacity:0;overflow:hidden;border:0;border-radius:30px;height:38px;padding:0;background:var(--light-beige);font-family:var(--fb);font-size:14px;color:var(--black);transition:width .3s cubic-bezier(.4,0,.1,1),opacity .2s,padding .3s}
+  .tb-search:focus{outline:2px solid var(--green)}
+  .tb-close{display:none;font-size:16px;cursor:pointer;color:var(--black)}
+  /* nav + heading SHARE the same hero darkening */
+  .navhero{position:relative;background:rgba(20,20,20,var(--heroDark))}
+  .navrow{position:relative;z-index:5;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,.14)}
   .hdr-main{display:flex;align-items:center;gap:16px;padding:13px var(--gut)}
   .navside{flex:1;display:flex;gap:2px;align-items:center}
   .navside.left{justify-content:flex-start}
   .navside.right{justify-content:flex-end}
-  .logo{flex:0 0 auto;font-family:var(--fh);font-weight:700;font-size:26px;letter-spacing:.5px;cursor:pointer}
-  .navitem{font-family:var(--fh);font-weight:500;font-size:13.5px;padding:9px 11px;cursor:pointer;border-radius:6px;white-space:nowrap;position:relative}
+  .logo{flex:0 0 auto;font-family:var(--fh);font-weight:700;font-size:26px;letter-spacing:.5px;cursor:pointer;color:#fff}
+  .navitem{font-family:var(--fh);font-weight:500;font-size:13.5px;padding:9px 11px;cursor:pointer;border-radius:6px;white-space:nowrap;position:relative;color:#fff}
+  .navitem.tier{color:rgba(255,255,255,.72)}
   .navitem.on::after{content:"";position:absolute;left:11px;right:11px;bottom:-1px;height:2px;background:currentColor;opacity:.9}
-  /* nav font-colour mode (toggle) — white (default, over image) · black · custom (feey green) */
-  .header.navlight .navitem,.header.navlight .logo{color:#fff}
-  .header.navdark .navitem,.header.navdark .logo{color:var(--black)}
-  .header.navcustom .navitem,.header.navcustom .logo{color:var(--green-dark)}
-  .header.navlight .navitem.tier{color:rgba(255,255,255,.72)}
-  .header.navdark .navitem.tier,.header.navcustom .navitem.tier{color:var(--dark-beige)}
-  .header.navlight .navitem:hover,.header.navlight .navitem.on{background:rgba(255,255,255,.18)}
-  .header.navdark .navitem:hover,.header.navdark .navitem.on{background:rgba(20,20,20,.07)}
-  .header.navcustom .navitem:hover,.header.navcustom .navitem.on{background:var(--green-15)}
-  /* hero heading — over the darkened image; home only (.header.inner hides it on inner pages) */
+  .navitem:hover,.navitem.on{background:rgba(255,255,255,.18)}
+  /* nav font-colour mode (HOME only) — white (default) · black · custom (feey green) */
+  .hero.navdark .navitem,.hero.navdark .logo{color:var(--black)}
+  .hero.navdark .navitem.tier{color:var(--dark-beige)}
+  .hero.navdark .navitem:hover,.hero.navdark .navitem.on{background:rgba(20,20,20,.07)}
+  .hero.navcustom .navitem,.hero.navcustom .logo{color:var(--green-dark)}
+  .hero.navcustom .navitem.tier{color:var(--dark-beige)}
+  .hero.navcustom .navitem:hover,.hero.navcustom .navitem.on{background:var(--green-15)}
+  /* hero heading — over the darkened image (home only) */
   .herohead{position:relative;z-index:1;color:#fff;padding:34px var(--gut) 56px}
   .hh-pre{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;opacity:.92}
   .hh-h2{font-family:var(--fh);font-weight:600;font-size:42px;line-height:46px;margin:8px 0 12px;max-width:560px}
   .hh-h2 em{font-style:normal;color:var(--green-40)}
   .hh-p{font-size:15px;opacity:.92;margin:0 0 20px;max-width:480px;line-height:21px}
   .hh-cta{font-family:var(--fh);font-weight:500;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;background:#fff;color:var(--black);padding:13px 26px;display:inline-block;cursor:pointer}
-  .header.inner .herohead{display:none}
 
-  /* shared dropdown shell (search + mega-menu both drop from the header) */
+  /* ===== SOLID state — inner pages (blog/product/collection) AND search mode: black text on white ===== */
+  .hero.inner,.hero.searching{background:#fff}
+  .hero.inner .toolbar,.hero.searching .toolbar{background:transparent;color:var(--black);border-bottom-color:var(--dark-beige-15)}
+  .hero.inner .tb-svc .svc:hover,.hero.searching .tb-svc .svc:hover{background:var(--light-beige)}
+  .hero.inner .navhero,.hero.searching .navhero{background:transparent}
+  .hero.inner .navrow,.hero.searching .navrow{backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom-color:var(--dark-beige-15)}
+  .hero.inner .navitem,.hero.inner .logo{color:var(--black)}
+  .hero.inner .navitem.tier{color:var(--dark-beige)}
+  .hero.inner .navitem:hover,.hero.inner .navitem.on{background:var(--light-beige)}
+  .hero.inner .herohead,.hero.searching .herohead{display:none}
+  /* search mode — hide the nav row + svc/lang/icons, expand the pill, show ✕ */
+  .hero.searching .navhero{display:none}
+  .hero.searching .tb-svc,.hero.searching .tb-loc,.hero.searching .icobtn.io{display:none}
+  .hero.searching .tb-search{width:min(520px,58vw);opacity:1;padding:0 18px}
+  .hero.searching .tb-close{display:block}
+
+  /* shared dropdown shell (search drops from the TOOLBAR · mega-menu from the NAV) */
   .drop{position:absolute;left:0;right:0;top:100%;z-index:28;background:#fff;border-top:1px solid var(--dark-beige-15);box-shadow:0 26px 44px -20px rgba(20,20,20,.26);display:none}
   .drop.show{display:block;animation:dropin .2s ease}
   @keyframes dropin{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+  #spInner{width:100%;transition:opacity .18s ease}
+  .snohit{font-size:13px;color:var(--dark-beige);padding:8px 0}
 
   /* ===== search dropdown ===== */
   .sp{display:flex;gap:46px;padding:24px var(--gut) 30px}
@@ -241,35 +266,37 @@
     <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="addr">🔒 feey.ch</div></div>
     <div class="site" id="site">
       <div class="util"><span>🌱 Gesunde &amp; langlebige Pflanzen</span><span>🚛 Lieferung an die Haustüre</span><span>📦 Versand inkl. Garantie</span><span>🇨🇭 Schweizer Gewächs</span></div>
-      <div class="toolbar">
-        <div class="tb-svc" id="tbSvc"></div>
-        <div class="tb-icons">
-          <div class="icobtn" data-a="open-search">🔍</div>
-          <div class="icobtn">♡</div>
-          <div class="icobtn">👤</div>
-          <div class="icobtn">🛒<span class="dot">2</span></div>
-        </div>
-      </div>
-      <div class="header navlight">
-        <div class="navrow">
-          <div class="hdr-main">
-            <nav class="navside left" id="navL"></nav>
-            <div class="logo" data-a="home">feey</div>
-            <nav class="navside right" id="navR"></nav>
+      <div class="hero navlight">
+        <div class="toolbar">
+          <div class="tb-svc" id="tbSvc"></div>
+          <div class="tb-right">
+            <input class="tb-search" id="tbSearch" type="text" placeholder="Wonach suchst du?" autocomplete="off">
+            <span class="tb-loc">🇨🇭 Schweiz · DE ▾</span>
+            <div class="icobtn" data-a="open-search">🔍</div>
+            <div class="icobtn io">♡</div>
+            <div class="icobtn io">👤</div>
+            <div class="icobtn io">🛒<span class="dot">2</span></div>
+            <span class="tb-close" data-a="close-search">✕</span>
           </div>
-          <!-- search drop-down -->
-          <div class="drop" id="searchpanel"><div class="sp">
-            <div class="terms"><h4>Beliebte Suchen · letzte 30 Tage</h4><div id="terms"></div></div>
-            <div style="flex:1"><div class="seehead"><h4>Meistverkaufte Produkte</h4><span class="link">Alle ansehen</span></div><div class="prow" id="sprods"></div></div>
-          </div></div>
-          <!-- mega-menu drop-down -->
-          <div class="drop" id="megamenu"></div>
+          <!-- search drop-down — drops below the TOOLBAR -->
+          <div class="drop" id="searchpanel"><div class="sp" id="spInner"></div></div>
         </div>
-        <div class="herohead">
-          <div class="hh-pre">Willkommen bei feey</div>
-          <h2 class="hh-h2">Bring dein Zuhause zum <em>Leben</em></h2>
-          <p class="hh-p">Pflanzen, Pflege, Töpfe &amp; Geschenke — alles aus einer Hand, in die Schweiz geliefert.</p>
-          <div class="hh-cta" data-redir="Alle Zimmerpflanzen" data-crumb="Zimmerpflanzen" data-world="zimmer">Jetzt entdecken</div>
+        <div class="navhero">
+          <div class="navrow">
+            <div class="hdr-main">
+              <nav class="navside left" id="navL"></nav>
+              <div class="logo" data-a="home">feey</div>
+              <nav class="navside right" id="navR"></nav>
+            </div>
+            <!-- mega-menu drop-down -->
+            <div class="drop" id="megamenu"></div>
+          </div>
+          <div class="herohead">
+            <div class="hh-pre">Willkommen bei feey</div>
+            <h2 class="hh-h2">Bring dein Zuhause zum <em>Leben</em></h2>
+            <p class="hh-p">Pflanzen, Pflege, Töpfe &amp; Geschenke — alles aus einer Hand, in die Schweiz geliefert.</p>
+            <div class="hh-cta" data-redir="Alle Zimmerpflanzen" data-crumb="Zimmerpflanzen" data-world="zimmer">Jetzt entdecken</div>
+          </div>
         </div>
       </div>
       <div class="stagewrap">
@@ -429,9 +456,9 @@
 
   /* ---- view plumbing ---- */
   var page=document.getElementById('page'),sp=document.getElementById('searchpanel');
-  function setPage(html){page.innerHTML=html;page.scrollTop=0;var h=document.querySelector('.header');if(h)h.classList.toggle('inner',html.indexOf('worldsstrip')===-1);}
-  function openSearch(){closeMenu();sp.classList.add('show');scrim.classList.add('show');}
-  function closeSearch(){sp.classList.remove('show');}
+  function setPage(html){page.innerHTML=html;page.scrollTop=0;closeSearch();var h=document.querySelector('.hero');if(h)h.classList.toggle('inner',html.indexOf('worldsstrip')===-1);}
+  function openSearch(){closeMenu();var h=document.querySelector('.hero');if(h)h.classList.add('searching');sp.classList.add('show');scrim.classList.add('show');renderSearch('');var inp=document.getElementById('tbSearch');if(inp){inp.value='';setTimeout(function(){try{inp.focus();}catch(e){}},80);}}
+  function closeSearch(){var h=document.querySelector('.hero');if(h)h.classList.remove('searching');if(sp)sp.classList.remove('show');if(scrim)scrim.classList.remove('show');var inp=document.getElementById('tbSearch');if(inp)inp.value='';}
 
   function navClick(e){var it=e.target.closest('.navitem');if(it){var k=it.getAttribute('data-k');if(panelWorld===k){closeMenu();}else{openMenu(k);}}}
   navL.addEventListener('click',navClick);navR.addEventListener('click',navClick);
@@ -446,25 +473,39 @@
     var mm=e.target.closest('[data-menu]');if(mm){var mk=mm.getAttribute('data-menu');cw=mk;setPage(collectionPage(WORLDS[mk].main,WORLDS[mk].title,null,mk));closeMenu();return;}
     var a=e.target.closest('[data-a]');if(!a)return;var act=a.getAttribute('data-a');
     if(act==='home'){cw='zimmer';setPage(homeHTML());closeMenu();closeSearch();}
-    else if(act==='open-search'){if(sp.classList.contains('show')){closeSearch();scrim.classList.remove('show');}else{openSearch();}}
+    else if(act==='open-search'){var hh=document.querySelector('.hero');if(hh&&hh.classList.contains('searching')){closeSearch();}else{openSearch();}}
+    else if(act==='close-search'){closeSearch();}
   });
 
-  /* ---- search zero-state (static) ---- */
-  (function(){
-    var t='',i;for(i=0;i<TERMS.length;i++){var T0=TERMS[i];if(T0.k==='b'){t+='<div class="sterm" data-pillar="'+esc(T0.t)+'" data-crumb="Ratgeber"><span class="tg">📄</span>'+T0.t+'<span class="sblog">Ratgeber</span><span class="ar">↗</span></div>';}else{t+='<div class="sterm" '+rd('zimmer',T0.t,null)+'><span class="tg">🔍</span>'+T0.t+'<span class="ar">↗</span></div>';}}
-    document.getElementById('terms').innerHTML=t;
-    var p='';for(i=0;i<4;i++){p+=pcard(PLANTS[i]);}document.getElementById('sprods').innerHTML=p;
-  })();
+  /* ---- search: smart index + render (zero-state → typed results, with a fade) ---- */
+  var SIDX_D=[],SIDX_P=[],_seenP={};
+  (function(){for(var i=0;i<ORDER.length;i++){var k=ORDER[i],w=WORLDS[k];SIDX_D.push({l:w.title,t:'Welt',w:k,title:w.main});
+      for(var c=0;c<w.cats.length;c++)SIDX_D.push({l:w.cats[c][1],t:'Kategorie',w:k,title:w.cats[c][1]});
+      for(var p=0;p<w.prods.length;p++){var nm=w.prods[p][0];if(!_seenP[nm]){_seenP[nm]=1;SIDX_P.push(w.prods[p]);}}}
+    for(var b=0;b<BLOG.length;b++){if(BLOG[b].topics)for(var tt=0;tt<BLOG[b].topics.length;tt++)SIDX_D.push({l:BLOG[b].topics[tt],t:'Ratgeber',pillar:BLOG[b].topics[tt]+' – '+(BLOG[b].scope||''),crumb:BLOG[b].t});}})();
+  function _srow(d){if(d.pillar)return '<div class="sterm" data-pillar="'+esc(d.pillar)+'" data-crumb="'+esc(d.crumb||'Blog')+'"><span class="tg">📄</span>'+d.l+'<span class="sblog">'+d.t+'</span><span class="ar">↗</span></div>';
+    return '<div class="sterm" data-redir="'+esc(d.title)+'" data-crumb="'+esc(WORLDS[d.w]?WORLDS[d.w].title:'')+'" data-world="'+d.w+'"><span class="tg">'+(d.t==='Welt'?'🌿':'🔖')+'</span>'+d.l+'<span class="sblog">'+d.t+'</span><span class="ar">↗</span></div>';}
+  function renderSearch(q){var el=document.getElementById('spInner');if(!el)return;q=(q||'').trim();var ql=q.toLowerCase(),o,i;
+    if(!ql){var t='';for(i=0;i<TERMS.length;i++){var T0=TERMS[i];if(T0.k==='b'){t+='<div class="sterm" data-pillar="'+esc(T0.t)+'" data-crumb="Ratgeber"><span class="tg">📄</span>'+T0.t+'<span class="sblog">Ratgeber</span><span class="ar">↗</span></div>';}else{t+='<div class="sterm" '+rd('zimmer',T0.t,null)+'><span class="tg">🔍</span>'+T0.t+'<span class="ar">↗</span></div>';}}
+      var p='';for(i=0;i<4;i++)p+=pcard(PLANTS[i]);
+      o='<div class="terms"><h4>Beliebte Suchen · letzte 30 Tage</h4><div>'+t+'</div></div><div style="flex:1"><div class="seehead"><h4>Meistverkaufte Produkte</h4><span class="link">Alle ansehen</span></div><div class="prow">'+p+'</div></div>';
+    }else{var ds=[];for(i=0;i<SIDX_D.length&&ds.length<6;i++)if(SIDX_D[i].l.toLowerCase().indexOf(ql)>=0)ds.push(SIDX_D[i]);
+      var pr=[];for(i=0;i<SIDX_P.length&&pr.length<8;i++)if(SIDX_P[i][0].toLowerCase().indexOf(ql)>=0)pr.push(SIDX_P[i]);
+      var dh=ds.length?'':'<div class="snohit">Keine passende Kategorie — schau dir die Produkte an.</div>';for(i=0;i<ds.length;i++)dh+=_srow(ds[i]);
+      var ph='';if(pr.length)for(i=0;i<pr.length;i++)ph+=pcard(pr[i]);else for(i=0;i<4;i++)ph+=pcard(PLANTS[i]);
+      o='<div class="terms"><h4>Vorschläge</h4><div>'+dh+'</div></div><div style="flex:1"><div class="seehead"><h4>'+(pr.length?'Produkte · „'+esc(q)+'"':'Beliebte Produkte')+'</h4></div><div class="prow">'+ph+'</div></div>';}
+    el.style.opacity='0';el.innerHTML=o;requestAnimationFrame(function(){el.style.opacity='1';});}
+  var _tbi=document.getElementById('tbSearch');if(_tbi)_tbi.addEventListener('input',function(){renderSearch(this.value);});
 
   /* ---- nav font-colour toggle (nav sits over the header image): white · black · custom ---- */
-  (function(){var modes=['navlight','navdark','navcustom'],labels=['Weiss','Schwarz','Custom (Grün)'],idx=0,h=document.querySelector('.header'),btn=document.getElementById('fontToggle');
+  (function(){var modes=['navlight','navdark','navcustom'],labels=['Weiss','Schwarz','Custom (Grün)'],idx=0,h=document.querySelector('.hero'),btn=document.getElementById('fontToggle');
     if(btn)btn.onclick=function(){idx=(idx+1)%modes.length;h.classList.remove('navlight','navdark','navcustom');h.classList.add(modes[idx]);document.getElementById('fontState').textContent=labels[idx];};})();
 
   /* ---- init + deep-links ---- */
   setPage(homeHTML());
   var P=new URLSearchParams(location.search);
   if(P.get('embed')==='1'){document.body.classList.add('embed');}
-  var nm=P.get('nav');if(nm&&{light:1,dark:1,custom:1}[nm]){var hh=document.querySelector('.header');hh.classList.remove('navlight','navdark','navcustom');hh.classList.add('nav'+nm);var fs=document.getElementById('fontState');if(fs)fs.textContent=({light:'Weiss',dark:'Schwarz',custom:'Custom (Grün)'})[nm];}
+  var nm=P.get('nav');if(nm&&{light:1,dark:1,custom:1}[nm]){var hh=document.querySelector('.hero');hh.classList.remove('navlight','navdark','navcustom');hh.classList.add('nav'+nm);var fs=document.getElementById('fontState');if(fs)fs.textContent=({light:'Weiss',dark:'Schwarz',custom:'Custom (Grün)'})[nm];}
   var wd=P.get('world'),fcd=P.get('facet');
   if(wd&&WORLDS[wd]){cw=wd;if(fcd&&NODES[fcd]){setPage(smartPage(fcd,wd));}else{setPage(collectionPage(WORLDS[wd].main,WORLDS[wd].title,null,wd));}}
   if(P.get('collection')){setPage(collectionPage(P.get('collection'),P.get('crumb')||'',P.get('filter')||null));}
@@ -472,6 +513,7 @@
   if(P.get('pillar')){setPage(pillarPage(P.get('pillar'),P.get('crumb')||'Blog'));}
   if(P.get('menu')&&WORLDS[P.get('menu')]){openMenu(P.get('menu'));}
   if(P.get('search')==='1'){openSearch();}
+  var sq=P.get('q');if(sq){openSearch();var sqi=document.getElementById('tbSearch');if(sqi)sqi.value=sq;renderSearch(sq);}
 </script>
 </body>
 </html>
