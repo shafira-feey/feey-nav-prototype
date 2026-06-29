@@ -1,5 +1,9 @@
 <!--
-  feey.ch — NAVIGATION REDESIGN · DESKTOP · VERSION 6 "Kategorien links" (= V5 with Kategorien moved far left + wider) · throwaway
+  feey.ch — NAVIGATION REDESIGN · DESKTOP · VERSION 6 "Kategorien links" (Kategorien far left + wider) · throwaway
+       2026-06-29: "Entdecken nach" smart facets (Nach Licht/Raum/Anlass…) now OPEN their sub-filters INLINE
+       in the column (V1-style options) and the pick goes to that specific FILTERED collection (not the pillar
+       landing). Micro-interaction: opening the sub-filters WIDENS the Entdecken-nach column (.mm.dexp,
+       flex-basis transition) and slightly NARROWS the Sommer-Edit visual.
   Brief (Shafira, 2026-06-25): combine the best of V1 and V4.
    • From V1: the VISUAL approach — "shop through your eyes", products already showing, a guided expose
      preview (feature/lifestyle banner + popular products).
@@ -135,14 +139,27 @@
   .seeall:hover{text-decoration:underline}
 
   /* LEFT — Entdecken nach (tinted hero) + Kategorien (calm text columns · from V4) */
-  .col.discover{flex:0 0 240px;background:var(--green-15);border-radius:14px;padding:18px 14px 12px}
+  .col.discover{flex:0 0 240px;background:var(--green-15);border-radius:14px;padding:18px 14px 12px;transition:flex-basis .32s cubic-bezier(.4,0,.1,1)}
   .col.discover .deye{color:var(--green-dark)}
   .frow{display:flex;align-items:center;gap:11px;padding:11px 8px;border-radius:10px;cursor:pointer}
-  .frow:hover{background:#fff}
+  .frow:hover,.frow.open{background:#fff}
   .frow .fic{width:32px;height:32px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 auto;box-shadow:0 1px 0 rgba(20,20,20,.04)}
-  .col.discover .frow:hover .fic{background:var(--green-15)}
+  .col.discover .frow:hover .fic,.col.discover .frow.open .fic{background:var(--green-15)}
   .frow .fl{font-family:var(--fh);font-weight:600;font-size:14px;white-space:nowrap}
-  .frow:hover .fl{color:var(--green-dark)}
+  .frow:hover .fl,.frow.open .fl{color:var(--green-dark)}
+  .frow .fchev{margin-left:auto;color:var(--green-40);font-size:15px;transition:transform .25s ease}
+  .frow.open .fchev{transform:rotate(90deg);color:var(--green-dark)}
+  /* sub-filters that open inline under a smart facet (Nach Licht → Für die sonnige Seite …) */
+  .fsub{overflow:hidden;animation:subin .26s ease}
+  @keyframes subin{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+  .subrow{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 40px;border-radius:8px;cursor:pointer}
+  .subrow:hover{background:#fff}
+  .subrow .se{font-size:14px;width:18px;text-align:center;flex:0 0 auto;opacity:.85}
+  .subrow .sl{font-family:var(--fb);font-size:13.5px;line-height:16px}
+  .subrow:hover .sl{color:var(--green-dark)}
+  /* fluid micro-interaction: opening sub-filters widens Entdecken nach + narrows the visual */
+  .mm.dexp .col.discover{flex-basis:362px}
+  .mm.dexp .preview{flex-basis:430px}
   /* Kategorien — moved FAR LEFT + a bit wider (V6, main CTA into the catalog) */
   .col.cats{flex:0 0 288px}
   .col.cats.solo{flex:0 0 320px}
@@ -157,7 +174,7 @@
 
   /* RIGHT — visual preview pane (from V1) */
   /* fixed width so the tiles/banner stay the SAME size regardless of how many columns a world has */
-  .preview{flex:0 0 492px;display:flex;flex-direction:column;gap:14px}
+  .preview{flex:0 0 492px;display:flex;flex-direction:column;gap:14px;transition:flex-basis .32s cubic-bezier(.4,0,.1,1)}
   .hl{display:flex;align-items:center;gap:11px;background:var(--yellow-40);border-radius:12px;padding:12px 13px;cursor:pointer}
   .hl .hi{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}
   .hl b{font-family:var(--fh);font-weight:600;font-size:13.5px;display:block}.hl span{font-size:11px;color:var(--dark-beige)}
@@ -258,7 +275,7 @@
 <body>
   <div class="intro">
     <h1>feey · Desktop-Navigation (V6 — Kategorien links)</h1>
-    <p>Variante von V5: „Kategorien" (Haupt-CTA, etwas breiter) ganz <b>links</b>, dann visuelle Vorschau, „Entdecken nach" und „Wissen &amp; Geschichten". Oben: USP-Banner → schlanke Toolbar → Haupt-Navigation auf dem Header-Bild.</p>
+    <p>„Kategorien" (Haupt-CTA) ganz <b>links</b>, dann visuelle Vorschau, „Entdecken nach" + „Wissen". <b>Neu:</b> „Nach Licht" &amp; Co. öffnen die Filter <b>inline</b> (Für dunkle Ecken …) — die Spalte verbreitert sich, die Vorschau wird etwas schmaler — und führen zur gefilterten Kollektion.</p>
     <button class="fonttoggle" id="fontToggle">Nav-Schriftfarbe: <b id="fontState">Weiss</b></button>
   </div>
 
@@ -346,7 +363,7 @@
   var TERMS=[{t:'Monstera',k:'p'},{t:'Übertöpfe',k:'p'},{t:'Pflanze umtopfen',k:'b'}];
   var ORDER=['zimmer','balkon','pflege','toepfe','blumen','geschenke','workshops'];
 
-  var cw='zimmer', panelWorld=null;
+  var cw='zimmer', panelWorld=null, dexp=null;
   function esc(s){return String(s).replace(/"/g,'&quot;');}
   function pcard(p){var bd=p[3]?'<span class="pbadge '+p[3]+'">'+(p[3]==='best'?'Bestseller':'Neu')+'</span>':'';return '<div class="pcard"><div class="pthumb">'+p[2]+bd+'</div><div class="pt">'+p[0]+'</div><div class="pp">CHF '+p[1]+'</div></div>';}
   function slice5(pool,s){var r=[];for(var i=0;i<5;i++){r.push(pool[(s+i)%pool.length]);}return r;}
@@ -362,14 +379,17 @@
     document.getElementById('tbSvc').innerHTML=o;})();
 
   /* ===== V5 hybrid mega-menu ===== */
-  function discoverCol(k){
-    var w=WORLDS[k],i,o='<div class="col discover"><div class="deye">Entdecken nach</div>';
+  function discoverCol(k){return '<div class="col discover" id="dcol">'+discoverInner(k)+'</div>';}
+  function discoverInner(k){
+    var w=WORLDS[k],i,o='<div class="deye">Entdecken nach</div>';
     for(i=0;i<w.uc.length;i++){
       var it=w.uc[i],smart=(it[2]&&NODES[it[2]]);
-      var at=smart?('data-facetall="'+it[2]+'" data-world="'+k+'"'):rd(k,it[1]);
-      o+='<div class="frow" '+at+'><span class="fic">'+it[0]+'</span><span class="fl">'+it[1]+'</span></div>';
+      if(smart){var open=(dexp===it[2]);
+        o+='<div class="frow fsmart'+(open?' open':'')+'" data-fdrill="'+it[2]+'" data-world="'+k+'"><span class="fic">'+it[0]+'</span><span class="fl">'+it[1]+'</span><span class="fchev">›</span></div>';
+        if(open){var n=NODES[it[2]];o+='<div class="fsub">';for(var j=0;j<n.items.length;j++){o+='<div class="subrow" '+rd(k,n.items[j][1],n.items[j][1])+'><span class="se">'+n.items[j][0]+'</span><span class="sl">'+n.items[j][1]+'</span></div>';}o+='</div>';}
+      } else {o+='<div class="frow" '+rd(k,it[1])+'><span class="fic">'+it[0]+'</span><span class="fl">'+it[1]+'</span></div>';}
     }
-    return o+'</div>';
+    return o;
   }
   function catsCol(k,solo){
     var w=WORLDS[k],i,o='<div class="col cats'+(solo?' solo':'')+'"><div class="deye">Kategorien</div>';
@@ -404,7 +424,7 @@
   }
 
   var megamenu=document.getElementById('megamenu'),scrim=document.getElementById('scrim');
-  function openMenu(k){closeSearch();panelWorld=k;cw=k;megamenu.innerHTML=megaHTML(k);megamenu.classList.add('show');scrim.classList.add('show');var it=document.querySelectorAll('.navitem');for(var i=0;i<it.length;i++)it[i].classList.toggle('on',it[i].getAttribute('data-k')===k);}
+  function openMenu(k){closeSearch();dexp=null;panelWorld=k;cw=k;megamenu.innerHTML=megaHTML(k);megamenu.classList.add('show');scrim.classList.add('show');var it=document.querySelectorAll('.navitem');for(var i=0;i<it.length;i++)it[i].classList.toggle('on',it[i].getAttribute('data-k')===k);}
   function closeMenu(){panelWorld=null;megamenu.classList.remove('show');scrim.classList.remove('show');var it=document.querySelectorAll('.navitem');for(var i=0;i<it.length;i++)it[i].classList.remove('on');}
 
   /* ---- inner pages (lifted from approved build) ---- */
@@ -465,6 +485,7 @@
   scrim.addEventListener('click',function(){closeMenu();closeSearch();});
 
   document.addEventListener('click',function(e){
+    var fd=e.target.closest('[data-fdrill]');if(fd){var fk=fd.getAttribute('data-fdrill');dexp=(dexp===fk)?null:fk;var dc=document.getElementById('dcol');if(dc)dc.innerHTML=discoverInner(fd.getAttribute('data-world')||cw);var mmEl=megamenu.querySelector('.mm');if(mmEl)mmEl.classList.toggle('dexp',!!dexp);return;}
     var fa=e.target.closest('[data-facetall]');if(fa){cw=fa.getAttribute('data-world')||cw;setPage(smartPage(fa.getAttribute('data-facetall'),fa.getAttribute('data-world')));closeMenu();return;}
     var rdr=e.target.closest('[data-redir]');if(rdr){cw=rdr.getAttribute('data-world')||cw;setPage(collectionPage(rdr.getAttribute('data-redir'),rdr.getAttribute('data-crumb'),rdr.getAttribute('data-filter'),rdr.getAttribute('data-world')));closeMenu();return;}
     var bcat=e.target.closest('[data-blogcat]');if(bcat){setPage(topicPage(+bcat.getAttribute('data-blogcat')));closeMenu();return;}
@@ -511,7 +532,7 @@
   if(P.get('collection')){setPage(collectionPage(P.get('collection'),P.get('crumb')||'',P.get('filter')||null));}
   if(P.get('blog')==='1'){setPage(blogHubPage());var bca=P.get('blogcat');if(bca!==null&&BLOG[+bca]&&BLOG[+bca].topics){setPage(topicPage(+bca));}}
   if(P.get('pillar')){setPage(pillarPage(P.get('pillar'),P.get('crumb')||'Blog'));}
-  if(P.get('menu')&&WORLDS[P.get('menu')]){openMenu(P.get('menu'));}
+  if(P.get('menu')&&WORLDS[P.get('menu')]){openMenu(P.get('menu'));var fdr=P.get('fdrill');if(fdr&&NODES[fdr]){dexp=fdr;var dc0=document.getElementById('dcol');if(dc0)dc0.innerHTML=discoverInner(P.get('menu'));var mm0=megamenu.querySelector('.mm');if(mm0)mm0.classList.add('dexp');}}
   if(P.get('search')==='1'){openSearch();}
   var sq=P.get('q');if(sq){openSearch();var sqi=document.getElementById('tbSearch');if(sqi)sqi.value=sq;renderSearch(sq);}
 </script>
