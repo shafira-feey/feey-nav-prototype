@@ -1,0 +1,547 @@
+<!--
+  feey.ch — NAVIGATION REDESIGN · DESKTOP · VERSION 7 (= V6 "Kategorien links" + 2 refinements) · throwaway
+       2026-06-29 (V7): (1) "Wissen & Geschichten" column is WIDER by default (232px), easing back to ~188px
+       only when "Entdecken nach" opens its sub-filters and needs the room. (2) "Entdecken nach" sub-filters
+       (Für die pralle Sonne …) no longer get a white hover fill — a green underline now slides in left→right.
+       2026-06-29: "Entdecken nach" smart facets (Nach Licht/Raum/Anlass…) now OPEN their sub-filters INLINE
+       in the column (V1-style options) and the pick goes to that specific FILTERED collection (not the pillar
+       landing). Micro-interaction: opening the sub-filters WIDENS the Entdecken-nach column (.mm.dexp,
+       flex-basis transition) and slightly NARROWS the Sommer-Edit visual.
+  Brief (Shafira, 2026-06-25): combine the best of V1 and V4.
+   • From V1: the VISUAL approach — "shop through your eyes", products already showing, a guided expose
+     preview (feature/lifestyle banner + popular products).
+   • From V4: CALM + FAMILIAR — traditional desktop columns, content-height drop-down (not a full-screen
+     takeover), easy on the eyes via typography/colour/spacing.
+  Result:
+   • SAME header as V4 (logo centered top · 7-world nav left · SERVICE links right of the nav row).
+   • Click a world → contained drop-down under the nav (content height). Inside:
+       LEFT  = KATEGORIEN (main CTA, widened) — moved all the way left, per Shafira 2026-06-25
+       THEN  = visual PREVIEW (tiles: highlight + feature banner + "Beliebt in …" products) · ENTDECKEN NACH · WISSEN & GESCHICHTEN
+       (V6 = V5 with Kategorien pulled to the far left + a bit wider; the order of everything else is unchanged)
+   • Flow kept from V4 (locked): selecting an "Entdecken nach" filter / category / product REDIRECTS to the
+     landing/collection page — no in-menu drilling, no hover (click-only).
+  IA + data model 1:1 with nav-desktop-calm.html / nav-redesign-desktop.html.
+  Deep-links: ?menu=<world> · ?embed=1 · ?world=<w>[&facet=<f>] · ?collection=<t>&crumb=<c>
+              · ?blog=1[&blogcat=0|1] · ?pillar=<t>&crumb=<c> · ?search=1
+-->
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>feey · Navigation Desktop (V6 · Kategorien links)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--green:#60BFA4;--green-dark:#4A9A83;--green-15:#E6F4F0;--green-40:#BFE4DB;--yellow:#FACE44;--yellow-40:#FDEBB3;--yellow-70:#FBDD7C;--beige:#D3CCB6;--light-beige:#F6F5F0;--dark-beige:#635D4B;--dark-beige-15:#E8E6E4;--black:#141414;--fh:'Poppins',system-ui,sans-serif;--fb:'Karla',system-ui,sans-serif;--gut:max(34px,calc((100% - 1340px)/2))}
+  *{box-sizing:border-box}html,body{margin:0}
+  body{font-family:var(--fb);color:var(--black);background:#dfddd5;padding:24px 16px 56px;display:flex;flex-direction:column;align-items:center}
+  .intro{max-width:1000px;text-align:center;margin-bottom:14px}
+  .intro h1{font-family:var(--fh);font-weight:600;font-size:17px;margin:0 0 4px}
+  .intro p{font-size:12.5px;color:var(--dark-beige);margin:0 0 9px}
+  .fonttoggle{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:.4px;border:1.5px solid var(--beige);background:#fff;color:var(--black);border-radius:20px;padding:6px 14px;cursor:pointer}
+  .fonttoggle b{color:var(--green-dark)}
+
+  .win{width:100%;max-width:1360px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 30px 70px -24px rgba(20,20,20,.5)}
+  .chrome{height:42px;background:#e9e7e1;display:flex;align-items:center;gap:8px;padding:0 16px;border-bottom:1px solid #d8d5cc}
+  .chrome .dots{display:flex;gap:6px}.chrome .dots i{width:11px;height:11px;border-radius:50%;display:block}
+  .chrome .dots i:nth-child(1){background:#ec6a5e}.chrome .dots i:nth-child(2){background:#f4be4f}.chrome .dots i:nth-child(3){background:#61c554}
+  .chrome .addr{flex:1;max-width:420px;margin:0 auto;background:#fff;border-radius:20px;height:26px;display:flex;align-items:center;justify-content:center;gap:7px;font-size:12px;color:var(--dark-beige);border:1px solid #d8d5cc}
+
+  .site{position:relative}
+  .util{background:var(--green);color:#fff;font-size:11.5px;font-weight:500;display:flex;justify-content:center;gap:26px;padding:7px var(--gut)}
+
+  /* ===== HERO HEADER — toolbar + nav + heading ALL sit on ONE hero image =====
+     Darkening: toolbar = slight (--tbDark); nav + heading SHARE the same strength (--heroDark).
+     (--heroDark + the hero height are the values to expose in the Shopify schema later.) */
+  .hero{position:relative;z-index:30;background-image:linear-gradient(135deg,#5C8C7C,#9FB48E 55%,#CBBE9C);background-size:cover;background-position:center;--heroDark:.42;--tbDark:.18}
+  .toolbar{position:relative;z-index:6;display:flex;align-items:center;gap:16px;padding:7px var(--gut);background:rgba(20,20,20,var(--tbDark));border-bottom:1px solid rgba(255,255,255,.12);color:#fff}
+  .tb-svc{display:flex;gap:2px;align-items:center;flex-wrap:wrap}
+  .tb-svc .svc{font-family:var(--fh);font-weight:500;font-size:12px;color:inherit;opacity:.92;padding:5px 9px;border-radius:6px;cursor:pointer;white-space:nowrap}
+  .tb-svc .svc:hover{background:rgba(255,255,255,.16);opacity:1}
+  .tb-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+  .tb-loc{font-family:var(--fh);font-weight:600;font-size:12px;color:inherit;opacity:.92;cursor:pointer;white-space:nowrap}
+  .tb-loc:hover{opacity:1}
+  .icobtn{font-size:18px;cursor:pointer;position:relative;color:inherit}
+  .icobtn .dot{position:absolute;top:-3px;right:-4px;background:var(--green);color:#fff;font-family:var(--fh);font-weight:600;font-size:9px;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+  /* search pill — collapsed by default, expands to the LEFT when search is active */
+  .tb-search{width:0;min-width:0;opacity:0;overflow:hidden;border:0;border-radius:30px;height:38px;padding:0;background:var(--light-beige);font-family:var(--fb);font-size:14px;color:var(--black);transition:width .3s cubic-bezier(.4,0,.1,1),opacity .2s,padding .3s}
+  .tb-search:focus{outline:2px solid var(--green)}
+  .tb-close{display:none;font-size:16px;cursor:pointer;color:var(--black)}
+  /* nav + heading SHARE the same hero darkening */
+  .navhero{position:relative;background:rgba(20,20,20,var(--heroDark))}
+  .navrow{position:relative;z-index:5;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,.14)}
+  .hdr-main{display:flex;align-items:center;gap:16px;padding:13px var(--gut)}
+  .navside{flex:1;display:flex;gap:2px;align-items:center}
+  .navside.left{justify-content:flex-start}
+  .navside.right{justify-content:flex-end}
+  .logo{flex:0 0 auto;font-family:var(--fh);font-weight:700;font-size:26px;letter-spacing:.5px;cursor:pointer;color:#fff}
+  .navitem{font-family:var(--fh);font-weight:500;font-size:13.5px;padding:9px 11px;cursor:pointer;border-radius:6px;white-space:nowrap;position:relative;color:#fff}
+  .navitem.tier{color:rgba(255,255,255,.72)}
+  .navitem.on::after{content:"";position:absolute;left:11px;right:11px;bottom:-1px;height:2px;background:currentColor;opacity:.9}
+  .navitem:hover,.navitem.on{background:rgba(255,255,255,.18)}
+  /* nav font-colour mode (HOME only) — white (default) · black · custom (feey green) */
+  .hero.navdark .navitem,.hero.navdark .logo{color:var(--black)}
+  .hero.navdark .navitem.tier{color:var(--dark-beige)}
+  .hero.navdark .navitem:hover,.hero.navdark .navitem.on{background:rgba(20,20,20,.07)}
+  .hero.navcustom .navitem,.hero.navcustom .logo{color:var(--green-dark)}
+  .hero.navcustom .navitem.tier{color:var(--dark-beige)}
+  .hero.navcustom .navitem:hover,.hero.navcustom .navitem.on{background:var(--green-15)}
+  /* hero heading — over the darkened image (home only) */
+  .herohead{position:relative;z-index:1;color:#fff;padding:34px var(--gut) 56px}
+  .hh-pre{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;opacity:.92}
+  .hh-h2{font-family:var(--fh);font-weight:600;font-size:42px;line-height:46px;margin:8px 0 12px;max-width:560px}
+  .hh-h2 em{font-style:normal;color:var(--green-40)}
+  .hh-p{font-size:15px;opacity:.92;margin:0 0 20px;max-width:480px;line-height:21px}
+  .hh-cta{font-family:var(--fh);font-weight:500;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;background:#fff;color:var(--black);padding:13px 26px;display:inline-block;cursor:pointer}
+
+  /* ===== SOLID state — inner pages (blog/product/collection) AND search mode: black text on white ===== */
+  .hero.inner,.hero.searching{background:#fff}
+  .hero.inner .toolbar,.hero.searching .toolbar{background:transparent;color:var(--black);border-bottom-color:var(--dark-beige-15)}
+  .hero.inner .tb-svc .svc:hover,.hero.searching .tb-svc .svc:hover{background:var(--light-beige)}
+  .hero.inner .navhero,.hero.searching .navhero{background:transparent}
+  .hero.inner .navrow,.hero.searching .navrow{backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom-color:var(--dark-beige-15)}
+  .hero.inner .navitem,.hero.inner .logo{color:var(--black)}
+  .hero.inner .navitem.tier{color:var(--dark-beige)}
+  .hero.inner .navitem:hover,.hero.inner .navitem.on{background:var(--light-beige)}
+  .hero.inner .herohead,.hero.searching .herohead{display:none}
+  /* search mode — hide the nav row + svc/lang/icons, expand the pill, show ✕ */
+  .hero.searching .navhero{display:none}
+  .hero.searching .tb-svc,.hero.searching .tb-loc,.hero.searching .icobtn.io{display:none}
+  .hero.searching .tb-search{width:min(520px,58vw);opacity:1;padding:0 18px}
+  .hero.searching .tb-close{display:block}
+
+  /* shared dropdown shell (search drops from the TOOLBAR · mega-menu from the NAV) */
+  .drop{position:absolute;left:0;right:0;top:100%;z-index:28;background:#fff;border-top:1px solid var(--dark-beige-15);box-shadow:0 26px 44px -20px rgba(20,20,20,.26);display:none}
+  .drop.show{display:block;animation:dropin .2s ease}
+  @keyframes dropin{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+  #spInner{width:100%;transition:opacity .18s ease}
+  .snohit{font-size:13px;color:var(--dark-beige);padding:8px 0}
+
+  /* ===== search dropdown ===== */
+  .sp{display:flex;gap:46px;padding:24px var(--gut) 30px}
+  .sp .terms{flex:0 0 280px}
+  .sp h4{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dark-beige);margin:0 0 12px}
+  .sp .seehead{display:flex;align-items:baseline;justify-content:space-between}
+  .sterm{display:flex;align-items:center;gap:10px;padding:9px 0;font-size:14px;cursor:pointer;border-bottom:1px solid var(--light-beige)}.sterm:hover{color:var(--green-dark)}
+  .sterm .tg{font-size:13px;opacity:.55}.sterm .ar{margin-left:auto;color:var(--beige);font-size:13px}
+  .sterm .sblog{margin-left:6px;font-family:var(--fh);font-weight:600;font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:var(--green-dark);background:var(--green-15);padding:2px 6px;border-radius:3px}
+  .prow{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;flex:1}
+
+  /* ===== V5 hybrid mega-menu ===== */
+  .mm{padding:26px var(--gut) 34px}
+  .mmhead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-bottom:16px;margin-bottom:20px;border-bottom:1px solid var(--dark-beige-15)}
+  .mmtitle{font-family:var(--fh);font-weight:600;font-size:22px;letter-spacing:.2px}
+  .mmtop{display:flex;gap:24px;align-items:flex-start}
+  /* right rail stacks Entdecken nach + Wissen (3-region layout: visual LEFT · Kategorien MIDDLE · this) */
+  /* middle column stacks Entdecken nach (tinted) + Wissen & Geschichten below it */
+  .col.side{flex:0 0 244px;display:flex;flex-direction:column;gap:22px}
+  .col.side .col{flex:0 0 auto;width:100%}
+  .deye{font-family:var(--fh);font-weight:600;font-size:10.5px;letter-spacing:1.7px;text-transform:uppercase;color:var(--dark-beige);margin:0 0 10px}
+  .seeall{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--green-dark);cursor:pointer;white-space:nowrap;flex:0 0 auto}
+  .seeall:hover{text-decoration:underline}
+
+  /* LEFT — Entdecken nach (tinted hero) + Kategorien (calm text columns · from V4) */
+  .col.discover{flex:0 0 240px;background:var(--green-15);border-radius:14px;padding:18px 14px 12px;transition:flex-basis .32s cubic-bezier(.4,0,.1,1)}
+  .col.discover .deye{color:var(--green-dark)}
+  .frow{display:flex;align-items:center;gap:11px;padding:11px 8px;border-radius:10px;cursor:pointer}
+  .frow:hover,.frow.open{background:#fff}
+  .frow .fic{width:32px;height:32px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 auto;box-shadow:0 1px 0 rgba(20,20,20,.04)}
+  .col.discover .frow:hover .fic,.col.discover .frow.open .fic{background:var(--green-15)}
+  .frow .fl{font-family:var(--fh);font-weight:600;font-size:14px;white-space:nowrap}
+  .frow:hover .fl,.frow.open .fl{color:var(--green-dark)}
+  .frow .fchev{margin-left:auto;color:var(--green-40);font-size:15px;transition:transform .25s ease}
+  .frow.open .fchev{transform:rotate(90deg);color:var(--green-dark)}
+  /* sub-filters that open inline under a smart facet (Nach Licht → Für die sonnige Seite …) */
+  .fsub{overflow:hidden;animation:subin .26s ease}
+  @keyframes subin{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+  .subrow{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 40px;border-radius:8px;cursor:pointer}
+  .subrow .se{font-size:14px;width:18px;text-align:center;flex:0 0 auto;opacity:.85;transition:opacity .2s}
+  /* V7: no white fill on hover — an underline slides in from left→right under the label */
+  .subrow .sl{font-family:var(--fb);font-size:13.5px;line-height:16px;position:relative;transition:color .2s}
+  .subrow .sl::after{content:'';position:absolute;left:0;right:0;bottom:-2px;height:1.5px;background:var(--green-dark);transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.4,0,.1,1)}
+  .subrow:hover .sl{color:var(--green-dark)}
+  .subrow:hover .sl::after{transform:scaleX(1)}
+  .subrow:hover .se{opacity:1}
+  /* fluid micro-interaction: opening sub-filters widens Entdecken nach + narrows the visual (+ Wissen eases back) */
+  .mm.dexp .col.discover{flex-basis:362px}
+  .mm.dexp .preview{flex-basis:430px}
+  .mm.dexp .col.wissen{flex-basis:188px}
+  /* Kategorien — moved FAR LEFT + a bit wider (V6, main CTA into the catalog) */
+  .col.cats{flex:0 0 288px}
+  .col.cats.solo{flex:0 0 320px}
+  .crow{display:flex;align-items:center;gap:10px;padding:12px 0;cursor:pointer;border-bottom:1px solid var(--light-beige)}
+  .crow:last-child{border-bottom:0}
+  .crow .ct{flex:1;min-width:0}
+  .crow b{font-family:var(--fh);font-weight:600;font-size:15px;display:block;line-height:19px}
+  .crow small{font-size:12px;color:var(--dark-beige);display:block;line-height:15px;margin-top:1px}
+  .crow .ccv{flex:0 0 auto;color:var(--beige);font-size:15px}
+  .crow:hover b{color:var(--green-dark)}
+  .crow:hover .ccv{color:var(--green-dark)}
+
+  /* RIGHT — visual preview pane (from V1) */
+  /* fixed width so the tiles/banner stay the SAME size regardless of how many columns a world has */
+  .preview{flex:0 0 492px;display:flex;flex-direction:column;gap:14px;transition:flex-basis .32s cubic-bezier(.4,0,.1,1)}
+  .hl{display:flex;align-items:center;gap:11px;background:var(--yellow-40);border-radius:12px;padding:12px 13px;cursor:pointer}
+  .hl .hi{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}
+  .hl b{font-family:var(--fh);font-weight:600;font-size:13.5px;display:block}.hl span{font-size:11px;color:var(--dark-beige)}
+  .pfeat{border-radius:13px;overflow:hidden;position:relative;min-height:178px;display:flex;flex-direction:column;justify-content:flex-end;padding:18px;color:#fff;cursor:pointer;background-image:linear-gradient(0deg,rgba(20,20,20,.6),rgba(20,20,20,.05) 60%),linear-gradient(135deg,#7BAE9E,#CDB892)}
+  .pfeat.feat-out{background-image:linear-gradient(0deg,rgba(20,20,20,.6),rgba(20,20,20,.05) 60%),linear-gradient(135deg,#7FA886,#CFD8BC)}
+  .pfeat.feat-care{background-image:linear-gradient(0deg,rgba(20,20,20,.6),rgba(20,20,20,.05) 60%),linear-gradient(135deg,#E4A877,#FBE9D8)}
+  .pfeat.feat-pots{background-image:linear-gradient(0deg,rgba(20,20,20,.6),rgba(20,20,20,.05) 60%),linear-gradient(135deg,#B7AD8C,#ECE7D6)}
+  .pfeat.feat-flow{background-image:linear-gradient(0deg,rgba(20,20,20,.6),rgba(20,20,20,.05) 60%),linear-gradient(135deg,#E48C8A,#FBE2E1)}
+  .pfeat.feat-gift{background-image:linear-gradient(0deg,rgba(20,20,20,.6),rgba(20,20,20,.05) 60%),linear-gradient(135deg,#E6BE55,#FDF0C2)}
+  .pfeat.feat-work{background-image:linear-gradient(0deg,rgba(20,20,20,.6),rgba(20,20,20,.05) 60%),linear-gradient(135deg,#7FA8A6,#D4CDBA)}
+  .pfeat .pre{font-family:var(--fh);font-weight:600;font-size:10px;letter-spacing:2px;text-transform:uppercase;opacity:.95}
+  .pfeat b{font-family:var(--fh);font-weight:600;font-size:20px;margin:3px 0 11px;display:block}
+  .pfeat .cta{font-family:var(--fh);font-weight:500;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;background:#fff;color:var(--black);padding:9px 14px;align-self:flex-start}
+  .pvhd{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:2px 0 0}
+  .pvhd .deye{margin:0}
+  .prodgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:10px}
+  .pcard{cursor:pointer}
+  .pthumb{position:relative;border-radius:9px;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:34px;background:linear-gradient(135deg,var(--green-15),var(--green-40))}
+  .pbadge{position:absolute;left:7px;top:7px;font-family:var(--fh);font-weight:400;font-size:10px;letter-spacing:.5px;text-transform:uppercase;padding:3px 7px;border-radius:4px;line-height:1}
+  .pbadge.best{background:#D8F2EB;color:#008275}.pbadge.neu{background:var(--yellow-70);color:#896D1F}
+  .pcard .pt{font-family:var(--fh);font-weight:500;font-size:12.5px;margin:7px 0 1px;line-height:15px}
+  .pcard .pp{font-family:var(--fh);font-weight:600;font-size:12.5px}
+
+  /* Wissen & Geschichten — its OWN column (a clear peer, not a footer) */
+  .col.wissen{flex:0 0 232px;transition:flex-basis .32s cubic-bezier(.4,0,.1,1)}
+  .col.wissen .deye{margin-bottom:8px}
+  .hubrow{display:flex;align-items:center;gap:10px;background:var(--green-15);border-radius:11px;padding:10px 11px;cursor:pointer;margin-bottom:8px}
+  .hubrow .hi{width:32px;height:32px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 auto}
+  .hubrow b{font-family:var(--fh);font-weight:600;font-size:12.5px;display:block}.hubrow span{font-size:10px;color:var(--dark-beige);line-height:13px}
+  .hubrow .cv{margin-left:auto;color:var(--green-dark);font-size:14px}
+  .wlink{display:flex;align-items:center;gap:9px;padding:8px 0;font-size:13px;cursor:pointer;border-bottom:1px solid var(--light-beige)}
+  .wlink:last-child{border-bottom:0}
+  .wlink:hover{color:var(--green-dark)}
+  .wlink .wdot{font-size:12px;opacity:.7}
+  .wallblogs{font-family:var(--fh);font-weight:600;font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--green-dark);cursor:pointer;margin-top:12px;display:inline-block}
+  .wallblogs:hover{text-decoration:underline}
+
+  .stagewrap{position:relative;height:760px;overflow:hidden}
+  /* full-bleed embed (used by the compare viewer) */
+  body.embed{padding:0;height:100vh;overflow:hidden}
+  body.embed .intro,body.embed .hint,body.embed .chrome{display:none}
+  body.embed .win{max-width:none;width:100%;height:100vh;border-radius:0;box-shadow:none;display:flex;flex-direction:column}
+  body.embed .site{flex:1;display:flex;flex-direction:column;min-height:0}
+  body.embed .stagewrap{flex:1;min-height:0;height:auto}
+  .scrim{position:absolute;inset:0;background:rgba(20,20,20,.28);z-index:24;opacity:0;pointer-events:none;transition:opacity .22s}
+  .scrim.show{opacity:1;pointer-events:auto}
+  .link{font-family:var(--fh);font-weight:500;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--green-dark);cursor:pointer;white-space:nowrap}
+
+  /* ---- inner pages (lifted from approved build) ---- */
+  .page{position:relative;z-index:1;height:100%;overflow-y:auto}
+  .phero{position:relative;min-height:330px;display:flex;flex-direction:column;justify-content:center;padding:0 60px;background:linear-gradient(120deg,#F3E6CF,#F8EFE0 55%,var(--green-15));overflow:hidden}
+  .phero .deco{position:absolute;right:46px;top:50%;transform:translateY(-50%) rotate(8deg);font-size:200px;opacity:.5}
+  .phero .pre{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--green-dark)}
+  .phero h2{font-family:var(--fh);font-weight:600;font-size:42px;line-height:46px;margin:8px 0 10px;max-width:560px}
+  .phero h2 em{font-style:normal;color:var(--green-dark)}
+  .phero p{font-size:15px;color:var(--dark-beige);margin:0 0 18px;max-width:460px}
+  .phero .cta{font-family:var(--fh);font-weight:500;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;background:var(--green);color:#fff;padding:13px 26px;align-self:flex-start;cursor:pointer}
+  .worldsstrip{padding:34px var(--gut) 8px}
+  .worldsstrip .wh{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dark-beige);margin:0 0 14px}
+  .wgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .wtile{position:relative;border-radius:11px;overflow:hidden;min-height:118px;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;cursor:pointer;color:#fff;background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 62%),linear-gradient(135deg,#8FCBB9,#BFE4DB)}
+  .wtile.span2{grid-column:span 2}
+  .wtile .e{position:absolute;top:11px;right:13px;font-size:26px;opacity:.92}
+  .wtile b{font-family:var(--fh);font-weight:600;font-size:16px;position:relative;z-index:1}
+  .wtile.gt-out{background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 62%),linear-gradient(135deg,#7FA886,#CFD8BC)}
+  .wtile.gt-care{background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 62%),linear-gradient(135deg,#E4A877,#FBE9D8)}
+  .wtile.gt-pots{background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 62%),linear-gradient(135deg,#B7AD8C,#ECE7D6)}
+  .wtile.gt-flow{background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 62%),linear-gradient(135deg,#E48C8A,#FBE2E1)}
+  .wtile.gt-gift{background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 62%),linear-gradient(135deg,#E6BE55,#FDF0C2)}
+  .wtile.gt-work{background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 62%),linear-gradient(135deg,#7FA8A6,#D4CDBA)}
+
+  .collwrap{padding:26px var(--gut) 52px}
+  .crumb{font-size:13px;color:var(--dark-beige);margin-bottom:10px}.crumb a{color:var(--green-dark);cursor:pointer;font-weight:500}
+  .colltitle{font-family:var(--fh);font-weight:600;font-size:30px;margin:0 0 10px}
+  .collsub{font-size:14px;color:var(--dark-beige);margin:0 0 18px;max-width:620px;line-height:20px}
+  .filterchip{display:inline-flex;align-items:center;gap:7px;background:var(--green-15);color:var(--green-dark);border-radius:4px;padding:6px 11px;font-family:var(--fh);font-weight:600;font-size:11.5px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px}
+  .collcount{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--dark-beige);margin:0 0 14px}
+  .pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+  .smartsec{margin:24px 0 6px}
+  .smarthd{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;cursor:pointer;gap:12px}
+  .smarthd .l{display:flex;align-items:center;gap:10px;min-width:0}.smarthd .sme{font-size:20px}.smarthd b{font-family:var(--fh);font-weight:600;font-size:17px}
+  .srow{display:grid;grid-template-columns:repeat(5,1fr);gap:18px}
+  .bloggrid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:840px}
+  .blogcard{display:flex;align-items:center;gap:14px;border:1px solid var(--dark-beige-15);border-radius:12px;padding:15px;cursor:pointer}
+  .blogcard:hover{border-color:var(--beige)}
+  .blogcard .be{width:48px;height:48px;border-radius:10px;background:var(--green-15);display:flex;align-items:center;justify-content:center;font-size:22px;flex:0 0 auto}
+  .blogcard b{font-family:var(--fh);font-weight:600;font-size:15px;display:block;line-height:18px}.blogcard span{font-size:12.5px;color:var(--dark-beige)}
+  .blogcard .cv{margin-left:auto;color:var(--beige);font-size:17px}
+  .toprow{display:flex;align-items:center;gap:13px;padding:12px 0;border-bottom:1px solid var(--dark-beige-15);cursor:pointer;max-width:620px}
+  .toprow .ti{width:42px;height:42px;border-radius:9px;background:var(--light-beige);display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 auto}
+  .toprow b{font-family:var(--fh);font-weight:600;font-size:14.5px}
+  .toprow .rl{display:block;font-family:var(--fh);font-weight:600;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--green-dark);margin-top:2px}
+  .toprow .cv{margin-left:auto;color:var(--beige);font-size:16px}
+  .btnsec{display:inline-block;font-family:var(--fh);font-weight:500;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;background:#fff;color:var(--black);border:1.5px solid var(--black);border-radius:0;padding:11px 18px;margin-top:16px;cursor:pointer}
+  .hint{max-width:1360px;margin:13px auto 0;font-size:11.5px;color:#8a887f;text-align:center;line-height:17px}
+</style>
+</head>
+<body>
+  <div class="intro">
+    <h1>feey · Desktop-Navigation (V6 — Kategorien links)</h1>
+    <p>„Kategorien" (Haupt-CTA) ganz <b>links</b>, dann visuelle Vorschau, „Entdecken nach" + „Wissen". <b>Neu:</b> „Nach Licht" &amp; Co. öffnen die Filter <b>inline</b> (Für dunkle Ecken …) — die Spalte verbreitert sich, die Vorschau wird etwas schmaler — und führen zur gefilterten Kollektion.</p>
+    <button class="fonttoggle" id="fontToggle">Nav-Schriftfarbe: <b id="fontState">Weiss</b></button>
+  </div>
+
+  <div class="win">
+    <div class="chrome"><div class="dots"><i></i><i></i><i></i></div><div class="addr">🔒 feey.ch</div></div>
+    <div class="site" id="site">
+      <div class="util"><span>🌱 Gesunde &amp; langlebige Pflanzen</span><span>🚛 Lieferung an die Haustüre</span><span>📦 Versand inkl. Garantie</span><span>🇨🇭 Schweizer Gewächs</span></div>
+      <div class="hero navlight">
+        <div class="toolbar">
+          <div class="tb-svc" id="tbSvc"></div>
+          <div class="tb-right">
+            <input class="tb-search" id="tbSearch" type="text" placeholder="Wonach suchst du?" autocomplete="off">
+            <span class="tb-loc">🇨🇭 Schweiz · DE ▾</span>
+            <div class="icobtn" data-a="open-search">🔍</div>
+            <div class="icobtn io">♡</div>
+            <div class="icobtn io">👤</div>
+            <div class="icobtn io">🛒<span class="dot">2</span></div>
+            <span class="tb-close" data-a="close-search">✕</span>
+          </div>
+          <!-- search drop-down — drops below the TOOLBAR -->
+          <div class="drop" id="searchpanel"><div class="sp" id="spInner"></div></div>
+        </div>
+        <div class="navhero">
+          <div class="navrow">
+            <div class="hdr-main">
+              <nav class="navside left" id="navL"></nav>
+              <div class="logo" data-a="home">feey</div>
+              <nav class="navside right" id="navR"></nav>
+            </div>
+            <!-- mega-menu drop-down -->
+            <div class="drop" id="megamenu"></div>
+          </div>
+          <div class="herohead">
+            <div class="hh-pre">Willkommen bei feey</div>
+            <h2 class="hh-h2">Bring dein Zuhause zum <em>Leben</em></h2>
+            <p class="hh-p">Pflanzen, Pflege, Töpfe &amp; Geschenke — alles aus einer Hand, in die Schweiz geliefert.</p>
+            <div class="hh-cta" data-redir="Alle Zimmerpflanzen" data-crumb="Zimmerpflanzen" data-world="zimmer">Jetzt entdecken</div>
+          </div>
+        </div>
+      </div>
+      <div class="stagewrap">
+        <div class="page" id="page"></div>
+        <div class="scrim" id="scrim"></div>
+      </div>
+    </div>
+  </div>
+  <div class="hint">V7: „Kategorien" ganz <b>links</b> · visuelle Vorschau · „Entdecken nach" · „Wissen &amp; Geschichten" (jetzt <b>breiter</b>). „Nach Licht/Standort …" öffnet die Filter inline (Unterzeile mit <b>Slide-Unterstrich</b> beim Hover) — die Spalte wächst, „Wissen" rückt etwas ein.</div>
+
+<script>
+  /* ---- data model 1:1 with nav-desktop-calm.html (featured blog lists expanded for the desktop "many blogs" case) ---- */
+  var PLANTS=[['Pilea Peperomioides','29.90','🪙','best'],['Monstera Deliciosa','39.90','🌿',''],['Calathea Orbifolia','34.90','🍃','neu'],['Strelitzie','49.90','🌴',''],['Pothos','18.90','🌿','best'],['ZZ-Pflanze','29.90','🪴',''],['Sansevieria','24.90','🌵','best'],['Efeutute','19.90','🍃','neu']];
+  var OUT=[['Lavendel','14.90','💜','best'],['Olivenbaum','89.00','🫒',''],['Hortensie','24.90','🌸','neu'],['Buchsbaum','19.90','🌳',''],['Bambus Fargesia','39.90','🎋','best'],['Ziergräser-Mix','17.90','🌾','']];
+  var EMOJI={zimmer:'🪴',balkon:'🌳',pflege:'🧴',toepfe:'🛋️',blumen:'💐',geschenke:'🎁',workshops:'🎓'};
+  var BLOG=[
+    {e:'🪴',t:'Zimmerpflanzen-Blog',s:'Pflege drinnen',scope:'Zimmerpflanzen',topics:['Standort','Giessen','Umtopfen','Düngen','Luftfeuchtigkeit','Schädlinge','Erste Hilfe']},
+    {e:'🌳',t:'Balkon- & Gartenpflanzen-Blog',s:'Pflege draussen',scope:'Balkon & Garten',topics:['Standort','Giessen','Eintopfen','Einpflanzen','Düngen']},
+    {e:'🛋️',t:'Einrichten mit Pflanzen',s:'Styling & Inspiration'},
+    {e:'🎓',t:'Online-Pflanzkurs: Mein grüner Daumen',s:'Schritt für Schritt zum Profi'}
+  ];
+  var WORLDS={
+    zimmer:{title:'Zimmerpflanzen',main:'Alle Zimmerpflanzen',tile:'',highlight:{e:'✨',t:'Pflanzenfinder',s:'Finde deine perfekte Zimmerpflanze'},uc:[['☀️','Nach Licht','licht'],['🪟','Nach Raum','raum'],['🐾','Haustierfreundlich'],['🌱','Pflegeleicht'],['✨','Raritäten']],cats:[['🌿','Alle Zimmerpflanzen','Das ganze Sortiment'],['📏','Grosse Pflanzen','Statement ab 1 m'],['🌱','Kleine Pflanzen','Für Regal & Tisch'],['🪴','Hängepflanzen','Ampeln & Ranker'],['🏺','Übertöpfe & Zubehör','Passend zur Pflanze']],featured:['Die ersten 5 Pflanzen','Lichtbedarf richtig einschätzen','Gelbe Blätter – was tun?','Richtig giessen','Umtopfen Schritt für Schritt','Pflanzen & Haustiere'],prods:PLANTS},
+    balkon:{title:'Balkon & Garten',main:'Alle Balkon- & Gartenpflanzen',tile:'gt-out',highlight:{e:'✨',t:'Pflanzenfinder',s:'Finde die richtige Pflanze für draussen'},uc:[['🧭','Nach Standort','standort'],['🌸','Nach Saison','saison'],['❄️','Winterhart']],cats:[['🪴','Balkonpflanzen','Kästen & Töpfe'],['🏺','Kübelpflanzen','Gross & winterhart'],['🌾','Stauden & Gräser','Mehrjährig'],['🌿','Kräuter','Küche & Duft'],['🌳','Bäume & Sträucher','Sichtschutz & Struktur'],['🪑','Kübel & Zubehör','Outdoor-Töpfe']],featured:['Balkon winterfest machen','Welche Pflanze für den Schatten?','Kübel richtig bepflanzen','Der richtige Standort draussen','Giessen im Hochsommer'],prods:OUT},
+    pflege:{title:'Pflege',main:'Alle Pflegeprodukte',tile:'gt-care',highlight:{e:'🩺',t:'Pflanzendoktor',s:'Diagnose & Soforthilfe für deine Pflanze'},uc:[],cats:[['🧴','Dünger','Flüssig · Stäbchen · Bio'],['🐛','Schädlingsbekämpfung','Prävention & Akut-Hilfe'],['🪨','Erde & Substrat','Universal & Spezial'],['🛠️','Werkzeug','Scheren & Umtopf-Set'],['💧','Giesskannen','Innen & Outdoor']],featured:['Richtig giessen','Schädlinge erkennen & bekämpfen','Umtopfen Schritt für Schritt','Dünger richtig dosieren'],prods:[['Bio-Flüssigdünger','12.90','🧴','best'],['Nematoden','9.90','🐛','neu'],['Giesskanne Lina','24.90','💧',''],['Pflanzenerde','14.90','🪨','best']]},
+    toepfe:{title:'Wohnen & Lifestyle',main:'Alle Wohnen & Lifestyle',tile:'gt-pots',uc:[],cats:[['🪴','Übertöpfe','Innen · alle Grössen'],['🏺','Pflanzkübel','Boden & XL'],['🪑','Pflanzenständer','Höhe & Display'],['🕯️','Kerzen & Duft','Kerzen · Diffuser'],['🧢','Merch','feey zum Anziehen'],['🛋️','Deko & Accessoires','Wohn-Accessoires']],featured:['Styling-Tipps fürs Wohnzimmer','Den richtigen Übertopf wählen'],prods:[['Übertopf Blom','24.90','🪴','best'],['Pflanzenständer Nora','39.90','🪑','neu'],['Duftkerze Sage','19.90','🕯️',''],['feey Cap','29.00','🧢','neu']]},
+    blumen:{title:'Blumen',main:'Alle Blumen',tile:'gt-flow',uc:[['🎉','Nach Anlass','anlass']],cats:[['💐','Blumensträusse','Frisch gebunden'],['🔁','Blumen-Abo','Regelmässig frisch'],['🌷','Saisonale Sträusse','Je nach Saison'],['🏺','Vasen & Zubehör','Passend zum Strauss']],featured:['Schnittblumen länger frisch halten','Die schönsten Sommersträusse'],prods:[['Strauss Sommersorbet','54.90','💐','best'],['Blumen-Abo','39.00','🔁','neu'],['Strauss Perlenglanz','49.90','💐','']]},
+    geschenke:{title:'Geschenke',main:'Alle Geschenke',tile:'gt-gift',uc:[['🎉','Nach Anlass','anlass']],cats:[['🎁','Geschenksets','Fixfertig verpackt'],['💳','Geschenkgutscheine','Ab CHF 25'],['✉️','Grusskarten','Persönliche Worte']],featured:[],prods:[['Geschenkset Easy','59.90','🎁','best'],['Geschenkgutschein','25.00','💳',''],['Grusskarte','4.90','✉️','neu']]},
+    workshops:{title:'Workshops',main:'Alle Workshops',tile:'gt-work',uc:[],cats:[['📅','Kommende Termine','Alle Daten'],['🌱','Einsteiger-Workshop','Basics & Pflege'],['🪴','Umtopf-Workshop','Hands-on'],['🏢','Firmen-Events','Teambuilding']],featured:['Was dich im Workshop erwartet'],prods:[['Einsteiger-Workshop','49.00','🌱','best'],['Umtopf-Workshop','59.00','🪴',''],['Floristik-Abend','69.00','💐','neu']]}
+  };
+  var NODES={
+    licht:{eyebrow:'Nach Licht',title:'Wie viel Licht hast du?',items:[['☀️','Für die sonnige Seite'],['🌤️','Für helle, indirekte Plätze'],['🌑','Für dunkle Ecken'],['❄️','Für kühle Nordzimmer']]},
+    raum:{eyebrow:'Nach Raum',title:'Für welchen Raum?',items:[['🛋️','Fürs grosse Wohnzimmer'],['🛁','Fürs feuchte Badezimmer'],['🛏️','Fürs gemütliche Schlafzimmer'],['💻','Fürs Homeoffice']]},
+    anlass:{eyebrow:'Nach Anlass',title:'Für welchen Anlass?',items:[['🎂','Zum Geburtstag'],['💍','Zum Jahrestag'],['💐','Zum Muttertag'],['🙏','Als Dankeschön'],['🏡','Zum Einzug']]},
+    standort:{eyebrow:'Nach Standort',title:'Wo solls hin?',items:[['☀️','Für die pralle Sonne'],['⛅','Für den Halbschatten'],['🌑','Für schattige Plätze'],['💨','Für windige Balkone']]},
+    saison:{eyebrow:'Nach Saison',title:'Für welche Jahreszeit?',items:[['🌷','Frühlingsblüher'],['☀️','Sommerblüher'],['🍂','Herbst & Winter'],['🌿','Ganzjährig grün']]}
+  };
+  var FEAT={
+    zimmer:{pre:'Saisonal · Highlight',b:'Sommer-Edit 2026',cls:''},
+    balkon:{pre:'Jetzt aktuell',b:'Balkonsaison 2026',cls:'feat-out'},
+    pflege:{pre:'Ratgeber',b:'Gesund durch den Sommer',cls:'feat-care'},
+    toepfe:{pre:'Neu eingetroffen',b:'Wohn-Trends 2026',cls:'feat-pots'},
+    blumen:{pre:'Beliebt',b:'Blumen-Abo entdecken',cls:'feat-flow'},
+    geschenke:{pre:'Für jeden Anlass',b:'Geschenkideen',cls:'feat-gift'},
+    workshops:{pre:'Erlebnis',b:'Nächste Termine',cls:'feat-work'}
+  };
+  var TERMS=[{t:'Monstera',k:'p'},{t:'Übertöpfe',k:'p'},{t:'Pflanze umtopfen',k:'b'}];
+  var ORDER=['zimmer','balkon','pflege','toepfe','blumen','geschenke','workshops'];
+
+  var cw='zimmer', panelWorld=null, dexp=null;
+  function esc(s){return String(s).replace(/"/g,'&quot;');}
+  function pcard(p){var bd=p[3]?'<span class="pbadge '+p[3]+'">'+(p[3]==='best'?'Bestseller':'Neu')+'</span>':'';return '<div class="pcard"><div class="pthumb">'+p[2]+bd+'</div><div class="pt">'+p[0]+'</div><div class="pp">CHF '+p[1]+'</div></div>';}
+  function slice5(pool,s){var r=[];for(var i=0;i<5;i++){r.push(pool[(s+i)%pool.length]);}return r;}
+  function rd(world,title,filter){var c=WORLDS[world]?WORLDS[world].title:'';var f=filter?(' data-filter="'+esc(filter)+'"'):'';return 'data-redir="'+esc(title)+'" data-crumb="'+esc(c)+'" data-world="'+world+'"'+f;}
+
+  /* ---- header: worlds split around the centered logo (V1 style) · service links in the top toolbar ---- */
+  var navL=document.getElementById('navL'),navR=document.getElementById('navR');
+  var LEFTW=['zimmer','balkon','blumen'],RIGHTW=['pflege','toepfe','geschenke','workshops'];
+  function navHTML(keys){var o='';for(var i=0;i<keys.length;i++){var k=keys[i];o+='<div class="navitem'+(k==='workshops'?' tier':'')+'" data-k="'+k+'">'+WORLDS[k].title+'</div>';}return o;}
+  navL.innerHTML=navHTML(LEFTW);navR.innerHTML=navHTML(RIGHTW);
+  (function(){var SVC=[['Hilfezentrum','Hilfezentrum'],['Pflanzendoktor','Pflanzendoktor'],['Firmen-Angebot','Firmen-Angebot (B2B)'],['Mehr über uns','Über feey']];
+    var o='';for(var s=0;s<SVC.length;s++){o+='<span class="svc" data-pillar="'+esc(SVC[s][1])+'" data-crumb="Service">'+SVC[s][0]+'</span>';}
+    document.getElementById('tbSvc').innerHTML=o;})();
+
+  /* ===== V5 hybrid mega-menu ===== */
+  function discoverCol(k){return '<div class="col discover" id="dcol">'+discoverInner(k)+'</div>';}
+  function discoverInner(k){
+    var w=WORLDS[k],i,o='<div class="deye">Entdecken nach</div>';
+    for(i=0;i<w.uc.length;i++){
+      var it=w.uc[i],smart=(it[2]&&NODES[it[2]]);
+      if(smart){var open=(dexp===it[2]);
+        o+='<div class="frow fsmart'+(open?' open':'')+'" data-fdrill="'+it[2]+'" data-world="'+k+'"><span class="fic">'+it[0]+'</span><span class="fl">'+it[1]+'</span><span class="fchev">›</span></div>';
+        if(open){var n=NODES[it[2]];o+='<div class="fsub">';for(var j=0;j<n.items.length;j++){o+='<div class="subrow" '+rd(k,n.items[j][1],n.items[j][1])+'><span class="se">'+n.items[j][0]+'</span><span class="sl">'+n.items[j][1]+'</span></div>';}o+='</div>';}
+      } else {o+='<div class="frow" '+rd(k,it[1])+'><span class="fic">'+it[0]+'</span><span class="fl">'+it[1]+'</span></div>';}
+    }
+    return o;
+  }
+  function catsCol(k,solo){
+    var w=WORLDS[k],i,o='<div class="col cats'+(solo?' solo':'')+'"><div class="deye">Kategorien</div>';
+    for(i=0;i<w.cats.length;i++){var ct=w.cats[i];o+='<div class="crow" '+rd(k,ct[1])+'><div class="ct"><b>'+ct[1]+'</b>'+(ct[2]?'<small>'+ct[2]+'</small>':'')+'</div><span class="ccv">›</span></div>';}
+    return o+'</div>';
+  }
+  /* RIGHT — visual preview (from V1): highlight + feature banner + popular products */
+  function previewPane(k){
+    var w=WORLDS[k],f=FEAT[k],i,o='<div class="preview">';
+    if(w.highlight){o+='<div class="hl" '+rd(k,w.highlight.t)+'><div class="hi">'+w.highlight.e+'</div><div><b>'+w.highlight.t+'</b><span>'+w.highlight.s+'</span></div></div>';}
+    o+='<div class="pfeat '+f.cls+'" '+rd(k,f.b)+'><span class="pre">'+f.pre+'</span><b>'+f.b+'</b><span class="cta">Entdecken</span></div>';
+    o+='<div class="pvhd"><span class="deye">Beliebt in '+w.title+'</span><span class="seeall" '+rd(k,w.main)+'>Alle ansehen →</span></div><div class="prodgrid">';
+    var s=slice5(w.prods,0);for(i=0;i<3;i++){o+=pcard(s[i]);}
+    return o+'</div></div>';
+  }
+  /* Wissen & Geschichten — its OWN column: Pflanzenlexikon + all linked blogs + Alle Blogs → (at column bottom) */
+  function wissenCol(k){
+    var w=WORLDS[k],feat=w.featured||[],isPlant=(k==='zimmer'||k==='balkon'),i;
+    if(!feat.length)return '';
+    var allAttr=isPlant?('data-blogcat="'+(k==='zimmer'?0:1)+'"'):'data-blog="1"';
+    var o='<div class="col wissen"><div class="deye">Wissen &amp; Geschichten</div>';
+    if(isPlant){o+='<div class="hubrow" data-pillar="Pflanzenlexikon" data-crumb="Wissen"><div class="hi">📖</div><div><b>Pflanzenlexikon</b><span>Alles Wissen rund um deine Pflanzen</span></div><span class="cv">›</span></div>';}
+    for(i=0;i<feat.length;i++){o+='<div class="wlink" data-pillar="'+esc(feat[i])+'" data-crumb="Blog"><span class="wdot">📄</span>'+feat[i]+'</div>';}
+    o+='<div class="wallblogs" '+allAttr+'>Alle Blogs ansehen →</div>';
+    return o+'</div>';
+  }
+  function megaHTML(k){
+    var w=WORLDS[k],hasUC=(w.uc&&w.uc.length);
+    /* V6: Kategorien FIRST (far left, widened) · then visual · Entdecken nach · Wissen — rest unchanged (Shafira) */
+    var top=catsCol(k)+previewPane(k)+(hasUC?discoverCol(k):'')+wissenCol(k);
+    return '<div class="mm"><div class="mmhead"><div class="mmtitle">'+w.title+'</div><span class="seeall" '+rd(k,w.main)+'>Alle ansehen →</span></div><div class="mmtop">'+top+'</div></div>';
+  }
+
+  var megamenu=document.getElementById('megamenu'),scrim=document.getElementById('scrim');
+  function openMenu(k){closeSearch();dexp=null;panelWorld=k;cw=k;megamenu.innerHTML=megaHTML(k);megamenu.classList.add('show');scrim.classList.add('show');var it=document.querySelectorAll('.navitem');for(var i=0;i<it.length;i++)it[i].classList.toggle('on',it[i].getAttribute('data-k')===k);}
+  function closeMenu(){panelWorld=null;megamenu.classList.remove('show');scrim.classList.remove('show');var it=document.querySelectorAll('.navitem');for(var i=0;i<it.length;i++)it[i].classList.remove('on');}
+
+  /* ---- inner pages (lifted from approved build) ---- */
+  function pageHead(crumbHTML,title){return '<div class="collwrap"><div class="crumb">'+crumbHTML+'</div><div class="colltitle">'+title+'</div>';}
+  function homeHTML(){
+    /* hero heading now lives in the header (over the image); home page = the worlds strip */
+    var o='<div class="worldsstrip"><div class="wh">Entdecke unsere Welten</div><div class="wgrid">';
+    for(var i=0;i<ORDER.length;i++){var k=ORDER[i],w=WORLDS[k],sp=(k==='zimmer')?' span2':'';o+='<div class="wtile'+sp+' '+(w.tile||'')+'" data-menu="'+k+'"><span class="e">'+EMOJI[k]+'</span><b>'+w.title+'</b></div>';}
+    o+='</div></div>';
+    return o;
+  }
+  function collectionPage(title,crumb,filter,world){
+    var w=WORLDS[world||cw]||WORLDS.zimmer,list=w.prods,i;
+    var o=pageHead('<a data-a="home">Startseite</a> › '+(crumb||'')+(crumb&&title!==crumb?' › '+title:''),title);
+    if(filter){o+='<div class="filterchip">'+filter+' ✕</div>';}
+    o+='<div class="collcount">'+list.length+' Produkte</div><div class="pgrid">';
+    for(i=0;i<list.length;i++){o+=pcard(list[i]);}
+    return o+'</div></div>';
+  }
+  function smartPage(facetKey,world){
+    var n=NODES[facetKey],w=WORLDS[world||cw]||WORLDS.zimmer,pool=w.prods,i,k;
+    var o=pageHead('<a data-a="home">Startseite</a> › <a '+rd(world||cw,w.main)+'>'+w.title+'</a> › '+n.eyebrow,n.title);
+    o+='<p class="collsub">Kuratierte Auswahl — wir haben '+w.title.toLowerCase()+' nach passenden Plätzen sortiert, damit du schneller findest, was zu dir passt.</p>';
+    for(i=0;i<n.items.length;i++){
+      o+='<div class="smartsec"><div class="smarthd" '+rd(world||cw,n.items[i][1])+'><div class="l"><span class="sme">'+n.items[i][0]+'</span><b>'+n.items[i][1]+'</b></div><span class="link">Alle ansehen ›</span></div><div class="srow">';
+      var s=slice5(pool,i*2);for(k=0;k<s.length;k++){o+=pcard(s[k]);}o+='</div></div>';
+    }
+    return o+'</div>';
+  }
+  function blogHubPage(){
+    var o=pageHead('<a data-a="home">Startseite</a> › Wissen &amp; Geschichten','Wissen &amp; Geschichten');
+    o+='<p class="collsub">Lernen &amp; stöbern — von der ersten Pflanze bis zum grünen Daumen.</p><div class="bloggrid">';
+    for(var i=0;i<BLOG.length;i++){var b=BLOG[i];var at=b.topics?('data-blogcat="'+i+'"'):('data-pillar="'+esc(b.t)+'" data-crumb="Blog"');o+='<div class="blogcard" '+at+'><div class="be">'+b.e+'</div><div><b>'+b.t+'</b><span>'+b.s+'</span></div><span class="cv">›</span></div>';}
+    return o+'</div></div>';
+  }
+  function topicPage(idx){
+    var b=BLOG[idx],i;var o=pageHead('<a data-a="home">Startseite</a> › <a data-blog="1">Wissen</a> › '+b.t,b.t);
+    o+='<div class="collcount">Themen</div>';
+    for(i=0;i<b.topics.length;i++){o+='<div class="toprow" data-pillar="'+esc(b.topics[i]+' – '+(b.scope||''))+'" data-crumb="'+esc(b.t)+'"><div class="ti">📄</div><div><b>'+b.topics[i]+'</b><span class="rl">Ratgeber</span></div><span class="cv">›</span></div>';}
+    return o+'</div>';
+  }
+  function pillarPage(title,crumb){
+    var arts=[['📄',title+': die Basics','Ratgeber · 4 Min'],['📄',title+' – häufige Fehler','Ratgeber · 3 Min'],['🎥',title+' im Video erklärt','Video · 6 Min'],['📄','Checkliste: '+title,'Ratgeber · 2 Min']],a;
+    var o=pageHead('<a data-a="home">Startseite</a> › '+(crumb||'Blog')+' › '+title,title);
+    o+='<p class="collsub">Dein Pillar-Guide zu „'+title+'" — alle Artikel, Tipps und Videos an einem Ort.</p><div class="collcount">Artikel &amp; Guides</div>';
+    for(a=0;a<arts.length;a++){o+='<div class="toprow"><div class="ti">'+arts[a][0]+'</div><div><b>'+arts[a][1]+'</b><span class="rl">'+arts[a][2]+'</span></div><span class="cv">›</span></div>';}
+    return o+'<span class="btnsec" data-a="home">Zurück zur Startseite</span></div>';
+  }
+
+  /* ---- view plumbing ---- */
+  var page=document.getElementById('page'),sp=document.getElementById('searchpanel');
+  function setPage(html){page.innerHTML=html;page.scrollTop=0;closeSearch();var h=document.querySelector('.hero');if(h)h.classList.toggle('inner',html.indexOf('worldsstrip')===-1);}
+  function openSearch(){closeMenu();var h=document.querySelector('.hero');if(h)h.classList.add('searching');sp.classList.add('show');scrim.classList.add('show');renderSearch('');var inp=document.getElementById('tbSearch');if(inp){inp.value='';setTimeout(function(){try{inp.focus();}catch(e){}},80);}}
+  function closeSearch(){var h=document.querySelector('.hero');if(h)h.classList.remove('searching');if(sp)sp.classList.remove('show');if(scrim)scrim.classList.remove('show');var inp=document.getElementById('tbSearch');if(inp)inp.value='';}
+
+  function navClick(e){var it=e.target.closest('.navitem');if(it){var k=it.getAttribute('data-k');if(panelWorld===k){closeMenu();}else{openMenu(k);}}}
+  navL.addEventListener('click',navClick);navR.addEventListener('click',navClick);
+  scrim.addEventListener('click',function(){closeMenu();closeSearch();});
+
+  document.addEventListener('click',function(e){
+    var fd=e.target.closest('[data-fdrill]');if(fd){var fk=fd.getAttribute('data-fdrill');dexp=(dexp===fk)?null:fk;var dc=document.getElementById('dcol');if(dc)dc.innerHTML=discoverInner(fd.getAttribute('data-world')||cw);var mmEl=megamenu.querySelector('.mm');if(mmEl)mmEl.classList.toggle('dexp',!!dexp);return;}
+    var fa=e.target.closest('[data-facetall]');if(fa){cw=fa.getAttribute('data-world')||cw;setPage(smartPage(fa.getAttribute('data-facetall'),fa.getAttribute('data-world')));closeMenu();return;}
+    var rdr=e.target.closest('[data-redir]');if(rdr){cw=rdr.getAttribute('data-world')||cw;setPage(collectionPage(rdr.getAttribute('data-redir'),rdr.getAttribute('data-crumb'),rdr.getAttribute('data-filter'),rdr.getAttribute('data-world')));closeMenu();return;}
+    var bcat=e.target.closest('[data-blogcat]');if(bcat){setPage(topicPage(+bcat.getAttribute('data-blogcat')));closeMenu();return;}
+    var bl=e.target.closest('[data-blog]');if(bl){setPage(blogHubPage());closeMenu();return;}
+    var pil=e.target.closest('[data-pillar]');if(pil){setPage(pillarPage(pil.getAttribute('data-pillar'),pil.getAttribute('data-crumb')));closeMenu();return;}
+    var mm=e.target.closest('[data-menu]');if(mm){var mk=mm.getAttribute('data-menu');cw=mk;setPage(collectionPage(WORLDS[mk].main,WORLDS[mk].title,null,mk));closeMenu();return;}
+    var a=e.target.closest('[data-a]');if(!a)return;var act=a.getAttribute('data-a');
+    if(act==='home'){cw='zimmer';setPage(homeHTML());closeMenu();closeSearch();}
+    else if(act==='open-search'){var hh=document.querySelector('.hero');if(hh&&hh.classList.contains('searching')){closeSearch();}else{openSearch();}}
+    else if(act==='close-search'){closeSearch();}
+  });
+
+  /* ---- search: smart index + render (zero-state → typed results, with a fade) ---- */
+  var SIDX_D=[],SIDX_P=[],_seenP={};
+  (function(){for(var i=0;i<ORDER.length;i++){var k=ORDER[i],w=WORLDS[k];SIDX_D.push({l:w.title,t:'Welt',w:k,title:w.main});
+      for(var c=0;c<w.cats.length;c++)SIDX_D.push({l:w.cats[c][1],t:'Kategorie',w:k,title:w.cats[c][1]});
+      for(var p=0;p<w.prods.length;p++){var nm=w.prods[p][0];if(!_seenP[nm]){_seenP[nm]=1;SIDX_P.push(w.prods[p]);}}}
+    for(var b=0;b<BLOG.length;b++){if(BLOG[b].topics)for(var tt=0;tt<BLOG[b].topics.length;tt++)SIDX_D.push({l:BLOG[b].topics[tt],t:'Ratgeber',pillar:BLOG[b].topics[tt]+' – '+(BLOG[b].scope||''),crumb:BLOG[b].t});}})();
+  function _srow(d){if(d.pillar)return '<div class="sterm" data-pillar="'+esc(d.pillar)+'" data-crumb="'+esc(d.crumb||'Blog')+'"><span class="tg">📄</span>'+d.l+'<span class="sblog">'+d.t+'</span><span class="ar">↗</span></div>';
+    return '<div class="sterm" data-redir="'+esc(d.title)+'" data-crumb="'+esc(WORLDS[d.w]?WORLDS[d.w].title:'')+'" data-world="'+d.w+'"><span class="tg">'+(d.t==='Welt'?'🌿':'🔖')+'</span>'+d.l+'<span class="sblog">'+d.t+'</span><span class="ar">↗</span></div>';}
+  function renderSearch(q){var el=document.getElementById('spInner');if(!el)return;q=(q||'').trim();var ql=q.toLowerCase(),o,i;
+    if(!ql){var t='';for(i=0;i<TERMS.length;i++){var T0=TERMS[i];if(T0.k==='b'){t+='<div class="sterm" data-pillar="'+esc(T0.t)+'" data-crumb="Ratgeber"><span class="tg">📄</span>'+T0.t+'<span class="sblog">Ratgeber</span><span class="ar">↗</span></div>';}else{t+='<div class="sterm" '+rd('zimmer',T0.t,null)+'><span class="tg">🔍</span>'+T0.t+'<span class="ar">↗</span></div>';}}
+      var p='';for(i=0;i<4;i++)p+=pcard(PLANTS[i]);
+      o='<div class="terms"><h4>Beliebte Suchen · letzte 30 Tage</h4><div>'+t+'</div></div><div style="flex:1"><div class="seehead"><h4>Meistverkaufte Produkte</h4><span class="link">Alle ansehen</span></div><div class="prow">'+p+'</div></div>';
+    }else{var ds=[];for(i=0;i<SIDX_D.length&&ds.length<6;i++)if(SIDX_D[i].l.toLowerCase().indexOf(ql)>=0)ds.push(SIDX_D[i]);
+      var pr=[];for(i=0;i<SIDX_P.length&&pr.length<8;i++)if(SIDX_P[i][0].toLowerCase().indexOf(ql)>=0)pr.push(SIDX_P[i]);
+      var dh=ds.length?'':'<div class="snohit">Keine passende Kategorie — schau dir die Produkte an.</div>';for(i=0;i<ds.length;i++)dh+=_srow(ds[i]);
+      var ph='';if(pr.length)for(i=0;i<pr.length;i++)ph+=pcard(pr[i]);else for(i=0;i<4;i++)ph+=pcard(PLANTS[i]);
+      o='<div class="terms"><h4>Vorschläge</h4><div>'+dh+'</div></div><div style="flex:1"><div class="seehead"><h4>'+(pr.length?'Produkte · „'+esc(q)+'"':'Beliebte Produkte')+'</h4></div><div class="prow">'+ph+'</div></div>';}
+    el.style.opacity='0';el.innerHTML=o;requestAnimationFrame(function(){el.style.opacity='1';});}
+  var _tbi=document.getElementById('tbSearch');if(_tbi)_tbi.addEventListener('input',function(){renderSearch(this.value);});
+
+  /* ---- nav font-colour toggle (nav sits over the header image): white · black · custom ---- */
+  (function(){var modes=['navlight','navdark','navcustom'],labels=['Weiss','Schwarz','Custom (Grün)'],idx=0,h=document.querySelector('.hero'),btn=document.getElementById('fontToggle');
+    if(btn)btn.onclick=function(){idx=(idx+1)%modes.length;h.classList.remove('navlight','navdark','navcustom');h.classList.add(modes[idx]);document.getElementById('fontState').textContent=labels[idx];};})();
+
+  /* ---- init + deep-links ---- */
+  setPage(homeHTML());
+  var P=new URLSearchParams(location.search);
+  if(P.get('embed')==='1'){document.body.classList.add('embed');}
+  var nm=P.get('nav');if(nm&&{light:1,dark:1,custom:1}[nm]){var hh=document.querySelector('.hero');hh.classList.remove('navlight','navdark','navcustom');hh.classList.add('nav'+nm);var fs=document.getElementById('fontState');if(fs)fs.textContent=({light:'Weiss',dark:'Schwarz',custom:'Custom (Grün)'})[nm];}
+  var wd=P.get('world'),fcd=P.get('facet');
+  if(wd&&WORLDS[wd]){cw=wd;if(fcd&&NODES[fcd]){setPage(smartPage(fcd,wd));}else{setPage(collectionPage(WORLDS[wd].main,WORLDS[wd].title,null,wd));}}
+  if(P.get('collection')){setPage(collectionPage(P.get('collection'),P.get('crumb')||'',P.get('filter')||null));}
+  if(P.get('blog')==='1'){setPage(blogHubPage());var bca=P.get('blogcat');if(bca!==null&&BLOG[+bca]&&BLOG[+bca].topics){setPage(topicPage(+bca));}}
+  if(P.get('pillar')){setPage(pillarPage(P.get('pillar'),P.get('crumb')||'Blog'));}
+  if(P.get('menu')&&WORLDS[P.get('menu')]){openMenu(P.get('menu'));var fdr=P.get('fdrill');if(fdr&&NODES[fdr]){dexp=fdr;var dc0=document.getElementById('dcol');if(dc0)dc0.innerHTML=discoverInner(P.get('menu'));var mm0=megamenu.querySelector('.mm');if(mm0)mm0.classList.add('dexp');}}
+  if(P.get('search')==='1'){openSearch();}
+  var sq=P.get('q');if(sq){openSearch();var sqi=document.getElementById('tbSearch');if(sqi)sqi.value=sq;renderSearch(sq);}
+</script>
+</body>
+</html>
