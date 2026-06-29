@@ -1,0 +1,349 @@
+<!--
+  feey.ch — NAVIGATION REDESIGN · PROTOTYPE (LOCKED v7) · throwaway, not production
+  Mobile-first hamburger drawer, plant-led-but-rebalanced lifestyle IA.
+  v7 (Sevi/design feedback 2026-06-23):
+   • L1: optional Neuheiten/Bestseller blocks under the seasonal slot — MERCHANT TOGGLE
+     (demo toggle above the phone flips them on/off).
+   • World renamed: Töpfe & Wohnen → "Wohnen & Lifestyle" (fits Kerzen, Merch, Deko…).
+   • Category rows now carry a context subline (e.g. Schädlingsbekämpfung — Prävention & Akut-Hilfe).
+   • Tipps & Wissen leads with the content pillars (Pflanzenlexikon · Blog · Herkunft),
+     then specific articles. [tentative per Sevi — easy to revert]
+  2026-06-25 (align to desktop V4): selecting an "Entdecken nach" smart facet (Licht/Raum/Anlass/
+   Standort/Saison) no longer opens an in-drawer L3 layer — it CLOSES the drawer and redirects to the
+   curated landing page (smartLandingPage), matching desktop. Drawer is now 2 layers (worlds → world) + page.
+  Deep-links: ?view=list · ?world=zimmer|balkon|pflege|toepfe|blumen|geschenke|workshops · &facet=licht|raum|standort|saison|anlass
+-->
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>feey · Navigation Prototype (v7)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--green:#60BFA4;--green-dark:#4A9A83;--green-15:#E6F4F0;--green-40:#BFE4DB;--yellow:#FACE44;--yellow-40:#FDEBB3;--yellow-70:#FBDD7C;--beige:#D3CCB6;--light-beige:#F6F5F0;--dark-beige:#635D4B;--dark-beige-15:#E8E6E4;--black:#141414;--fh:'Poppins',system-ui,sans-serif;--fb:'Karla',system-ui,sans-serif}
+  *{box-sizing:border-box}html,body{margin:0}
+  body{font-family:var(--fb);color:var(--black);background:radial-gradient(circle at 50% -5%,#f1f0ea,#dcdad2);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 12px 120px}
+  .intro{max-width:380px;text-align:center;margin-bottom:12px}
+  .intro h1{font-family:var(--fh);font-weight:600;font-size:17px;margin:0 0 4px}
+  .intro p{font-size:12.5px;line-height:18px;color:var(--dark-beige);margin:0 0 9px}
+  .nbtoggle{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:.4px;border:1.5px solid var(--beige);background:#fff;color:var(--black);border-radius:20px;padding:6px 14px;cursor:pointer}
+  .nbtoggle b{color:var(--green-dark)}
+  .device{width:372px;max-width:100%;height:min(760px,84vh);background:#fff;border-radius:40px;position:relative;overflow:hidden;box-shadow:0 26px 60px -14px rgba(20,20,20,.45),0 0 0 10px #1b1b1d,0 0 0 12px #2c2c2e}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:122px;height:25px;background:#1b1b1d;border-radius:0 0 15px 15px;z-index:90}
+  .screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden}.screen::-webkit-scrollbar{width:0}
+  .pad{padding:0 15px}
+  .statusbar{height:38px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 5px;font-family:var(--fh);font-weight:600;font-size:12px}
+  .seclabel{font-family:var(--fh);font-weight:600;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--dark-beige)}
+  .seclabel.dark{color:var(--black)}
+  .searchpill{display:flex;align-items:center;gap:8px;background:var(--light-beige);border:1.5px solid var(--beige);padding:10px 13px;color:var(--dark-beige);font-size:13.5px;cursor:pointer;border-radius:4px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:4px 15px 9px}
+  .topbar .logo{font-family:var(--fh);font-weight:700;font-size:20px;cursor:pointer}
+  .topbar .ico{font-size:18px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative}
+  .grp{display:flex;gap:2px}.dot{position:absolute;top:4px;right:5px;width:6px;height:6px;background:var(--green);border-radius:50%}
+  .trust{display:flex;gap:13px;overflow-x:auto;background:var(--green);color:#fff;padding:7px 15px;font-size:11px;font-weight:500;white-space:nowrap}.trust::-webkit-scrollbar{height:0}
+  .hero{position:relative;border-radius:11px;overflow:hidden;padding:17px;min-height:144px;display:flex;flex-direction:column;justify-content:flex-end;background:linear-gradient(120deg,#F3E6CF,#F8EFE0 55%,var(--green-15))}
+  .hero .deco{position:absolute;top:-8px;right:-4px;font-size:78px;opacity:.5;transform:rotate(8deg)}
+  .hero .pre{font-family:var(--fh);font-weight:600;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--green-dark)}
+  .hero h2{font-family:var(--fh);font-weight:600;font-size:21px;line-height:25px;margin:5px 0 4px;max-width:82%}.hero h2 em{font-style:normal;color:var(--green-dark)}
+  .hero p{font-size:12px;color:var(--dark-beige);margin:0 0 11px;max-width:82%}
+  .btn{font-family:var(--fh);font-weight:500;font-size:12.5px;letter-spacing:1.5px;text-transform:uppercase;border:0;border-radius:0;padding:11px 18px;cursor:pointer;background:var(--green);color:#fff}
+  .scrim{position:absolute;inset:0;background:rgba(20,20,20,.45);opacity:0;pointer-events:none;transition:.25s;z-index:40}.scrim.show{opacity:1;pointer-events:auto}
+  .drawer{position:absolute;top:0;bottom:0;left:0;width:90%;max-width:340px;background:#fff;z-index:50;transform:translateX(-104%);transition:transform .3s cubic-bezier(.4,0,.1,1);overflow:hidden;box-shadow:8px 0 40px rgba(0,0,0,.22);display:flex;flex-direction:column}
+  .drawer.show{transform:none}
+  .dhead{display:flex;align-items:center;justify-content:space-between;padding:15px 17px 11px;flex:0 0 auto}
+  .dhead .logo{font-family:var(--fh);font-weight:700;font-size:19px}.dhead .x{font-size:20px;cursor:pointer;color:var(--dark-beige)}
+  .dbody{flex:1;overflow-y:auto;overflow-x:hidden}.dbody::-webkit-scrollbar{width:0}
+  .dpad{padding:0 17px}
+  .feature{position:relative;border-radius:11px;overflow:hidden;min-height:104px;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;cursor:pointer;color:#fff;background-image:linear-gradient(0deg,rgba(20,20,20,.58),rgba(20,20,20,.05) 62%),linear-gradient(120deg,#7BAE9E,#CDB892)}
+  .feature .fpre{font-family:var(--fh);font-weight:600;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;opacity:.95}
+  .feature b{font-family:var(--fh);font-weight:600;font-size:18px;margin-top:3px}
+  .quickrow{display:flex;gap:9px;margin-top:9px}
+  .quicklink{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:var(--light-beige);border:1px solid var(--dark-beige-15);border-radius:8px;padding:11px;font-family:var(--fh);font-weight:600;font-size:12.5px;cursor:pointer}
+  .toplevel{display:none}.toplevel.on{display:block}
+  .tgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .gtile{position:relative;border-radius:10px;overflow:hidden;min-height:106px;display:flex;flex-direction:column;justify-content:flex-end;padding:11px;cursor:pointer;color:#fff;background:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 62%),linear-gradient(135deg,#8FCBB9,#BFE4DB)}
+  .gtile.span{grid-column:1/3;min-height:116px}
+  .gtile .e{position:absolute;top:8px;right:10px;font-size:23px;opacity:.92}
+  .gtile b{font-family:var(--fh);font-weight:600;font-size:14px;position:relative;z-index:1}.gtile span{font-size:11px;opacity:.92;position:relative;z-index:1}
+  .gt-out{background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 62%),linear-gradient(135deg,#7FA886,#CFD8BC)}
+  .gt-care{background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 62%),linear-gradient(135deg,#E4A877,#FBE9D8)}
+  .gt-pots{background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 62%),linear-gradient(135deg,#B7AD8C,#ECE7D6)}
+  .gt-flow{background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 62%),linear-gradient(135deg,#E48C8A,#FBE2E1)}
+  .gt-gift{background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 62%),linear-gradient(135deg,#E6BE55,#FDF0C2)}
+  .gt-work{background-image:linear-gradient(0deg,rgba(20,20,20,.5),rgba(20,20,20,0) 62%),linear-gradient(135deg,#7FA8A6,#D4CDBA)}
+  .crow{display:flex;align-items:center;gap:12px;padding:10px 0;cursor:pointer;border-bottom:1px solid var(--dark-beige-15)}
+  .crow .th{width:46px;height:46px;border-radius:9px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:21px;background:linear-gradient(135deg,var(--green-15),var(--green-40))}
+  .crow .th.out{background:linear-gradient(135deg,#CFD8BC,#EDEFE0)}.crow .th.care{background:linear-gradient(135deg,#FBE9D8,#FDF6EC)}.crow .th.pots{background:linear-gradient(135deg,#ECE7D6,#F6F5F0)}
+  .crow .th.flow{background:linear-gradient(135deg,#FBE2E1,#FDF1F0)}.crow .th.gift{background:linear-gradient(135deg,var(--yellow-40),#FDF8E2)}.crow .th.work{background:linear-gradient(135deg,#D4CDBA,#EDE9DC)}
+  .crow .ct b{font-family:var(--fh);font-weight:600;font-size:13.5px;display:block}.crow .ct span{font-size:11px;color:var(--dark-beige)}
+  .crow .cv{margin-left:auto;color:var(--beige);font-size:17px}
+  .hlcard{display:flex;align-items:center;gap:12px;background:var(--yellow-40);border-radius:10px;padding:13px;cursor:pointer;margin:4px 0 6px}
+  .hlcard .hi{width:42px;height:42px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;flex:0 0 auto}
+  .hlcard .ht b{font-family:var(--fh);font-weight:600;font-size:14px;display:block}.hlcard .ht span{font-size:11.5px;color:var(--dark-beige);line-height:14px}.hlcard .cv{margin-left:auto;color:var(--dark-beige);font-size:18px}
+  .cardscroll{display:flex;gap:9px;overflow-x:auto;padding-bottom:2px}.cardscroll::-webkit-scrollbar{height:0}
+  .artcard{flex:0 0 176px;height:104px;border-radius:9px;position:relative;overflow:hidden;cursor:pointer;display:flex;align-items:flex-end;padding:11px;color:#fff;background-image:linear-gradient(0deg,rgba(20,20,20,.62),rgba(20,20,20,0) 60%),linear-gradient(135deg,#6E8F86,#AEB89C)}
+  .artcard .e{position:absolute;top:7px;right:9px;font-size:18px;opacity:.9}
+  .artcard .rl{position:absolute;top:8px;left:9px;font-family:var(--fh);font-weight:600;font-size:9px;letter-spacing:1px;text-transform:uppercase;opacity:.92}
+  .artcard b{font-family:var(--fh);font-weight:600;font-size:13px;position:relative;z-index:1;line-height:15px}
+  .artcard .asub{font-family:var(--fb);font-weight:400;font-size:10.5px;color:#fff;opacity:.92;position:relative;z-index:1;line-height:13px;margin-top:2px}
+  .dutil{padding:6px 0 18px;border-top:1px solid var(--dark-beige-15);margin-top:13px}
+  .dlink{display:block;padding:9px 0;font-size:13px;color:var(--dark-beige);cursor:pointer}
+  .link{font-family:var(--fh);font-weight:500;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--green-dark);cursor:pointer;white-space:nowrap}
+  .btnsec{display:block;width:100%;text-align:center;font-family:var(--fh);font-weight:500;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;background:#fff;color:var(--black);border:1.5px solid var(--black);border-radius:0;padding:11px;margin-top:12px;cursor:pointer}
+  .panel{position:absolute;inset:0;background:#fff;transform:translateX(104%);transition:transform .28s cubic-bezier(.4,0,.1,1);overflow-y:auto}.panel.show{transform:none}.panel::-webkit-scrollbar{width:0}
+  .phead{display:flex;align-items:center;gap:10px;padding:15px 16px 9px;position:sticky;top:0;background:#fff;z-index:2;border-bottom:1px solid var(--dark-beige-15)}
+  .phead .bk{font-size:21px;cursor:pointer;line-height:1;color:var(--black)}
+  .phead .eyebrow{font-family:var(--fh);font-weight:600;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--green-dark)}
+  .phead b{font-family:var(--fh);font-weight:600;font-size:17px;display:block;margin-top:1px}
+  .qa{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:6px 0 4px}
+  .qatile{border-radius:9px;padding:13px;min-height:62px;display:flex;flex-direction:column;justify-content:center;gap:3px;cursor:pointer;background:var(--green-15)}
+  .qatile.alt{background:var(--yellow-40)}.qatile .e{font-size:19px}.qatile b{font-family:var(--fh);font-weight:600;font-size:13.5px}.qatile span{font-size:10.5px;color:var(--dark-beige)}
+  .chip{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1.5px solid var(--beige);padding:7px 12px;border-radius:4px;font-family:var(--fh);font-weight:500;font-size:12px;cursor:pointer;white-space:nowrap;margin:0 7px 7px 0}.chip .e{font-size:13px}
+  .tiprow{display:flex;align-items:center;gap:11px;padding:9px 0;cursor:pointer;border-bottom:1px solid var(--dark-beige-15)}
+  .tiprow .ti{width:40px;height:40px;border-radius:8px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--light-beige)}
+  .tiprow.hub .ti{background:var(--green-15)}
+  .tiprow .tt{font-family:var(--fh);font-weight:600;font-size:13px;line-height:16px}
+  .tiprow .hsub{font-size:11px;color:var(--dark-beige)}
+  .tiprow .rl{display:block;font-family:var(--fh);font-weight:600;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--green-dark);margin-top:2px}
+  .tiprow .cv{margin-left:auto;color:var(--beige);font-size:15px}
+  .smartsec{margin:16px 0 8px}
+  .smarthd{display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:10px;gap:10px}
+  .smarthd .l{display:flex;align-items:center;gap:8px;min-width:0}.smarthd .sme{font-size:17px;flex:0 0 auto}.smarthd b{font-family:var(--fh);font-weight:600;font-size:15px;line-height:18px}
+  .pccard{flex:0 0 110px;cursor:pointer}
+  .pcth{position:relative;border-radius:8px;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:31px;background:linear-gradient(135deg,var(--green-15),var(--green-40))}
+  .pcn{font-family:var(--fh);font-weight:500;font-size:12px;margin:5px 0 0;line-height:14px}.pcp{font-family:var(--fh);font-weight:600;font-size:12px;margin-top:1px}
+  .badge{font-family:var(--fh);font-weight:400;font-size:10px;letter-spacing:.5px;text-transform:uppercase;padding:3px 7px;border-radius:4px;line-height:1;display:inline-block;position:absolute;left:6px;top:6px}
+  .badge.best{background:#D8F2EB;color:#008275}.badge.neu{background:var(--yellow-70);color:#896D1F}
+  .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pgrid .pccard{flex:none}
+  .collwrap{padding:13px 15px 24px}
+  .crumb{font-size:12px;color:var(--dark-beige);margin-bottom:8px}.crumb a{color:var(--green-dark);cursor:pointer;font-weight:500}
+  .colltitle{font-family:var(--fh);font-weight:600;font-size:22px;margin:0 0 8px}
+  .filterchip{display:inline-flex;align-items:center;gap:7px;background:var(--green-15);color:var(--green-dark);border-radius:4px;padding:6px 11px;font-family:var(--fh);font-weight:600;font-size:11.5px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px}
+  .searchov{position:absolute;inset:0;background:#fff;z-index:80;transform:translateY(100%);transition:transform .26s ease;overflow-y:auto}.searchov.show{transform:none}
+  .sov-top{display:flex;align-items:center;gap:9px;padding:44px 13px 11px;position:sticky;top:0;background:#fff;z-index:2}.sov-top .back{font-size:19px;cursor:pointer;padding:4px}
+  .sov-field{flex:1;display:flex;align-items:center;gap:8px;background:var(--light-beige);border:1.5px solid var(--beige);border-radius:4px;padding:10px 12px}.sov-field input{border:0;background:transparent;outline:0;font-family:var(--fb);font-size:14px;width:100%}
+  .sterm{display:flex;align-items:center;gap:9px;padding:10px 4px;font-size:14px;cursor:pointer;border-bottom:1px solid var(--light-beige)}.sterm .tg{font-size:13px;opacity:.55}.sterm .ar{margin-left:auto;color:var(--beige);font-size:13px}
+  .sterm .sblog{margin-left:8px;font-family:var(--fh);font-weight:600;font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:var(--green-dark);background:var(--green-15);padding:2px 6px;border-radius:3px}
+  .switcher{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:200;display:inline-flex;align-items:center;gap:4px;background:#1b1b1d;color:#fff;border-radius:50px;padding:6px 7px;box-shadow:0 12px 30px rgba(0,0,0,.4)}
+  .switcher button{background:#34343a;border:0;color:#fff;width:32px;height:32px;border-radius:50%;font-size:15px;cursor:pointer}
+  .switcher .lab{font-family:var(--fh);font-weight:600;font-size:12px;padding:0 11px;min-width:140px;text-align:center}
+  .switcher .lab small{display:block;font-family:var(--fb);font-weight:400;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#9b9ba3;margin-top:1px}
+</style>
+</head>
+<body>
+  <div class="intro">
+    <h1>feey · Navigation (v7 — Sevi-Feedback)</h1>
+    <p>Neuheiten/Bestseller-Block ist optional (Theme-Setting). Hier zum Ausprobieren:</p>
+    <button class="nbtoggle" id="nbToggle">Neuheiten/Bestseller-Block: <b id="nbState">An</b></button>
+  </div>
+
+  <div class="device">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="statusbar"><span>9:41</span><span>5G &nbsp; 100%</span></div>
+      <div id="fyHome">
+        <div class="topbar"><div class="ico" data-a="open-drawer">☰</div><div class="logo">feey</div>
+          <div class="grp"><div class="ico" data-a="open-search">🔍</div><div class="ico">🛒<span class="dot"></span></div></div></div>
+        <div class="pad"><div class="searchpill" data-a="open-search">🔍 Wonach suchst du?</div></div>
+        <div class="trust" style="margin-top:11px"><span>🌱 Gesunde Pflanzen</span><span>🚛 Lieferung an die Haustüre</span><span>🇨🇭 Schweizer Gewächs</span></div>
+        <div class="pad" style="margin-top:15px"><div class="hero"><div class="deco">🪴</div><div class="pre">Neu bei feey</div><h2>Bring dein Zuhause zum <em>Leben</em></h2><p>Tippe auf ☰ — alle Welten, schön sichtbar.</p><button class="btn" data-a="open-drawer">Menü öffnen</button></div></div>
+        <div style="height:24px"></div>
+      </div>
+      <div id="fyColl" style="display:none"></div>
+    </div>
+
+    <div class="scrim" data-a="close-drawer"></div>
+
+    <aside class="drawer" id="fyDrawer">
+      <div class="dhead"><div class="logo">feey</div><span class="x" data-a="close-drawer">✕</span></div>
+      <div class="dbody">
+        <div class="dpad" style="padding-top:2px;padding-bottom:12px"><div class="searchpill" data-a="open-search">🔍 Wonach suchst du?</div></div>
+        <div class="dpad" style="padding-bottom:6px">
+          <div class="feature" data-redir="Sommer-Edit 2026" data-crumb="feey · Highlights"><span class="fpre">Saisonal · Highlight</span><b>Sommer-Edit 2026</b></div>
+          <div class="quickrow" id="fyNB">
+            <div class="quicklink" data-redir="Neuheiten" data-crumb="feey">🆕 Neuheiten</div>
+            <div class="quicklink" data-redir="Bestseller" data-crumb="feey">⭐ Bestseller</div>
+          </div>
+        </div>
+        <div class="dpad"><div class="seclabel" style="margin:14px 0 9px">Unsere Welten</div></div>
+        <div class="toplevel on" data-tl="GRID"><div class="dpad">
+          <div class="tgrid">
+            <div class="gtile span" data-w="zimmer"><span class="e">🪴</span><b>Zimmerpflanzen</b></div>
+            <div class="gtile gt-out" data-w="balkon"><span class="e">🌳</span><b>Balkon &amp; Garten</b></div>
+            <div class="gtile gt-care" data-w="pflege"><span class="e">🧴</span><b>Pflege</b><span>Dünger · Schädlinge · Werkzeug</span></div>
+            <div class="gtile gt-pots" data-w="toepfe"><span class="e">🛋️</span><b>Wohnen &amp; Lifestyle</b><span>Töpfe · Kerzen · Merch</span></div>
+            <div class="gtile gt-flow" data-w="blumen"><span class="e">💐</span><b>Blumen</b><span>Sträusse · Abo · Anlass</span></div>
+            <div class="gtile gt-gift" data-w="geschenke"><span class="e">🎁</span><b>Geschenke</b><span>Sets · Gutscheine · Anlass</span></div>
+            <div class="gtile gt-work" data-w="workshops"><span class="e">🎓</span><b>Workshops</b><span>Kurse · Events · Firmen</span></div>
+          </div>
+        </div></div>
+        <div class="toplevel" data-tl="LIST"><div class="dpad">
+          <div class="crow" data-w="zimmer"><div class="th">🪴</div><div class="ct"><b>Zimmerpflanzen</b></div><span class="cv">›</span></div>
+          <div class="crow" data-w="balkon"><div class="th out">🌳</div><div class="ct"><b>Balkon &amp; Garten</b></div><span class="cv">›</span></div>
+          <div class="crow" data-w="pflege"><div class="th care">🧴</div><div class="ct"><b>Pflege</b><span>Dünger · Schädlinge · Werkzeug</span></div><span class="cv">›</span></div>
+          <div class="crow" data-w="toepfe"><div class="th pots">🛋️</div><div class="ct"><b>Wohnen &amp; Lifestyle</b><span>Töpfe · Kerzen · Merch</span></div><span class="cv">›</span></div>
+          <div class="crow" data-w="blumen"><div class="th flow">💐</div><div class="ct"><b>Blumen</b><span>Sträusse · Abo · Anlass</span></div><span class="cv">›</span></div>
+          <div class="crow" data-w="geschenke"><div class="th gift">🎁</div><div class="ct"><b>Geschenke</b><span>Sets · Gutscheine · Anlass</span></div><span class="cv">›</span></div>
+          <div class="crow" data-w="workshops"><div class="th work">🎓</div><div class="ct"><b>Workshops</b><span>Kurse · Events · Firmen</span></div><span class="cv">›</span></div>
+        </div></div>
+        <div class="dpad"><div class="seclabel" style="margin:18px 0 9px">Wissen &amp; Geschichten</div>
+          <div class="cardscroll" id="fyHubs"></div>
+        </div>
+        <div class="dpad"><div class="dutil">
+          <span class="seclabel" style="display:block;margin-bottom:5px">Service</span>
+          <span class="dlink">💬 Hilfezentrum</span><span class="dlink">🩺 Pflanzendoktor</span><span class="dlink">🏢 Firmen-Angebot</span><span class="dlink">🌱 Mehr über uns</span><span class="dlink">👤 Mein Konto</span>
+        </div></div>
+      </div>
+    </aside>
+
+    <div class="searchov" id="fySearch">
+      <div class="sov-top"><span class="back" data-a="close-search">‹</span><div class="sov-field"><span>🔍</span><input placeholder="Wonach suchst du?"></div></div>
+      <div class="dpad">
+        <div class="seclabel dark" style="margin:6px 0 4px">Beliebte Suchen · letzte 30 Tage</div><div id="fyTerms"></div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin:16px 0 9px"><div class="seclabel dark">Meistverkaufte Produkte</div><span class="link">Alle ansehen</span></div>
+        <div class="pgrid" id="fyPg"></div><div style="height:24px"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="switcher"><button id="fyPrev">‹</button><div class="lab" id="fyLab"></div><button id="fyNext">›</button></div>
+
+<script>
+  var cw=null, stack=[];
+  var PLANTS=[['Pilea Peperomioides','29.90','🪙','best'],['Monstera Deliciosa','39.90','🌿',''],['Calathea Orbifolia','34.90','🍃','neu'],['Strelitzie','49.90','🌴',''],['Pothos','18.90','🌿','best'],['ZZ-Pflanze','29.90','🪴',''],['Sansevieria','24.90','🌵','best'],['Efeutute','19.90','🍃','neu']];
+  var OUT=[['Lavendel','14.90','💜','best'],['Olivenbaum','89.00','🫒',''],['Hortensie','24.90','🌸','neu'],['Buchsbaum','19.90','🌳',''],['Bambus Fargesia','39.90','🎋','best'],['Ziergräser-Mix','17.90','🌾','']];
+  var HUBS=[['📖','Pflanzenlexikon','Alles Wissen rund um deine Pflanzen'],['✍️','Blog','Stylen & pflegen wie ein Profi'],['🌍','Herkunft','Über uns & unsere Produktion']];
+  var BLOG=[
+    {e:'🪴',t:'Zimmerpflanzen-Blog',s:'Pflege drinnen',scope:'Zimmerpflanzen',topics:['Standort','Giessen','Umtopfen','Düngen','Luftfeuchtigkeit','Schädlinge','Erste Hilfe']},
+    {e:'🌳',t:'Balkon- & Gartenpflanzen-Blog',s:'Pflege draussen',scope:'Balkon & Garten',topics:['Standort','Giessen','Eintopfen','Einpflanzen','Düngen']},
+    {e:'🛋️',t:'Einrichten mit Pflanzen',s:'Styling & Inspiration'},
+    {e:'🎓',t:'Online-Pflanzkurs: Mein grüner Daumen',s:'Schritt für Schritt zum Profi'}
+  ];
+  var WORLDS={
+    zimmer:{title:'Zimmerpflanzen',main:'Alle Zimmerpflanzen',highlight:{e:'✨',t:'Pflanzenfinder',s:'Finde deine perfekte Zimmerpflanze'},uc:[['☀️','Nach Licht','licht'],['🪟','Nach Raum','raum'],['🐾','Haustierfreundlich'],['🌱','Pflegeleicht'],['✨','Raritäten']],cats:[['🌿','Alle Zimmerpflanzen','Das ganze Sortiment'],['📏','Grosse Pflanzen','Statement ab 1 m'],['🌱','Kleine Pflanzen','Für Regal & Tisch'],['🪴','Hängepflanzen','Ampeln & Ranker'],['🏺','Übertöpfe & Zubehör','Passend zur Pflanze']],featured:['Die ersten 5 Pflanzen','Lichtbedarf richtig einschätzen','Gelbe Blätter – was tun?'],prods:PLANTS},
+    balkon:{title:'Balkon & Garten',main:'Alle Balkon- & Gartenpflanzen',highlight:{e:'✨',t:'Pflanzenfinder',s:'Finde die richtige Pflanze für draussen'},uc:[['🧭','Nach Standort','standort'],['🌸','Nach Saison','saison'],['❄️','Winterhart']],cats:[['🪴','Balkonpflanzen','Kästen & Töpfe'],['🏺','Kübelpflanzen','Gross & winterhart'],['🌾','Stauden & Gräser','Mehrjährig'],['🌿','Kräuter','Küche & Duft'],['🌳','Bäume & Sträucher','Sichtschutz & Struktur'],['🪑','Kübel & Zubehör','Outdoor-Töpfe']],featured:['Balkon winterfest machen','Welche Pflanze für den Schatten?','Kübel richtig bepflanzen'],prods:OUT},
+    pflege:{title:'Pflege',main:'Alle Pflegeprodukte',highlight:{e:'🩺',t:'Pflanzendoktor',s:'Diagnose & Soforthilfe für deine Pflanze'},uc:[],cats:[['🧴','Dünger','Flüssig · Stäbchen · Bio'],['🐛','Schädlingsbekämpfung','Prävention & Akut-Hilfe'],['🪨','Erde & Substrat','Universal & Spezial'],['🛠️','Werkzeug','Scheren & Umtopf-Set'],['💧','Giesskannen','Innen & Outdoor']],featured:['Richtig giessen','Schädlinge erkennen & bekämpfen','Umtopfen Schritt für Schritt'],prods:[['Bio-Flüssigdünger','12.90','🧴','best'],['Nematoden','9.90','🐛','neu'],['Giesskanne Lina','24.90','💧',''],['Pflanzenerde','14.90','🪨','best']]},
+    toepfe:{title:'Wohnen & Lifestyle',main:'Alle Wohnen & Lifestyle',uc:[],cats:[['🪴','Übertöpfe','Innen · alle Grössen'],['🏺','Pflanzkübel','Boden & XL'],['🪑','Pflanzenständer','Höhe & Display'],['🕯️','Kerzen & Duft','Kerzen · Diffuser'],['🧢','Merch','feey zum Anziehen'],['🛋️','Deko & Accessoires','Wohn-Accessoires']],featured:['Styling-Tipps fürs Wohnzimmer','Den richtigen Übertopf wählen'],prods:[['Übertopf Blom','24.90','🪴','best'],['Pflanzenständer Nora','39.90','🪑','neu'],['Duftkerze Sage','19.90','🕯️',''],['feey Cap','29.00','🧢','neu']]},
+    blumen:{title:'Blumen',main:'Alle Blumen',uc:[['🎉','Nach Anlass','anlass']],cats:[['💐','Blumensträusse','Frisch gebunden'],['🔁','Blumen-Abo','Regelmässig frisch'],['🌷','Saisonale Sträusse','Je nach Saison'],['🏺','Vasen & Zubehör','Passend zum Strauss']],featured:['Schnittblumen länger frisch halten'],prods:[['Strauss Sommersorbet','54.90','💐','best'],['Blumen-Abo','39.00','🔁','neu'],['Strauss Perlenglanz','49.90','💐','']]},
+    geschenke:{title:'Geschenke',main:'Alle Geschenke',uc:[['🎉','Nach Anlass','anlass']],cats:[['🎁','Geschenksets','Fixfertig verpackt'],['💳','Geschenkgutscheine','Ab CHF 25'],['✉️','Grusskarten','Persönliche Worte']],featured:[],prods:[['Geschenkset Easy','59.90','🎁','best'],['Geschenkgutschein','25.00','💳',''],['Grusskarte','4.90','✉️','neu']]},
+    workshops:{title:'Workshops',main:'Alle Workshops',uc:[],cats:[['📅','Kommende Termine','Alle Daten'],['🌱','Einsteiger-Workshop','Basics & Pflege'],['🪴','Umtopf-Workshop','Hands-on'],['🏢','Firmen-Events','Teambuilding']],featured:['Was dich im Workshop erwartet'],prods:[['Einsteiger-Workshop','49.00','🌱','best'],['Umtopf-Workshop','59.00','🪴',''],['Floristik-Abend','69.00','💐','neu']]}
+  };
+  var NODES={
+    licht:{eyebrow:'Nach Licht',title:'Wie viel Licht hast du?',items:[['☀️','Für die sonnige Seite'],['🌤️','Für helle, indirekte Plätze'],['🌑','Für dunkle Ecken'],['❄️','Für kühle Nordzimmer']]},
+    raum:{eyebrow:'Nach Raum',title:'Für welchen Raum?',items:[['🛋️','Fürs grosse Wohnzimmer'],['🛁','Fürs feuchte Badezimmer'],['🛏️','Fürs gemütliche Schlafzimmer'],['💻','Fürs Homeoffice']]},
+    anlass:{eyebrow:'Nach Anlass',title:'Für welchen Anlass?',items:[['🎂','Zum Geburtstag'],['💍','Zum Jahrestag'],['💐','Zum Muttertag'],['🙏','Als Dankeschön'],['🏡','Zum Einzug']]},
+    standort:{eyebrow:'Nach Standort',title:'Wo solls hin?',items:[['☀️','Für die pralle Sonne'],['⛅','Für den Halbschatten'],['🌑','Für schattige Plätze'],['💨','Für windige Balkone']]},
+    saison:{eyebrow:'Nach Saison',title:'Für welche Jahreszeit?',items:[['🌷','Frühlingsblüher'],['☀️','Sommerblüher'],['🍂','Herbst & Winter'],['🌿','Ganzjährig grün']]}
+  };
+  var TERMS=[{t:'Monstera',k:'p'},{t:'Übertöpfe',k:'p'},{t:'Pflanze umtopfen',k:'b'}];
+  function esc(s){return s.replace(/"/g,'&quot;');}
+  function pcard(p){var bd=p[3]?'<span class="badge '+p[3]+'">'+(p[3]==='best'?'Bestseller':'Neu')+'</span>':'';return '<div class="pccard"><div class="pcth">'+p[2]+bd+'</div><div class="pcn">'+p[0]+'</div><div class="pcp">CHF '+p[1]+'</div></div>';}
+  function slice5(pool,s){var r=[];for(var i=0;i<5;i++){r.push(pool[(s+i)%pool.length]);}return r;}
+  var mg='';for(var i=0;i<4;i++){mg+=pcard(PLANTS[i]);}document.getElementById('fyPg').innerHTML=mg;
+  var tm='';for(var j=0;j<TERMS.length;j++){var T0=TERMS[j];if(T0.k==='b'){tm+='<div class="sterm" data-pillar="'+esc(T0.t)+'" data-crumb="Ratgeber"><span class="tg">📄</span>'+T0.t+'<span class="sblog">Ratgeber</span><span class="ar">↗</span></div>';}else{tm+='<div class="sterm" data-redir="'+esc(T0.t)+'" data-crumb="Suche"><span class="tg">🔍</span>'+T0.t+'<span class="ar">↗</span></div>';}}document.getElementById('fyTerms').innerHTML=tm;
+  var hbCls=['','gt-care','gt-out'];var hbAttr=['data-pillar="Pflanzenlexikon" data-crumb="Wissen"','data-blog="1"','data-pillar="Herkunft" data-crumb="Wissen"'];var hb='';for(var h=0;h<HUBS.length;h++){hb+='<div class="gtile '+hbCls[h]+'" '+hbAttr[h]+' style="flex:0 0 182px;min-height:108px"><span class="e">'+HUBS[h][0]+'</span><b>'+HUBS[h][1]+'</b><span>'+HUBS[h][2]+'</span></div>';}document.getElementById('fyHubs').innerHTML=hb;
+
+  function phead(eb,title){return '<div class="phead"><span class="bk" data-a="back">‹</span><div style="flex:1"><span class="eyebrow">'+eb+'</span><b>'+title+'</b></div><span class="bk" data-a="close-drawer" style="font-size:18px">✕</span></div>';}
+  function rd(title,filter){var c=WORLDS[cw]?WORLDS[cw].title:'';var f=filter?(' data-filter="'+esc(filter)+'"'):'';return 'data-redir="'+esc(title)+'" data-crumb="'+esc(c)+'"'+f;}
+  function worldL2(key){
+    var w=WORLDS[key];var o=phead('Welt',w.title)+'<div class="dpad" style="padding-top:6px">';
+    if(w.highlight){o+='<div class="hlcard" '+rd(w.highlight.t,null)+'><div class="hi">'+w.highlight.e+'</div><div class="ht"><b>'+w.highlight.t+'</b><span>'+w.highlight.s+'</span></div><span class="cv">›</span></div>';}
+    o+='<div class="qa"><div class="qatile" '+rd(w.main,'Neuheiten')+'><span class="e">🆕</span><b>Neuheiten</b><span>Frisch eingetroffen</span></div>';
+    o+='<div class="qatile alt" '+rd(w.main,'Bestseller')+'><span class="e">⭐</span><b>Bestseller</b><span>Meistgekauft</span></div></div>';
+    if(w.uc&&w.uc.length){o+='<div class="seclabel" style="margin:18px 0 9px">Entdecken nach</div><div>';for(var u=0;u<w.uc.length;u++){var it=w.uc[u];var at=it[2]?('data-to="'+it[2]+'"'):rd(it[1],null);o+='<span class="chip" '+at+'><span class="e">'+it[0]+'</span> '+it[1]+'</span>';}o+='</div>';}
+    o+='<div class="seclabel" style="margin:18px 0 3px">Kategorien</div>';
+    for(var c=0;c<w.cats.length;c++){var ct=w.cats[c];o+='<div class="crow" '+rd(ct[1],null)+'><div class="th">'+ct[0]+'</div><div class="ct"><b>'+ct[1]+'</b>'+(ct[2]?'<span>'+ct[2]+'</span>':'')+'</div><span class="cv">›</span></div>';}
+    var feat=w.featured||[];var isPlant=(key==='zimmer'||key==='balkon');
+    if(feat.length||isPlant){
+      o+='<div class="seclabel" style="margin:18px 0 9px">Wissen &amp; Geschichten</div>';
+      for(var f=0;f<Math.min(3,feat.length);f++){o+='<div class="tiprow" data-pillar="'+esc(feat[f])+'" data-crumb="Blog"><div class="ti">📄</div><div><div class="tt">'+feat[f]+'</div><span class="rl">Ratgeber</span></div><span class="cv">›</span></div>';}
+      if(feat.length){var allBtn=isPlant?('data-blogcat="'+(key==='zimmer'?0:1)+'"'):'data-blog="1"';o+='<button class="btnsec" '+allBtn+'>Alle Blogs ansehen</button>';}
+      if(isPlant){o+='<div class="tiprow hub" data-pillar="Pflanzenlexikon" data-crumb="Wissen"><div class="ti">📖</div><div><div class="tt">Pflanzenlexikon</div><span class="hsub">Alles Wissen rund um deine Pflanzen</span></div><span class="cv">›</span></div>';}
+    }
+    return o+'<div style="height:22px"></div></div>';
+  }
+  /* curated facet selection → LANDING PAGE in the main view (aligned with desktop V4; was an in-drawer L3 layer) */
+  function smartLandingPage(id){
+    var n=NODES[id],w=WORLDS[cw]||WORLDS.zimmer,pool=w.prods;
+    var o='<div class="topbar"><div class="ico" data-a="open-drawer">☰</div><div class="logo" data-a="home">feey</div><div class="grp"><div class="ico" data-a="open-search">🔍</div><div class="ico">🛒<span class="dot"></span></div></div></div>';
+    o+='<div class="collwrap"><div class="crumb"><a data-a="home">Startseite</a> › '+w.title+' › '+n.eyebrow+'</div><div class="colltitle">'+n.title+'</div>';
+    o+='<p style="font-size:13px;color:var(--dark-beige);margin:0 0 16px;line-height:18px">Kuratierte Auswahl — wir haben '+w.title.toLowerCase()+' nach passenden Plätzen sortiert, damit du schneller findest, was zu dir passt.</p>';
+    for(var i=0;i<n.items.length;i++){
+      o+='<div class="smartsec"><div class="smarthd" '+rd(n.items[i][1],null)+'><div class="l"><span class="sme">'+n.items[i][0]+'</span><b>'+n.items[i][1]+'</b></div><span class="link">Alle ansehen ›</span></div><div class="cardscroll">';
+      var s=slice5(pool,i*2);for(var k=0;k<s.length;k++){o+=pcard(s[k]);}o+='</div></div>';
+    }
+    return o+'</div>';
+  }
+  function collectionPage(title,crumb,filter){
+    var w=WORLDS[cw]||WORLDS.zimmer,list=w.prods;
+    var o='<div class="topbar"><div class="ico" data-a="open-drawer">☰</div><div class="logo" data-a="home">feey</div><div class="grp"><div class="ico" data-a="open-search">🔍</div><div class="ico">🛒<span class="dot"></span></div></div></div>';
+    o+='<div class="collwrap"><div class="crumb"><a data-a="home">Startseite</a> › '+(crumb||'')+'</div><div class="colltitle">'+title+'</div>';
+    if(filter){o+='<div class="filterchip">'+filter+' ✕</div>';}
+    o+='<div class="seclabel" style="margin:0 0 12px">'+list.length+' Produkte</div><div class="pgrid">';
+    for(var i=0;i<list.length;i++){o+=pcard(list[i]);}return o+'</div></div>';
+  }
+  function blogPanel(){
+    var o=phead('Wissen & Geschichten','Blog')+'<div class="dpad" style="padding-top:8px">';
+    for(var i=0;i<BLOG.length;i++){var b=BLOG[i];var at=b.topics?('data-blogcat="'+i+'"'):('data-pillar="'+esc(b.t)+'" data-crumb="Blog"');
+      o+='<div class="crow" '+at+'><div class="th">'+b.e+'</div><div class="ct"><b>'+b.t+'</b><span>'+b.s+'</span></div><span class="cv">›</span></div>';}
+    return o+'<div style="height:22px"></div></div>';
+  }
+  function topicPanel(i){
+    var b=BLOG[i];var o=phead('Blog',b.t)+'<div class="dpad" style="padding-top:8px"><div class="seclabel" style="margin:0 0 4px">Themen</div>';
+    for(var k=0;k<b.topics.length;k++){o+='<div class="crow" data-pillar="'+esc(b.topics[k]+' – '+(b.scope||''))+'" data-crumb="'+esc(b.t)+'"><div class="th">📄</div><div class="ct"><b>'+b.topics[k]+'</b></div><span class="cv">›</span></div>';}
+    return o+'<div style="height:22px"></div></div>';
+  }
+  function pillarPage(title,crumb){
+    var arts=[['📄',title+': die Basics','Ratgeber · 4 Min'],['📄',title+' – häufige Fehler','Ratgeber · 3 Min'],['🎥',title+' im Video erklärt','Video · 6 Min'],['📄','Checkliste: '+title,'Ratgeber · 2 Min']];
+    var o='<div class="topbar"><div class="ico" data-a="open-drawer">☰</div><div class="logo" data-a="home">feey</div><div class="grp"><div class="ico" data-a="open-search">🔍</div><div class="ico">🛒<span class="dot"></span></div></div></div>';
+    o+='<div class="collwrap"><div class="crumb"><a data-a="home">Startseite</a> › '+(crumb||'Blog')+'</div><div class="colltitle">'+title+'</div>';
+    o+='<p style="font-size:13px;color:var(--dark-beige);margin:0 0 16px;line-height:18px">Dein Pillar-Guide zu „'+title+'" — alle Artikel, Tipps und Videos an einem Ort.</p>';
+    o+='<div class="seclabel" style="margin:0 0 6px">Artikel &amp; Guides</div>';
+    for(var a=0;a<arts.length;a++){o+='<div class="tiprow"><div class="ti">'+arts[a][0]+'</div><div><div class="tt">'+arts[a][1]+'</div><span class="rl">'+arts[a][2]+'</span></div><span class="cv">›</span></div>';}
+    return o+'</div>';
+  }
+  function redirectPillar(title,crumb){closeDrawer();document.getElementById('fySearch').classList.remove('show');document.getElementById('fyColl').innerHTML=pillarPage(title,crumb);document.getElementById('fyHome').style.display='none';document.getElementById('fyColl').style.display='block';document.querySelector('.screen').scrollTop=0;}
+  function push(html){var p=document.createElement('div');p.className='panel';p.style.zIndex=String(55+stack.length);p.innerHTML=html;document.getElementById('fyDrawer').appendChild(p);p.getBoundingClientRect();p.classList.add('show');p.scrollTop=0;stack.push(p);}
+  function pop(){var p=stack.pop();if(!p)return;p.classList.remove('show');setTimeout(function(){if(p.parentNode)p.parentNode.removeChild(p);},300);}
+  function popAll(){for(var i=0;i<stack.length;i++){if(stack[i].parentNode)stack[i].parentNode.removeChild(stack[i]);}stack=[];}
+  function closeDrawer(){popAll();document.getElementById('fyDrawer').classList.remove('show');document.querySelector('.scrim').classList.remove('show');}
+  function redirect(title,crumb,filter){closeDrawer();document.getElementById('fySearch').classList.remove('show');document.getElementById('fyColl').innerHTML=collectionPage(title,crumb,filter);document.getElementById('fyHome').style.display='none';document.getElementById('fyColl').style.display='block';document.querySelector('.screen').scrollTop=0;}
+  function redirectSmart(id){closeDrawer();document.getElementById('fySearch').classList.remove('show');document.getElementById('fyColl').innerHTML=smartLandingPage(id);document.getElementById('fyHome').style.display='none';document.getElementById('fyColl').style.display='block';document.querySelector('.screen').scrollTop=0;}
+  function goHome(){cw=null;closeDrawer();document.getElementById('fyColl').style.display='none';document.getElementById('fyHome').style.display='block';}
+
+  var T=[{k:'GRID',n:'Raster',tag:'Blöcke'},{k:'LIST',n:'Liste',tag:'Text'}];
+  var curi=0;
+  function showTL(){popAll();var tl=T[curi].k,ts=document.querySelectorAll('.toplevel');for(var i=0;i<ts.length;i++){ts[i].classList.toggle('on',ts[i].getAttribute('data-tl')===tl);}document.getElementById('fyLab').innerHTML=T[curi].n+'<small>'+T[curi].tag+'</small>';document.getElementById('fyDrawer').classList.add('show');document.querySelector('.scrim').classList.add('show');var db=document.querySelector('.dbody');if(db)db.scrollTop=0;}
+  document.getElementById('fyNext').onclick=function(){curi=(curi+1)%T.length;showTL();};
+  document.getElementById('fyPrev').onclick=function(){curi=(curi-1+T.length)%T.length;showTL();};
+  document.getElementById('nbToggle').onclick=function(){var nb=document.getElementById('fyNB');var on=nb.style.display!=='none';nb.style.display=on?'none':'flex';document.getElementById('nbState').textContent=on?'Aus':'An';};
+
+  document.addEventListener('click',function(e){
+    var rdr=e.target.closest('[data-redir]');if(rdr){redirect(rdr.getAttribute('data-redir'),rdr.getAttribute('data-crumb'),rdr.getAttribute('data-filter'));return;}
+    var bl=e.target.closest('[data-blog]');if(bl){push(blogPanel());return;}
+    var bcat=e.target.closest('[data-blogcat]');if(bcat){push(topicPanel(+bcat.getAttribute('data-blogcat')));return;}
+    var pil=e.target.closest('[data-pillar]');if(pil){redirectPillar(pil.getAttribute('data-pillar'),pil.getAttribute('data-crumb'));return;}
+    var w=e.target.closest('[data-w]');if(w){cw=w.getAttribute('data-w');push(worldL2(cw));return;}
+    var to=e.target.closest('[data-to]');if(to){redirectSmart(to.getAttribute('data-to'));return;}
+    var a=e.target.closest('[data-a]');if(!a)return;var act=a.getAttribute('data-a');
+    if(act==='open-drawer'){document.getElementById('fyDrawer').classList.add('show');document.querySelector('.scrim').classList.add('show');}
+    else if(act==='close-drawer'){closeDrawer();}
+    else if(act==='home'){goHome();}
+    else if(act==='open-search'){document.getElementById('fySearch').classList.add('show');}
+    else if(act==='close-search'){document.getElementById('fySearch').classList.remove('show');}
+    else if(act==='back'){pop();}
+  });
+
+  showTL();
+  var P=new URLSearchParams(location.search);
+  if(P.get('view')==='list'){curi=1;showTL();}
+  if(P.get('nb')==='off'){document.getElementById('fyNB').style.display='none';document.getElementById('nbState').textContent='Aus';}
+  var wd=P.get('world');if(wd&&WORLDS[wd]){cw=wd;var fc=P.get('facet');if(fc&&NODES[fc]){redirectSmart(fc);}else{push(worldL2(wd));}}
+  if(P.get('blog')==='1'){push(blogPanel());var bca=P.get('blogcat');if(bca!==null&&BLOG[+bca]&&BLOG[+bca].topics){push(topicPanel(+bca));}}
+  if(P.get('pillar')){redirectPillar(P.get('pillar'),P.get('crumb')||'Blog');}
+  if(P.get('search')==='1'){document.getElementById('fySearch').classList.add('show');}
+</script>
+</body>
+</html>

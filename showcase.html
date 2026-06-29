@@ -1,0 +1,54 @@
+<!--
+  feey.ch — NAVIGATION REDESIGN · SHOWCASE (team review)
+  One flipable window with the three current front-runners:
+    · Mobile (final)        → nav-redesign-prototype.html   (the approved mobile drawer nav)
+    · Desktop · Version 7   → nav-desktop-v7.html           (V6 + wider Wissen column + slide-underline sub-filters)
+    · Desktop · Version 1   → nav-desktop-v1.html           (V6 header/chrome + V1 world dropdown)
+  Tabs switch the view; each prototype fills the screen. Desktop views pre-open on Zimmerpflanzen.
+  Mobile renders its own phone frame; use its ‹ › switcher to step through the worlds.
+-->
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>feey · Navigation — Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{--green-dark:#4A9A83;--beige:#D3CCB6;--dark-beige-15:#E8E6E4;--black:#141414;--fh:'Poppins',system-ui,sans-serif;--fb:'Karla',system-ui,sans-serif}
+  *{box-sizing:border-box}html,body{height:100%;margin:0}
+  body{font-family:var(--fb);background:#dfddd5;overflow:hidden}
+  .bar{position:fixed;top:0;left:0;right:0;height:56px;display:flex;align-items:center;gap:16px;padding:0 18px;background:#fff;border-bottom:1px solid var(--dark-beige-15);z-index:10;box-shadow:0 2px 14px rgba(20,20,20,.06)}
+  .bar .ttl{font-family:var(--fh);font-weight:700;font-size:15px;letter-spacing:.3px}
+  .bar .ttl span{color:var(--green-dark)}
+  .tabs{display:flex;gap:8px;margin-left:auto}
+  .tabs button{font-family:var(--fh);font-weight:600;font-size:12px;letter-spacing:.2px;border:1.5px solid var(--beige);background:#fff;border-radius:30px;padding:9px 16px;cursor:pointer;color:var(--black)}
+  .tabs button:hover{border-color:var(--green-dark);color:var(--green-dark)}
+  .tabs button.active{background:var(--black);color:#fff;border-color:var(--black)}
+  .stage{position:fixed;top:56px;left:0;right:0;bottom:0;overflow:hidden}
+  #frame{width:100%;height:100%;border:0;display:block;background:#dfddd5}
+  .hint{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);font-family:var(--fb);font-size:11px;color:#6b6a62;background:rgba(255,255,255,.78);padding:5px 13px;border-radius:20px;z-index:10}
+</style>
+</head>
+<body>
+  <div class="bar">
+    <div class="ttl">feey · Navigation — <span>Showcase</span></div>
+    <div class="tabs">
+      <button data-src="nav-redesign-prototype.html" data-hint="Mobile (freigegeben) · ‹ › unten wechselt die Welt · ☰ öffnet die Navigation" class="active">📱 Mobile · final</button>
+      <button data-src="nav-desktop-v7.html?menu=zimmer&amp;v=2" data-hint="Desktop V7 · Welt anklicken · „Nach Licht“ öffnet die Sub-Filter (breitere Wissen-Spalte, Slide-Unterstrich)">🖥 Desktop · Version 7</button>
+      <button data-src="nav-desktop-v1.html?menu=zimmer&amp;v=2" data-hint="Desktop V1 · V6-Header + V1-Dropdown · Welt anklicken zum Ausprobieren">🖥 Desktop · Version 1</button>
+    </div>
+  </div>
+  <div class="stage"><iframe id="frame" title="Prototype"></iframe></div>
+  <div class="hint" id="hint"></div>
+
+<script>
+  var frame=document.getElementById('frame'), hint=document.getElementById('hint'), tabs=document.querySelectorAll('.tabs button');
+  function load(btn){frame.src=btn.getAttribute('data-src');hint.textContent=btn.getAttribute('data-hint')||'';for(var i=0;i<tabs.length;i++)tabs[i].classList.toggle('active',tabs[i]===btn);}
+  for(var i=0;i<tabs.length;i++)tabs[i].onclick=(function(b){return function(){load(b);};})(tabs[i]);
+  var _t=+(new URLSearchParams(location.search).get('tab')||1);
+  load(tabs[(_t>=1&&_t<=tabs.length)?_t-1:0]);
+</script>
+</body>
+</html>
